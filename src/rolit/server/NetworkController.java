@@ -6,13 +6,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class NetworkThread extends Thread {
+public class NetworkController extends Thread {
 	private LoggingInterface					log;
 	private int									port;
 	private String								host;
 	private Collection<ConnectionController>  	threads;
 
-	public NetworkThread(String aHost, int aPort, LoggingInterface aLog) {
+	public NetworkController(String aHost, int aPort, LoggingInterface aLog) {
 		super();
 		threads = new ArrayList<ConnectionController>();
 		log = aLog;
@@ -34,6 +34,13 @@ public class NetworkThread extends Thread {
 		} catch (IOException e){
 			log.log("Het lukt niet om een socket te openen op port:" + port);
 		}
+	}
+	
+	public void broadcast(String msg) {
+		for(ConnectionController client: threads){
+            client.sendMessage(msg + "\n");
+        }
+        log.log("Broadcasted:" + msg);
 	}
 	
 	public void addConnection(ConnectionController connection) {
