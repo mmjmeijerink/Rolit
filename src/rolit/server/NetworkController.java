@@ -28,7 +28,7 @@ public class NetworkController extends Thread {
 		ServerSocket server = null;
 		try {
 			server = new ServerSocket(port);
-			appController.log("Server started on port:" + port);
+			appController.log("Server started on port: " + port);
 			while (true) {
 				Socket socket = server.accept();
 				ConnectionController client = new ConnectionController(this, socket, appController);
