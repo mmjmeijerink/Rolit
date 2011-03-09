@@ -5,7 +5,10 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+
+import com.sun.tools.javac.util.List;
 
 public class NetworkController extends Thread {
 	private ApplicationController				appController;
@@ -29,6 +32,7 @@ public class NetworkController extends Thread {
 			while (true) {
 				Socket socket = server.accept();
 				ConnectionController client = new ConnectionController(this, socket, appController);
+				appController.log("New connection from IP: " + socket.getInetAddress());
 				addConnection(client);
 				client.start();
 			}
@@ -38,11 +42,37 @@ public class NetworkController extends Thread {
 		}
 	}
 	
-	public void broadcast(String msg) {
-		for(ConnectionController client: threads){
-            client.sendMessage(msg + "\n");
-        }
-		appController.log("Broadcasted:" + msg);
+	public void broadcastCommand(String msg) {
+		if(msg != null) {
+			for(ConnectionController client: threads){
+	            client.sendCommand(msg);
+	        }
+			appController.log("Broadcasted: " + msg);
+		}
+	}
+	
+	public void executeCommand(String msg, ConnectionController sender) {
+		if(msg != null && sender != null) {
+			String[] regexCommand = (msg.split("\\s+"));
+			ArrayList<String> splitCommand = new ArrayList<String>(Arrays.asList(regexCommand));
+			
+			if(splitCommand.get(0).equals("connect")) {
+				if(splitCommand.size() == 2) {
+					sender.gamer().name = splitCommand.get(1);
+					appController.log("Connection from " + sender.socket().getInetAddress() + " has identified itself as: " + splitCommand.get(1));
+				} else {
+					appController.log("Invalid command: " + msg);
+				}
+			} else if(splitCommand.get(0).equals("join")) {
+				
+			} else if(splitCommand.get(0).equals("domove")) {
+				
+			} else if(splitCommand.get(0).equals("chat")) {
+				
+			} else {
+				appController.log("Command misunderstoud: " + msg);
+			}
+		}
 	}
 	
 	public void addConnection(ConnectionController connection) {
