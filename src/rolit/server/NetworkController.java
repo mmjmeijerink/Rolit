@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class NetworkController extends Thread {
-	private LoggingInterface					log;
+	private ApplicationController				appController;
 	private int									port;
 	private InetAddress							host;
 	private Collection<ConnectionController>  	threads;
 
-	public NetworkController(InetAddress aHost, int aPort, LoggingInterface aLog) {
+	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller) {
 		super();
 		threads = new ArrayList<ConnectionController>();
-		log = aLog;
+		appController = controller;
 		port = aPort;
 		host = aHost;
 	}
@@ -25,15 +25,16 @@ public class NetworkController extends Thread {
 		ServerSocket server = null;
 		try {
 			server = new ServerSocket(port);
-			log.log("Server started on port:" + port);
+			appController.log("Server started on port:" + port);
 			while (true) {
 				Socket socket = server.accept();
-				ConnectionController client = new ConnectionController(this, socket,log);
+				ConnectionController client = new ConnectionController(this, socket, appController);
 				addConnection(client);
 				client.start();
 			}
 		} catch (IOException e){
-			log.log("Server can't start because port " + port + " is already being used");
+			appController.log("Server can't start because port " + port + " is already being used");
+			appController.connectionFailed();
 		}
 	}
 	
@@ -41,7 +42,7 @@ public class NetworkController extends Thread {
 		for(ConnectionController client: threads){
             client.sendMessage(msg + "\n");
         }
-        log.log("Broadcasted:" + msg);
+		appController.log("Broadcasted:" + msg);
 	}
 	
 	public void addConnection(ConnectionController connection) {
@@ -52,7 +53,8 @@ public class NetworkController extends Thread {
 		if(threads.contains(connection)) {
 			threads.remove(connection);
 		} else {
-			log.log("Tries to remove connection that does not exist");
+			appController.log("Tries to remove connection that does not exist");
 		}
 	}
+	
 }

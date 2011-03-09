@@ -45,12 +45,10 @@ public class ConnectionController extends Thread {
 					log.log("Gamer " + name + " connected");
 				}
 				
-				if (inlezen.equals("Exit")) {
-					shutdown();
-				} else {
+				else {
 					network.broadcast(inlezen);
 				}
-			} else shutdown();
+			} else disconnect();
 		}
 	}
 
@@ -64,7 +62,7 @@ public class ConnectionController extends Thread {
 	}
 
 
-	private void shutdown() {
+	public void disconnect() {
 		network.removeConnection(this);
 		this.running = false;
 	}

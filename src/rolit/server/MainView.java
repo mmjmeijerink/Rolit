@@ -54,7 +54,7 @@ public class MainView extends JFrame implements LoggingInterface {
         portField        = new JTextField("1337", 5);
         portField.setToolTipText("Set port for the server to use, you can only use ports that are not in use.");
         
-        connectButton = new JButton("Start the server");
+        connectButton = new JButton("(Re)start the server");
         connectButton.addActionListener(viewController);
         
         JLabel logLable = new JLabel("Log:");
@@ -83,6 +83,18 @@ public class MainView extends JFrame implements LoggingInterface {
         container.setLayout(new FlowLayout());
         container.add(flowAbove); container.add(flowBelow);
         this.setResizable(false);
+    }
+    
+    public void disableControls() {
+    	portField.setEnabled(false);
+    	hostField.setEnabled(false);
+    	connectButton.setEnabled(false);
+    }
+    
+    public void enableControls() {
+    	portField.setEnabled(true);
+    	hostField.setEnabled(true);
+    	connectButton.setEnabled(true);
     }
 	
     // Getters en setters

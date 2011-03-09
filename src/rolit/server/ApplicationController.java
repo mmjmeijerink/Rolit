@@ -29,6 +29,10 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 	public void log(String logEntry) {
 		view.log(logEntry);
 	}
+	
+	public void connectionFailed() {
+		view.enableControls();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
@@ -58,7 +62,7 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			if(host != null) {
 				network = new NetworkController(host, port, this);
 				network.start();
-				log("Server started!");
+				view.disableControls();
 			}
 			
 		}
