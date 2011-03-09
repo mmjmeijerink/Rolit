@@ -20,4 +20,8 @@ public class Gamer {
 		}
 		return result;
 	}
+	
+	public int getRequestedGameSize() {
+		return requestedGameSize;
+	}
 }

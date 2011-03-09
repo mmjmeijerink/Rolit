@@ -120,6 +120,7 @@ public class MainView extends JFrame implements LoggingInterface {
 		if(msg != null) {
 			logArea.append(" " + msg + "\n");
 			logArea.setCaretPosition(logArea.getText().length());
+			System.out.println(" " + msg);
 		}
 	}
 

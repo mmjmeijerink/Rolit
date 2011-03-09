@@ -76,7 +76,7 @@ public class NetworkController extends Thread {
 						appController.log(sender.toString() + " tries to but is already identified.");
 					}
 				} else {
-					appController.log("Connect command from " + sender.toString() + " has more than 1 parameter: " + msg);
+					appController.log("Connect command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
 				}
 				
 			} else if(splitCommand.get(0).equals("join")) {
@@ -92,16 +92,16 @@ public class NetworkController extends Thread {
 								appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
 								checkForGameStart();
 							} else {
-								appController.log("Join command from " + sender.toString() + " 1st parameter between [2-4]: " + msg);
+								appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter between [2-4]: " + msg);
 							}
 						} catch(NumberFormatException e) {
-							appController.log("Join command from " + sender.toString() + " 1st parameter needs to be a int: " + msg);
+							appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
 						}
 					} else {
-						appController.log("Join command from " + sender.toString() + " has more than 1 parameter: " + msg);
+						appController.log("Join command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
 					}
 				} else {
-					appController.log("Join command from " + sender.toString() + " but has not identified hisself.");
+					appController.log("Join command from " + sender.toString() + " FAILED, not identified.");
 				}
 				
 			} else if(splitCommand.get(0).equals("domove")) {
@@ -120,6 +120,7 @@ public class NetworkController extends Thread {
 
 	public void removeConnection(ConnectionController connection) {
 		if(threads.contains(connection)) {
+			appController.log(connection.toString() + " disconnects");
 			threads.remove(connection);
 		} else {
 			appController.log("Tries to remove connection that does not exist");
@@ -139,7 +140,43 @@ public class NetworkController extends Thread {
 	}
 	
 	public void checkForGameStart() {
+		appController.log("Checks if games can be started...");
+		ArrayList<ConnectionController> startingWith = null;
 		
+		for(ConnectionController masterClient: waitingForGame){
+			int minimalSize = masterClient.gamer().getRequestedGameSize();
+			ArrayList<ConnectionController> readyToStart = new ArrayList<ConnectionController>();
+			readyToStart.add(masterClient);
+			for(ConnectionController slaveClient: waitingForGame) {
+				if(masterClient != slaveClient) {
+					if(minimalSize > readyToStart.size()) {
+						readyToStart.add(slaveClient);
+					} else {
+						startingWith = readyToStart;
+					}
+				}
+			}
+			if (readyToStart.size() == minimalSize) {
+				startingWith = readyToStart;
+			}
+		}
+		
+		if(startingWith != null) {
+			for(ConnectionController starting: startingWith) {
+				if(waitingForGame.contains(starting)) {
+					waitingForGame.remove(starting);
+				} else {
+					appController.log("ERROR: Server tries to start game with someone who does not want to start");
+				}
+			}
+			startGame(startingWith);
+		} else {
+			appController.log("Not enough players to start a game");
+		}
+	}
+	
+	public void startGame(ArrayList<ConnectionController> players) {
+		appController.log("Start game");
 	}
 
 }
