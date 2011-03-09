@@ -44,7 +44,7 @@ public class ConnectionController extends Thread {
 
 	public void sendCommand(String msg) {
 		if(msg != null) {
-			log.log("Sending commmand (" + msg + ") to " + gamer.name);
+			log.log("Sending commmand (" + msg + ") to " + toString());
 			try {
 				out.write(msg + "\n");
 				out.flush();

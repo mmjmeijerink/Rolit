@@ -181,16 +181,18 @@ public class NetworkController extends Thread {
 	public void startGame(ArrayList<ConnectionController> players) {
 		
 		String command = "startgame";
+		String logEntry = "Starting a game between";
 		int i = 0;
 		for(ConnectionController player: players) {
 			i++;
 			if(i < 4) {
 				command = command + " " + player.gamer().name;
+				logEntry = logEntry + ", " + player.toString();
 			} else {
 				players.remove(player);
 			}
 		}
-		appController.log("Starting game: " + command);
+		appController.log(logEntry);
 		for(ConnectionController player: players) {
 			player.sendCommand(command);
 		}
