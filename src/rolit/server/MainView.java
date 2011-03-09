@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -59,6 +60,8 @@ public class MainView extends JFrame implements LoggingInterface {
         JLabel logLable = new JLabel("Log:");
         logArea = new JTextArea("", 15, 50);
         logArea.setEditable(false);
+        logArea.setLineWrap(true);
+        JScrollPane scrollPane = new JScrollPane(logArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         // Indelen layout
         JPanel grid = new JPanel(new GridLayout(2,2));
@@ -74,7 +77,7 @@ public class MainView extends JFrame implements LoggingInterface {
         JPanel flowBelow = new JPanel();
         flowBelow.setLayout(new BorderLayout());
         flowBelow.add(logLable);
-        flowBelow.add(logArea, BorderLayout.SOUTH);
+        flowBelow.add(scrollPane, BorderLayout.SOUTH);
 
         Container container = getContentPane();
         container.setLayout(new FlowLayout());

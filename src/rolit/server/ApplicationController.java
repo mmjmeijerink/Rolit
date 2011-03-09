@@ -56,15 +56,9 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			}
 			
 			if(host != null) {
-			/*
-			try {
-				network = new NetworkThread(host, port, this);
+				network = new NetworkController(host, port, this);
 				network.start();
 				log("Server started!");
-			} catch (IOException e) {
-				log("Server started!");
-			}
-			*/
 			}
 			
 		}
