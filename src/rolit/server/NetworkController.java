@@ -149,6 +149,9 @@ public class NetworkController extends Thread {
 			readyToStart.add(masterClient);
 			for(ConnectionController slaveClient: waitingForGame) {
 				if(masterClient != slaveClient) {
+					if(minimalSize < slaveClient.gamer().getRequestedGameSize()) {
+						minimalSize = slaveClient.gamer().getRequestedGameSize();
+					}
 					if(minimalSize > readyToStart.size()) {
 						readyToStart.add(slaveClient);
 					} else {
@@ -176,7 +179,21 @@ public class NetworkController extends Thread {
 	}
 	
 	public void startGame(ArrayList<ConnectionController> players) {
-		appController.log("Start game");
+		
+		String command = "startgame";
+		int i = 0;
+		for(ConnectionController player: players) {
+			i++;
+			if(i < 4) {
+				command = command + " " + player.gamer().name;
+			} else {
+				players.remove(player);
+			}
+		}
+		appController.log("Starting game: " + command);
+		for(ConnectionController player: players) {
+			player.sendCommand(command);
+		}
 	}
 
 }
