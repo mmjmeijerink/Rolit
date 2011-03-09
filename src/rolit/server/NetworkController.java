@@ -81,7 +81,7 @@ public class NetworkController extends Thread {
 			} else if(splitCommand.get(0).equals("chat")) {
 
 			} else {
-				appController.log("Command " + sender.socket().getInetAddress() + " misunderstoud: " + msg);
+				appController.log("Command from " + sender.gamer().name + " (" + sender.socket().getInetAddress() + ") misunderstoud: " + msg);
 			}
 		}
 	}
