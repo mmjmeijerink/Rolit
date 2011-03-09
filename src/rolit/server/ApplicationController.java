@@ -5,8 +5,9 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class ApplicationController implements ActionListener {
-	private MainView view;
+public class ApplicationController implements ActionListener,LoggingInterface {
+	private MainView 		view;
+	//private NetworkThread 	network;
 	
 	public ApplicationController() {
 		view = new MainView(this);
@@ -24,11 +25,48 @@ public class ApplicationController implements ActionListener {
 	public MainView view() {
 		return view;
 	}
+	
+	public void log(String logEntry) {
+		view.log(logEntry);
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(event.getSource() == view.connectButton()) {
-			view.log("Tries to connect!");
+			log("Starting the server...");
+			
+			InetAddress host;
+			try {    
+				host = InetAddress.getByName(view.host());
+			} catch (UnknownHostException e) {
+				host = null;
+				log("Hostname invalid.");
+			}
+			
+			int port = 1337; // Default port
+			try {
+				port = Integer.parseInt(view.port());
+				if (port<1 && port >= 65535) {
+					log("Port has to be in the range [1-65535], using 1337 default.");
+				} else {
+					port = 1337; // Default port
+				}
+			} catch (NumberFormatException e) {
+				log("Port is not a valid number, using 1337 default.");
+			}
+			
+			if(host != null) {
+			/*
+			try {
+				network = new NetworkThread(host, port, this);
+				network.start();
+				log("Server started!");
+			} catch (IOException e) {
+				log("Server started!");
+			}
+			*/
+			}
+			
 		}
 		
 	}
