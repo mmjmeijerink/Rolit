@@ -14,11 +14,13 @@ public class NetworkController extends Thread {
 	private ApplicationController				appController;
 	private int									port;
 	private InetAddress							host;
-	private Collection<ConnectionController>  	threads;
+	private ArrayList<ConnectionController>  	threads;
+	private ArrayList<ConnectionController>		waitingForGame;
 
 	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller) {
 		super();
-		threads = new ArrayList<ConnectionController>();
+		threads 		= new ArrayList<ConnectionController>();
+		waitingForGame 	= new ArrayList<ConnectionController>();
 		appController = controller;
 		port = aPort;
 		host = aHost;
@@ -57,6 +59,8 @@ public class NetworkController extends Thread {
 			ArrayList<String> splitCommand = new ArrayList<String>(Arrays.asList(regexCommand));
 
 			if(splitCommand.get(0).equals("connect")) {
+				/* Execute command "connect" */
+				
 				if(splitCommand.size() == 2) {
 					if(sender.gamer().name.equals("[NOT CONNECTED]")) {
 						String possibleName = splitCommand.get(1);
@@ -74,8 +78,29 @@ public class NetworkController extends Thread {
 				} else {
 					appController.log("Connect command from " + sender.toString() + " has more than 1 parameter: " + msg);
 				}
+				
 			} else if(splitCommand.get(0).equals("join")) {
-
+				/* Execute command "join" */
+				
+				if(splitCommand.size() == 2) {
+					try {
+						int requestedSize = Integer.parseInt(splitCommand.get(1));
+						if(sender.gamer().setRequestedGameSize(requestedSize)) {
+							if(!waitingForGame.contains(sender)) {
+								waitingForGame.add(sender);
+							}
+							appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
+							checkForGameStart();
+						} else {
+							appController.log("Join command from " + sender.toString() + " 1st parameter between [2-4]: " + msg);
+						}
+					} catch(NumberFormatException e) {
+						appController.log("Join command from " + sender.toString() + " 1st parameter needs to be a int: " + msg);
+					}
+				} else {
+					appController.log("Join command from " + sender.toString() + " has more than 1 parameter: " + msg);
+				}
+				
 			} else if(splitCommand.get(0).equals("domove")) {
 
 			} else if(splitCommand.get(0).equals("chat")) {
@@ -108,6 +133,10 @@ public class NetworkController extends Thread {
 			}
 		}
 		return result;
+	}
+	
+	public void checkForGameStart() {
+		
 	}
 
 }
