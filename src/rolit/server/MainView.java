@@ -82,6 +82,7 @@ public class MainView extends JFrame {
         this.setResizable(false);
     }
 	
+    // Getters en setters
     public void setHost(String host) {
     	if(host != null) {
     		hostField.setText(host);
@@ -90,6 +91,19 @@ public class MainView extends JFrame {
     
     public JButton connectButton() {
     	return connectButton;
+    }
+    
+    public String port() {
+    	return portField.getText();
+    }
+    
+    public String host() {
+    	return hostField.getText();
+    }
+    
+    public void log(String msg) {
+        logArea.append(" " + msg + "\n");
+        logArea.setCaretPosition(logArea.getText().length());
     }
 	
 }
