@@ -16,13 +16,16 @@ import javax.swing.JTextField;
 
 public class MainView extends JFrame {
 	
-	private JButton     connectButton;
-    private JTextField  portField;
-    private JTextArea   logArea;
+	private JButton   				connectButton;
+    private JTextField				portField;
+    private JTextArea 				logArea;
+    private JTextField				hostField;
+    private ApplicationController	viewController;
 	
-	public MainView() {
+	public MainView(ApplicationController aController) {
         super("Rolit Server");
-
+        
+        viewController = aController;
         buildView();
         setVisible(true);
 
@@ -41,43 +44,52 @@ public class MainView extends JFrame {
     public void buildView() {
         setSize(640,375);
 
-        // Panel p1 - Listen
-
-        JPanel p1 = new JPanel(new FlowLayout());
-        JPanel pp = new JPanel(new GridLayout(2,2));
-
-        JLabel hostLable = new JLabel("Hostname: ");
-        JTextField hostField = new JTextField("", 12);
+        JLabel hostLable 	= new JLabel("Hostname: ");
+        hostField 			= new JTextField("", 12);
+        hostField.setToolTipText("Your IP address");
         hostField.setEditable(false);
-
-        JLabel portLable = new JLabel("Port:");
-        portField        = new JTextField("2727", 5);
-
-        pp.add(hostLable);
-        pp.add(hostField);
-        pp.add(portLable);
-        pp.add(portField);
-
+        
+        JLabel portLable = new JLabel("Port: ");
+        portField        = new JTextField("1337", 5);
+        portField.setToolTipText("Set port for the server to use, you can only use ports that are not in use.");
+        
         connectButton = new JButton("Start the server");
-        //connectButton.addActionListener(this);
-
-        p1.add(pp, BorderLayout.WEST);
-        p1.add(connectButton, BorderLayout.EAST);
-
-        JPanel p2 = new JPanel();
-        p2.setLayout(new BorderLayout());
-
+        connectButton.addActionListener(viewController);
+        
         JLabel logLable = new JLabel("Log:");
         logArea = new JTextArea("", 15, 50);
-        
         logArea.setEditable(false);
-        p2.add(logLable);
-        p2.add(logArea, BorderLayout.SOUTH);
+        
+        // Indelen layout
+        JPanel grid = new JPanel(new GridLayout(2,2));
+        grid.add(hostLable);
+        grid.add(hostField);
+        grid.add(portLable);
+        grid.add(portField);
 
-        Container cc = getContentPane();
-        cc.setLayout(new FlowLayout());
-        cc.add(p1); cc.add(p2);
+        JPanel flowAbove = new JPanel(new FlowLayout());
+        flowAbove.add(grid, BorderLayout.WEST);
+        flowAbove.add(connectButton, BorderLayout.EAST);
+
+        JPanel flowBelow = new JPanel();
+        flowBelow.setLayout(new BorderLayout());
+        flowBelow.add(logLable);
+        flowBelow.add(logArea, BorderLayout.SOUTH);
+
+        Container container = getContentPane();
+        container.setLayout(new FlowLayout());
+        container.add(flowAbove); container.add(flowBelow);
+        this.setResizable(false);
     }
 	
+    public void setHost(String host) {
+    	if(host != null) {
+    		hostField.setText(host);
+    	}
+    }
+    
+    public JButton connectButton() {
+    	return connectButton;
+    }
 	
 }
