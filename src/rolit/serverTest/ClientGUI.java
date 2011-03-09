@@ -41,11 +41,11 @@ public class ClientGUI extends JFrame implements KeyListener, ActionListener, Me
 		JPanel pp = new JPanel(new GridLayout(3,2));
 
 		JLabel lbAddress = new JLabel("Adres: ");
-		tfAddress = new JTextField(null, 12);
+		tfAddress = new JTextField("127.0.0.1", 12);
 		tfAddress.addKeyListener(this);
 
 		JLabel lbPort = new JLabel("Poort:");
-		tfPort        = new JTextField(null, 5);
+		tfPort        = new JTextField("1337", 5);
 		tfPort.addKeyListener(this);
 
 
@@ -56,7 +56,7 @@ public class ClientGUI extends JFrame implements KeyListener, ActionListener, Me
 
 
 		bConnect = new JButton("Connect");
-		bConnect.setEnabled(false);
+		bConnect.setEnabled(true);
 		bConnect.addActionListener(this);
 		bConnect.setActionCommand("Connect");
 
