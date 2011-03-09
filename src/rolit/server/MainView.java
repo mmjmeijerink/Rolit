@@ -43,7 +43,7 @@ public class MainView extends JFrame implements LoggingInterface {
 
 	/** Bouwt de daadwerkelijke GUI. */
 	public void buildView() {
-		setSize(640,375);
+		setSize(645,375);
 
 		JLabel hostLable 	= new JLabel("Hostname: ");
 		hostField 			= new JTextField("", 12);

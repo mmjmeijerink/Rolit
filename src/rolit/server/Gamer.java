@@ -5,7 +5,7 @@ public class Gamer {
 	public boolean takesPart;
 	
 	public Gamer() {
-		name = "notconnected";
+		name = "[NOT CONNECTED]"; // Mag want op een andere manier kan name nooit geset worden met een spatie, dus deze is uniek
 		takesPart = false;
 	}
 }

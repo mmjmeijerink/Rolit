@@ -44,11 +44,12 @@ public class ConnectionController extends Thread {
 
 	public void sendCommand(String msg) {
 		if(msg != null) {
+			log.log("Sending commmand (" + msg + ") to " + gamer.name);
 			try {
-				out.write(msg);
+				out.write(msg + "\n");
 				out.flush();
 			} catch (IOException e) {
-				log.log("Sending commmand" + msg + "failed!");
+				log.log("Sending commmand " + msg + " failed!");
 			}
 		}
 	}
