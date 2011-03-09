@@ -81,24 +81,27 @@ public class NetworkController extends Thread {
 				
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
-				
-				if(splitCommand.size() == 2) {
-					try {
-						int requestedSize = Integer.parseInt(splitCommand.get(1));
-						if(sender.gamer().setRequestedGameSize(requestedSize)) {
-							if(!waitingForGame.contains(sender)) {
-								waitingForGame.add(sender);
+				if(!sender.gamer().name.equals("[NOT CONNECTED]")) {
+					if(splitCommand.size() == 2) {
+						try {
+							int requestedSize = Integer.parseInt(splitCommand.get(1));
+							if(sender.gamer().setRequestedGameSize(requestedSize)) {
+								if(!waitingForGame.contains(sender)) {
+									waitingForGame.add(sender);
+								}
+								appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
+								checkForGameStart();
+							} else {
+								appController.log("Join command from " + sender.toString() + " 1st parameter between [2-4]: " + msg);
 							}
-							appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
-							checkForGameStart();
-						} else {
-							appController.log("Join command from " + sender.toString() + " 1st parameter between [2-4]: " + msg);
+						} catch(NumberFormatException e) {
+							appController.log("Join command from " + sender.toString() + " 1st parameter needs to be a int: " + msg);
 						}
-					} catch(NumberFormatException e) {
-						appController.log("Join command from " + sender.toString() + " 1st parameter needs to be a int: " + msg);
+					} else {
+						appController.log("Join command from " + sender.toString() + " has more than 1 parameter: " + msg);
 					}
 				} else {
-					appController.log("Join command from " + sender.toString() + " has more than 1 parameter: " + msg);
+					appController.log("Join command from " + sender.toString() + " but has not identified hisself.");
 				}
 				
 			} else if(splitCommand.get(0).equals("domove")) {
