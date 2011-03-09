@@ -69,10 +69,10 @@ public class NetworkController extends Thread {
 						appController.log("Connection from " + sender.socket().getInetAddress() + " has identified itself as: " + possibleName);
 						sender.sendCommand("ackconnect "+possibleName);
 					} else {
-						appController.log(sender.gamer().name + " tries to but is already identified.");
+						appController.log(sender.toString() + " tries to but is already identified.");
 					}
 				} else {
-					appController.log("Invalid command: " + msg);
+					appController.log("Connect command from " + sender.toString() + " has more than 1 parameter: " + msg);
 				}
 			} else if(splitCommand.get(0).equals("join")) {
 
@@ -81,7 +81,7 @@ public class NetworkController extends Thread {
 			} else if(splitCommand.get(0).equals("chat")) {
 
 			} else {
-				appController.log("Command from " + sender.gamer().name + " (" + sender.socket().getInetAddress() + ") misunderstoud: " + msg);
+				appController.log("Command from " + sender.toString() + " misunderstoud: " + msg);
 			}
 		}
 	}

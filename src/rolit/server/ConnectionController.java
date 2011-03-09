@@ -66,5 +66,8 @@ public class ConnectionController extends Thread {
 	public Socket socket() {
 		return socket;
 	}
-
+	
+	public String toString() {
+		return gamer.name + " (" + socket.getInetAddress() + ")";
+	}
 }
