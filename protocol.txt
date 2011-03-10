@@ -1,0 +1,76 @@
+Protocol
+
+Het hele protocol is hoofdletter gevoelig. Alle commando's zijn in kleine letters.
+
+S -> C
+ackconnect [name]
+    Geeft aan de client aan dat de server zijn connect heeft ontvangen met de naam [name], als de naam al bestaat dan geeft hij aan dat de client een andere naam heeft.
+    
+S -> C*
+startgame [name1] [name2] [name3] [name4]
+    Geeft aan alle clients aan dat het spel begint, [name1] is de eerste kleur, [name2] de tweede, etc
+
+turn [name]
+    Geeft aan alle clients aan dat de speler met naam [name] aan de beurt is.
+    
+movedone [name] [number]
+    Geeft aan alle clients aan dat de speler met naam [name] de zet met nummer [number] heeft gedaan, de zet is gecontroleerd door de server.
+    
+endgame [points1] [points2] [points3] [points4]
+    Geeft aan dat het spel is afgelopen en dat speler 1 [points1] punten heeft, speler 2 [points2] punten heeft, etc. Punten staat voor het aantal rolit balletjes. Je komt weer in de lobby.
+    
+kick [name]
+    Geeft aan dat de naam [name] nu uit het spel ligt, wordt gebruikt bij een valse zet. Kan ook gebruikt worden bij een disconnect.      
+
+C -> S
+connect [name]
+    Geeft aan de server aan dat de client wil connecten met naam [name]
+    
+join [players]
+    Vertelt de server dat de client graag mee wil doen met een spel met [players] aantal spelers
+    
+domove [number]
+    Vertelt de server dat de client deze zet wil doen. [number] begint bij 0 en eindigt bij 63. De nummering begint linksboven. De nummering eindigt rechtsonder.
+    
+    
+    
+    
+Extra functies
+
+
+Chat
+
+De server bepaalt waar de chat berichten heen gaan. Als je in een game zit krijg je alleen chat berichten van mensen uit die game. Als je in de lobby zit krijg je enkel berichten van mensen die ook in de lobby zitten.
+
+S -> C
+
+
+S -> C*
+message [name] [message]
+    Geeft aan alle clients aan dat [name] een bericht [message] stuurde.
+
+
+C -> S
+chat [message]
+    Stuurt een chat bericht [message]
+    
+
+Challenge
+
+
+
+S -> C
+challenged [name]
+    Geeft aan de client aan dat hij een challenge krijgt van een speler met naam [name]
+
+S -> C*
+lobby [name1] [name2] [name3] etc
+    Geeft aan dat [name1], [name2], [name3], etc in de lobby zitten. Wordt gestuurd op het moment dat er iemand in of uit de lobby gaat.
+
+C -> S
+challenge [name1] [name2] [name3]
+    Geeft aan dat de speler met naam [name] een challenge krijgt van de client. [name2] en [name3] zijn optioneel. Een nieuwe challenge laat de oude vervallen.
+    
+challengeresponse [name] [boolean]
+    Geeft een reactie op een challenge van de speler met naam [name], met de boolean kun je aangeven of je de challenge accepteert of niet. true en false zijn in kleine letters.
+    
