@@ -1,9 +1,13 @@
 package rolit.client.GUI;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.*;
 
-public class ClientGUI extends JFrame {
+public class ClientGUI extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel boardPanel = null;
@@ -11,9 +15,8 @@ public class ClientGUI extends JFrame {
 	private JTextField chatField = null;
 	private JPanel chatPanel = null;
 	private JPanel mainPanel = null;
-	private JMenuBar menuBar = null;
 	private JButton[] places = new JButton[rolit.game.Board.DIM * rolit.game.Board.DIM];
-	//private JDialog aboutBox;
+	//private JMenuBar menuBar = null;
 
 	/**
 	 * This is the default constructor
@@ -29,9 +32,21 @@ public class ClientGUI extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(600, 600);
+		this.setSize(450, 400);
+		this.setMinimumSize(new Dimension(400, 400));
 		this.setContentPane(getContentPane());
 		this.setTitle("Rolit client");
+		
+		this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					e.getWindow().dispose();
+				}
+				
+				public void windowClosed(WindowEvent e) {
+					System.exit(0);
+				}
+			});
+		
 		this.setVisible(true);
 	}
 	
@@ -39,7 +54,7 @@ public class ClientGUI extends JFrame {
 		if(mainPanel == null) {
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
-			mainPanel.add(getBoardPanel(), BorderLayout.NORTH);
+			mainPanel.add(getBoardPanel(), BorderLayout.CENTER);
 			mainPanel.add(getChatPanel(), BorderLayout.SOUTH);
 		}
 		return mainPanel;
@@ -52,14 +67,15 @@ public class ClientGUI extends JFrame {
 			
 			for(int i = 0; i < places.length; i++) {
 				places[i] = new JButton();
-				//places[i].setMargin(new java.awt.Insets(10, 10, 10, 10));
-				places[i].setMaximumSize(new Dimension(100, 100));
-				places[i].setMinimumSize(new Dimension(25, 25));
-				places[i].setName("place" + i);
+				places[i].setMargin(new Insets(5, 5, 5, 5));
+				//places[i].setMaximumSize(new Dimension(500, 500));
+				//places[i].setMinimumSize(new Dimension(25, 25));
+				places[i].setActionCommand(i + "");
+				places[i].setText(i+"");
 				places[i].setPreferredSize(new Dimension(30, 30));
 				
-				int row = i / rolit.game.Board.DIM;
-				int col = i % rolit.game.Board.DIM;
+				int row = i % rolit.game.Board.DIM;
+				int col = i / rolit.game.Board.DIM;
 				
 				GridBagConstraints constraints = new GridBagConstraints();
 				constraints.gridx = row;
@@ -67,6 +83,11 @@ public class ClientGUI extends JFrame {
 				
 				boardPanel.add(places[i], constraints);
 			}
+			
+			places[27].setBackground(new Color(255, 0, 0));
+			places[28].setBackground(new Color(0, 0, 255));
+			places[35].setBackground(new Color(0, 255, 0));
+			places[36].setBackground(new Color(255, 255, 0));
 		}
 		return boardPanel;
 	}
@@ -78,38 +99,20 @@ public class ClientGUI extends JFrame {
 			
 			chatField = new JTextField();
 			chatArea = new JTextArea();
-			menuBar = new JMenuBar();
 			
+			//chatArea.setEditable(false);
 			chatArea.setRows(5);
 			chatArea.setColumns(20);
 			chatArea.setLineWrap(true);
+			
 			chatPanel.add(chatArea, BorderLayout.NORTH);
 			chatPanel.add(chatField, BorderLayout.SOUTH);
-			//chatArea.getAccessibleContext().setAccessibleParent(chatPanel);
 		}
 		return chatPanel;
 	}
-
-	/* 
-	GroupLayout chatPanelLayout = new GroupLayout(chatPanel);
-	chatPanel.setLayout(chatPanelLayout);
-	chatPanelLayout.setHorizontalGroup(chatPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(chatArea, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE).addComponent(chatField, GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE));
-	chatPanelLayout.setVerticalGroup(chatPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING, chatPanelLayout.createSequentialGroup().addComponent(chatArea, GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(chatField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
-	*/	
-
-	/*
-	javax.swing.GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-	mainPanel.setLayout(mainPanelLayout);
-	mainPanelLayout.setHorizontalGroup(mainPanelLayout
-			.createParallelGroup(GroupLayout.Alignment.LEADING)
-			.addComponent(chatPanel, GroupLayout.DEFAULT_SIZE,
-					GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(boardPanel, GroupLayout.DEFAULT_SIZE,
-					541, Short.MAX_VALUE));
-	mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup().addComponent(boardPanel, GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addComponent(chatPanel,GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
-	*/
 	
 	/*
+	menuBar = new JMenuBar();
 	JMenu fileMenu = new JMenu();
 	JMenuItem exitMenuItem = new JMenuItem();
 	JMenu helpMenu = new JMenu();
@@ -123,5 +126,11 @@ public class ClientGUI extends JFrame {
 	
 	public static void main(String[] args) {
 		new ClientGUI();
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 }
