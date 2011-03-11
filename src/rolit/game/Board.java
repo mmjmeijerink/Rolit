@@ -15,6 +15,15 @@ public class Board {
 	 */
 	public Board() {
 		places = new Place[DIM * DIM];
+		
+		for(int i = 0; i < places.length; i++) {
+			places[i] = new Place(i);
+		}
+		
+		places[27].setColor(Place.RED);
+		places[28].setColor(Place.YELLOW);
+		places[35].setColor(Place.BLUE);
+		places[36].setColor(Place.GREEN);
 	}
 
 	/**
@@ -26,7 +35,7 @@ public class Board {
 		Board copy = new Board();
 
 		for (int i = 0; i < places.length; i++) {
-			copy.places[i] = this.places[i];
+			copy.setColor(i, places[i].getColor());
 		}
 
 		return copy;
@@ -124,7 +133,7 @@ public class Board {
 	 *          <code>color == Place.EMPTY || color == Place.RED || color == Place.GREEN || color == Place.YELLOW || color == Place.BLUE</code>
 	 * @ensure <code>this.getPlace(i) == color</code>
 	 */
-	public void setPlace(int i, Color color) {
+	public void setColor(int i, Color color) {
 		places[i].setColor(color);
 	}
 
@@ -135,7 +144,7 @@ public class Board {
 	 *          <code>color == Place.EMPTY || color == Place.RED || color == Place.GREEN || color == Place.YELLOW || color == Place.BLUE</code>
 	 * @ensure <code>this.getPlace(i) == color</code>
 	 */
-	public void setPlace(int row, int col, Color color) {
-		setPlace(index(row, col), color);
+	public void setColor(int row, int col, Color color) {
+		setColor(index(row, col), color);
 	}
 }
