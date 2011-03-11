@@ -1,8 +1,11 @@
 package rolit.client.GUI;
 
 import rolit.game.*;
+import rolit.client.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.*;
@@ -14,27 +17,45 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 	private JTextArea chatArea = null;
 	private JButton bConnect;
 	private JTextField tfAddress, tfPort, tfName, chatField = null;
-	private JButton[] places = new JButton[rolit.game.Board.DIM * rolit.game.Board.DIM];
+	private JButton[] places = new JButton[Board.DIM * Board.DIM];
 	private JMenuBar menuBar = null;
+	private Client client;
 
-	/**
-	 * This is the default constructor
-	 */
-	public ClientGUI() {
+		public ClientGUI(Client client) {
 		super();
+		this.client = client;
+		client.addObserver(this);
 		initialize();
 	}
 	
 	public void connect() {
-		mainPanel.remove(getConnectPanel());
-		mainPanel.add(getBoardPanel());
-		this.repaint();
+		try {
+			InetAddress addr = InetAddress.getByName(tfAddress.getText());
+			int port = Integer.parseInt(tfPort.getText());
+			String name = tfName.getText();
+			
+			client.connect(addr, port, name);
+		} catch (UnknownHostException e) {
+			chatArea.append("Hostname doesn't contain a valid address!\n");
+			if(Main.debug)
+				e.printStackTrace();
+		} catch (NumberFormatException e) {
+			chatArea.append("Port doesn't contain a valid number!\n");
+			if(Main.debug)
+				e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
+		if(o.equals(client) && ((String) arg).equals("Start")) {
+			mainPanel.remove(getConnectPanel());
+			mainPanel.add(getBoardPanel());
+			this.repaint();
+		}
+		else if(o.equals(client) && ((String) arg).equals("connectError")) {
+			chatArea.append("There has been an error while connecting to the server.\n");
+		}
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -57,6 +78,7 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 		if(e.getKeyCode() == KeyEvent.VK_ENTER && e.getSource().equals(chatField)) {
 			String msg = chatField.getText();
 			chatField.setText(null);
+			chatArea.append(msg + "\n");
 			//client.sendMessage(msg);
 			//addMessage(msg);
 		}
@@ -217,9 +239,5 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 			chatPanel.add(chatField, BorderLayout.SOUTH);
 		}
 		return chatPanel;
-	}
-
-	public static void main(String[] args) {
-		new ClientGUI();
 	}
 }

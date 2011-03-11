@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+
 public class ApplicationController implements ActionListener,LoggingInterface {
 	private MainView 			view;
 	private NetworkController 	network;

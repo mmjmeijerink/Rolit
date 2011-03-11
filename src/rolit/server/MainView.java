@@ -15,6 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+
+
 public class MainView extends JFrame implements LoggingInterface {
 
 	private JButton   				connectButton;

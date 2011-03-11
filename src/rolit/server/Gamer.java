@@ -12,7 +12,7 @@ public class Gamer {
 	
 	public boolean setRequestedGameSize(int size) {
 		boolean result;
-		if(size >1 && size < 5) {
+		if(size > 1 && size < 5) {
 			result = true;
 			requestedGameSize = size;
 		} else {

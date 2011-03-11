@@ -19,37 +19,20 @@ public class Game extends Observable {
 	}
 
 	/**
-	 * Levert de Mark op die aan de beurt is.
+	 * Returns the player who's turn it is
 	 */
-	public Mark getHuidig() {
-		return huidig;
+	public Player getCurrent() {
+		return current;
 	}
-
-	// -- Commands ---------------------------------------------------
-
+	
 	/**
-	 * Reset dit spel. <br>
-	 * Het speelbord wordt weer leeggemaakt en Mark.XX wordt de huidige Mark.
-	 */
-	public void reset() {
-		huidig = Mark.XX;
-
-		bord.reset();
-		setChanged();
-		notifyObservers();
-	}
-
-	/**
-	 * Zet de huidige mark in het vakje i. Geef de beurt aan de andere Mark.
+	 * Place a ball on the board
 	 * 
-	 * @require 0<=i && i <Bord.DIM*Bord.DIM && this.getBord().isLeegVakje(i)
-	 * @param i
-	 *            de index waar de mark zal worden gezet.
+	 * @require 0 <= i && i < Board.DIM * Board.DIM && this.getBoard().isEmptyPlace(i)
 	 */
-	public void doeZet(int i) {
-		bord.setVakje(i, huidig);
+	public void doMove(int i) {
+		board.setColor(i, current.getColor());
 		setChanged();
-		notifyObservers();
-		huidig = huidig.other();
+		notifyObservers("Move");
 	}
 }
