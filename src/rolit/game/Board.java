@@ -1,24 +1,26 @@
 package rolit.game;
 
+import java.awt.Color;
+
 /**
  * Board for a Rolit game
  */
 public class Board {
 
 	public static final int DIM = 8;
-	private Ball[] places;
+	private Place[] places;
 
 	/**
 	 * Creates a new board with dimension DIM*DIM
 	 */
 	public Board() {
-		places = new Ball[DIM * DIM];
+		places = new Place[DIM * DIM];
 	}
 
 	/**
 	 * Creates a copy of the board
 	 * 
-	 * @ensure result.equals(this)
+	 * @ensure color.equals(this)
 	 */
 	public Board deepCopy() {
 		Board copy = new Board();
@@ -31,10 +33,10 @@ public class Board {
 	}
 
 	/**
-	 * Gives the index of a mark
+	 * Gives the index of the Place with row <code>row</code> and column <code>col</code>
 	 * 
 	 * @require <code>0 <= row && row < DIM && 0 <= col && col < DIM</code>
-	 * @return the index of the mark with row <code>row</code> and col <code>col</code>
+	 * @ensure <code>this.isPlace(color) == true</code>
 	 */
 	public int index(int row, int col) {
 		return DIM * row + col;
@@ -43,57 +45,56 @@ public class Board {
 	/**
 	 * Returns true if <code>i</code> is a valid index of this board
 	 * 
-	 * @ensure <code>result == (0 <= i && i < DIM*DIM)</code>
+	 * @ensure <code>color == (0 <= i && i < DIM*DIM)</code>
 	 */
-	public boolean isMark(int i) {
+	public boolean isPlace(int i) {
 		return (0 <= i) && (i < DIM * DIM);
 	}
 
 	/**
 	 * Returns true if <code>row</code> and <code>col</code> are valid rows and columns on this board
 	 * 
-	 * @ensure <code>result == (0 <= row && row < DIM && 0 <= col && col < DIM)</code>
+	 * @ensure <code>color == (0 <= row && row < DIM && 0 <= col && col < DIM)</code>
 	 */
-	public boolean isMark(int row, int col) {
+	public boolean isPlace(int row, int col) {
 		return (0 <= row) && (row < DIM) && (0 <= col) && (col < DIM);
 	}
 
 	/**
-	 * Returns the contents of the mark with index <code>i</code>
+	 * Returns the contents of the Place with index <code>i</code>
 	 * 
-	 * @require <code>this.isMark(i)</code>
-	 * @ensure <code>result == Ball.EMPTY || result == Ball.RED || result == Ball.GREEN || result == Ball.YELLOW || result == Ball.BLUE</code>
+	 * @require <code>this.isPlace(i)</code>
+	 * @ensure <code>color == Place.EMPTY || color == Place.RED || color == Place.GREEN || color == Place.YELLOW || color == Place.BLUE</code>
 	 */
-	public Ball getPlace(int i) {
+	public Place getPlace(int i) {
 		return places[i];
 	}
 
 	/**
-	 * Returns the contents of the mark with row <code>row</code> and column <code>col</code>
+	 * Returns the contents of the Place with row <code>row</code> and column <code>col</code>
 	 * 
-	 * @require <code>this.isMark(row, col)</code>
-	 * @ensure <code>result == Ball.EMPTY || result == Ball.RED || result == Ball.GREEN || result == Ball.YELLOW || result == Ball.BLUE</code>
+	 * @require <code>this.isPlace(row, col)</code>
+	 * @ensure <code>color == Board.EMPTY || color == Board.RED || color == Board.GREEN || color == Board.YELLOW || color == Board.BLUE</code>
 	 */
-	public Ball getPlace(int row, int col) {
+	public Place getPlace(int row, int col) {
 		return places[index(row, col)];
 	}
 
 	/**
-	 * Returns true if mark with index <code>i</code> is empty
+	 * Returns true if Place with index <code>i</code> is empty
 	 * 
-	 * @require <code>this.isMark(i)</code>
-	 * @ensure <code>result == (this.getMark(i) == LEEG)</code>
+	 * @require <code>this.isPlace(i)</code>
+	 * @ensure <code>color == (this.getPlace(i) == Place.EMPTY)</code>
 	 */
 	public boolean isEmptyPlace(int i) {
-		return getPlace(i) == Ball.EMPTY;
+		return getPlace(i).getColor() == Place.EMPTY;
 	}
 
 	/**
-	 * Return true if mark with row <code>row</code> and column <code>col</code>
-	 * is empty
+	 * Return true if Place with row <code>row</code> and column <code>col</code> is empty
 	 * 
-	 * @require <code>this.isMark(row, col)</code>
-	 * @ensure <code>result == (this.getMark(row, col) == LEEG)</code>
+	 * @require <code>this.isPlace(row, col)</code>
+	 * @ensure <code>color == (this.getPlace(row, col) == Place.EMPTY)</code>
 	 */
 	public boolean isEmptyPlace(int row, int col) {
 		return isEmptyPlace(index(row, col));
@@ -102,14 +103,14 @@ public class Board {
 	/**
 	 * Tests whether or not the whole board is filled
 	 * 
-	 * @ensure <code>result == for all i: 0 <= i && i < DIM*DIM: 
-	 *                                 this.getMark(i) != EMPTY</code>
+	 * @ensure <code>color == for all i: 0 <= i && i < DIM*DIM: 
+	 *                                 !this.isEmptyPlace(i)</code>
 	 */
 	public boolean isFull() {
 		boolean full = true;
 
 		for(int i = 0; i < places.length && full; i++) {
-			if(!isEmptyPlace(i))
+			if(isEmptyPlace(i))
 				full = false;
 		}
 
@@ -117,24 +118,24 @@ public class Board {
 	}
 
 	/**
-	 * Sets the contents of mark <code>i</code> on color <code>m</code>
+	 * Sets the contents of Place <code>i</code> on color <code>color</code>
 	 * 
-	 * @require <code>this.isMark(i)</code>
-	 *          <code>result == Place.EMPTY || result == Place.RED || result == Place.GREEN || result == Place.YELLOW || result == Place.BLUE</code>
-	 * @ensure <code>this.getMark(i) == m</code>
+	 * @require <code>this.isPlace(i)</code>
+	 *          <code>color == Place.EMPTY || color == Place.RED || color == Place.GREEN || color == Place.YELLOW || color == Place.BLUE</code>
+	 * @ensure <code>this.getPlace(i) == color</code>
 	 */
-	public void setPlace(int i, Ball color) {
-		places[i] = color;
+	public void setPlace(int i, Color color) {
+		places[i].setColor(color);
 	}
 
 	/**
-	 * Place a Ball in place <code>i</code> with color <code>color</code>
+	 * Sets the contents of Place <code>i</code> with color <code>color</code>
 	 * 
-	 * @require <code>this.isMark(i)</code>
-	 *          <code>result == Place.EMPTY || result == Place.RED || result == Place.GREEN || result == Place.YELLOW || result == Place.BLUE</code>
+	 * @require <code>this.isPlace(row, col)</code><br>
+	 *          <code>color == Place.EMPTY || color == Place.RED || color == Place.GREEN || color == Place.YELLOW || color == Place.BLUE</code>
 	 * @ensure <code>this.getPlace(i) == color</code>
 	 */
-	public void setPlace(int row, int col, Ball color) {
+	public void setPlace(int row, int col, Color color) {
 		setPlace(index(row, col), color);
 	}
 }

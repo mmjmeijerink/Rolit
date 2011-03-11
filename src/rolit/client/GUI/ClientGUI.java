@@ -1,5 +1,6 @@
 package rolit.client.GUI;
 
+import rolit.game.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Observable;
@@ -8,12 +9,7 @@ import javax.swing.*;
 
 public class ClientGUI extends JFrame implements Observer, KeyListener, ActionListener {
 
-	private static final Color RED = new Color(255, 0, 0);
-	private static final Color GREEN = new Color(0, 255, 0);
-	private static final Color BLUE = new Color(0, 0, 255);
-	private static final Color YELLOW = new Color(255, 255, 0);
 	private static final long serialVersionUID = 1L;
-	
 	private JPanel mainPanel = null, connectPanel = null, boardPanel = null, chatPanel = null;
 	private JTextArea chatArea = null;
 	private JButton bConnect;
@@ -30,11 +26,8 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 	}
 	
 	public void connect() {
-		System.out.println("remove");
 		mainPanel.remove(getConnectPanel());
-		System.out.println("add new");
 		mainPanel.add(getBoardPanel());
-		System.out.println("krijgen we toch niet te zien");
 		this.repaint();
 	}
 	
@@ -48,7 +41,7 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
     	if(e.getActionCommand().equals("Connect")) {
     		connect();
     	}
-    	else if(e.getActionCommand().equals("")) {
+    	else if(e.getActionCommand().equals("Exit")) {
     		this.dispose();
     	}
     }
@@ -121,6 +114,7 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 			JMenu fileMenu = new JMenu("File");
 			JMenuItem exitMenuItem = new JMenuItem("Exit");
 			exitMenuItem.addActionListener(this);
+			exitMenuItem.setActionCommand("Exit");
 			
 			JMenu helpMenu = new JMenu("Help");
 			JMenuItem aboutMenuItem = new JMenuItem("About");
@@ -136,7 +130,7 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 
 	private JPanel getConnectPanel() {
 		if (connectPanel == null) {
-			connectPanel = new JPanel();
+			connectPanel = new JPanel(new GridBagLayout());
 			JPanel pp = new JPanel(new GridLayout(3, 2));
 
 			JLabel lbAddress = new JLabel("Hostname:");
@@ -162,9 +156,12 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 			bConnect.setEnabled(false);
 			bConnect.addActionListener(this);
 			bConnect.setActionCommand("Connect");
-
-			connectPanel.add(pp, BorderLayout.WEST);
-			connectPanel.add(bConnect, BorderLayout.EAST);
+			
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.gridx = 1;
+			connectPanel.add(pp, constraints);
+			constraints.gridx = 2;
+			connectPanel.add(bConnect, constraints);
 		}
 		return connectPanel;
 	}
@@ -180,8 +177,8 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 				places[i].setActionCommand(i + "");
 				places[i].setText(i + "");
 
-				int row = i % rolit.game.Board.DIM;
-				int col = i / rolit.game.Board.DIM;
+				int row = i % Board.DIM;
+				int col = i / Board.DIM;
 
 				GridBagConstraints constraints = new GridBagConstraints();
 				constraints.gridx = row;
@@ -191,10 +188,10 @@ public class ClientGUI extends JFrame implements Observer, KeyListener, ActionLi
 				boardPanel.add(places[i], constraints);
 			}
 
-			places[27].setBackground(ClientGUI.RED);
-			places[28].setBackground(ClientGUI.YELLOW);
-			places[35].setBackground(ClientGUI.BLUE);
-			places[36].setBackground(ClientGUI.GREEN);
+			places[27].setBackground(Place.RED);
+			places[28].setBackground(Place.YELLOW);
+			places[35].setBackground(Place.BLUE);
+			places[36].setBackground(Place.GREEN);
 		}
 		return boardPanel;
 	}
