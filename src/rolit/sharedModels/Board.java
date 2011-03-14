@@ -229,15 +229,15 @@ public class Board {
 	}
 	
 	public String toString() {
-		String result = "";
+		String result = "\n";
 		for(Slot aSlot: slots){
-			result = result + "| " + aSlot.getValue();
+			result = result + " | " + aSlot.getValue();
 			if(slots.indexOf(aSlot) != 0 && (slots.indexOf(aSlot) % DIMENSION) == DIMENSION - 1) {
-				result = result + " |\n";
+				result = result + " |\n ";
 				for(int i = 0; i < DIMENSION ; i++) {
-					result = result + "---";
+					result = result + "----";
 				}
-				result = result + "\n";
+				result = result + "-\n";
 			}
 		}
 		return result;
@@ -260,7 +260,7 @@ public class Board {
 			}
 		} else if(aModulo == bModulo) { // Staan op de zelfde rij verticaal
 			int aTmp = a;
-			while(aTmp != b && aTmp > 0) { // aTmp > 0 voor de zekerheid om infinite loop te voorkomen
+			while(aTmp > b) {
 				if(aTmp != a) {
 					slots.get(aTmp).setValue(color);
 				}

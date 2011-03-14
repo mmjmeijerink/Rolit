@@ -59,7 +59,7 @@ public class NetworkController extends Thread implements Observer {
 
 			if(splitCommand.get(0).equals("connect")) {
 				/* Execute command "connect" */
-				
+
 				if(splitCommand.size() == 2) {
 					if(sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 						String possibleName = splitCommand.get(1);
@@ -77,7 +77,7 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Connect command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
 				}
-				
+
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
@@ -102,9 +102,50 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Join command from " + sender.toString() + " FAILED, not identified.");
 				}
-				
-			} else if(splitCommand.get(0).equals("domove")) {
 
+			} else if(splitCommand.get(0).equals("domove")) {
+				/* Execute command "dmove" */
+				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					if(splitCommand.size() == 2) {
+
+						Game participatingGame = null;
+						for(Game aGame: games) {
+							appController.log(games.toString());
+							for(Gamer aGamer: aGame.getGamers()) {
+								if(aGamer == sender.getGamer()) {
+									participatingGame = aGame;
+								}
+							}
+						}
+						if(participatingGame != null && sender.getGamer().isTakingPart()) {
+							if(participatingGame.getCurrent() == sender.getGamer()) {
+								try {
+									int slotToSet = Integer.parseInt(splitCommand.get(1));
+									if(participatingGame.doMove(slotToSet, sender.getGamer())) {
+										appController.log(sender.toString() + " has set " + splitCommand.get(1) + " in his game.");
+										// Turn changes
+									} else {
+										appController.log("Domove command from " + sender.toString() + " FAILED, move is impossible " + msg);
+										appController.log(participatingGame.getBoard().toString());
+										// Kick player
+									}
+								} catch(NumberFormatException e) {
+									appController.log("Domove command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
+								}
+							} else {
+								appController.log("Domove command from " + sender.toString() + " FAILED, does not have the turn.");
+								// Kick player
+							}
+						} else {
+							appController.log("Domove command from " + sender.toString() + " FAILED, player is not in game.");
+						}
+
+					} else {
+						appController.log("Domove command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
+					}
+				} else {
+					appController.log("Domove command from " + sender.toString() + " FAILED, not identified.");
+				}
 			} else if(splitCommand.get(0).equals("chat")) {
 
 			} else {
@@ -126,7 +167,7 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
-	public boolean checkName(String name) {
+	private boolean checkName(String name) {
 		boolean result = true;
 		if(name != null) {
 			for(ConnectionController client: connections){
@@ -137,11 +178,11 @@ public class NetworkController extends Thread implements Observer {
 		}
 		return result;
 	}
-	
-	public void checkForGameStart() {
+
+	private void checkForGameStart() {
 		appController.log("Checks if games can be started...");
 		ArrayList<ConnectionController> startingWith = null;
-		
+
 		for(ConnectionController masterClient: waitingForGame){
 			int minimalSize = masterClient.getGamer().getRequestedGameSize();
 			ArrayList<ConnectionController> readyToStart = new ArrayList<ConnectionController>();
@@ -162,7 +203,7 @@ public class NetworkController extends Thread implements Observer {
 				startingWith = readyToStart;
 			}
 		}
-		
+
 		if(startingWith != null) {
 			for(ConnectionController starting: startingWith) {
 				if(waitingForGame.contains(starting)) {
@@ -176,8 +217,8 @@ public class NetworkController extends Thread implements Observer {
 			appController.log("Not enough players to start a game");
 		}
 	}
-	
-	public void startGame(ArrayList<ConnectionController> players) {
+
+	private void startGame(ArrayList<ConnectionController> players) {
 		if(players.size() > 1 && players.size() < 5) {
 			String command = "startgame";
 			String logEntry = "Starting a game between";
@@ -193,20 +234,19 @@ public class NetworkController extends Thread implements Observer {
 			}
 			appController.log(logEntry);
 			ArrayList<Gamer> gamers = new ArrayList<Gamer>();
-			
+
 			for(ConnectionController player: players) {
 				player.sendCommand(command);
-				waitingForGame.remove(player);
 				gamers.add(player.getGamer());
 			}
-			
+
 			Game aGame = new Game(gamers);
 			aGame.addObserver(this);
 			games.add(aGame);
-			
-			
+
+
 			String turnCommand = "turn " + players.get(0).getGamer().getName();
-			
+
 			for(ConnectionController player: players) {
 				player.sendCommand(turnCommand);
 			}

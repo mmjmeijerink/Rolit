@@ -11,7 +11,7 @@ public class Game extends Observable {
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
 		gamers = aGamers;
-		for(int i = 0; i > gamers.size(); i++) {
+		for(int i = 0; i < gamers.size(); i++) {
 			gamers.get(i).setColor(i+1);
 		}
 		current = gamers.get(0);
@@ -40,6 +40,18 @@ public class Game extends Observable {
 
 	public Gamer getCurrent() {
 		return current;
+	}
+	
+	public ArrayList<Gamer> getGamers() {
+		return gamers;
+	}
+	
+	public String toString() {
+		String result = "Game with: ";
+		for(Gamer aGamer: gamers) {
+			result = result + aGamer.toString() + " ";
+		}
+		return result;
 	}
 
 }
