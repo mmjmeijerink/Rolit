@@ -30,7 +30,7 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 	}
 	
 	public void connectionFailed() {
-		view.enableControls();
+		view.connectMode();
 	}
 
 	@Override
@@ -78,11 +78,11 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 
 	@Override
 	public void keyTyped(KeyEvent event) {
-		if(event.getKeyCode() == KeyEvent.VK_ENTER && event.getSource().equals(view.getChatField())) {
+		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER) {
 			String msg = view.getChatField().getText();
 			view.getChatField().setText(null);
-			view.log(msg + "\n");
-			network..sendMessage(msg);
+			log(msg + "\n");
+			network.sendCommand("chat " + msg);
 		}
 	}
 }

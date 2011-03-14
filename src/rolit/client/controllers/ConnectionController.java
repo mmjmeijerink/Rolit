@@ -33,12 +33,14 @@ public class ConnectionController extends Thread {
 
 	public void run() {
 		String inlezen = null;
+		
 		while(this.running) {
 			try {
 				inlezen = in.readLine();  
 			} catch (IOException e) {
 				inlezen = null;
 			}
+			
 			if (inlezen != null) {
 				network.executeCommand(inlezen,this);
 			} else disconnect();
@@ -47,7 +49,7 @@ public class ConnectionController extends Thread {
 
 	public void sendCommand(String msg) {
 		if(msg != null) {
-			log.log("Sending commmand (" + msg + ") to " + toString());
+			log.log("Sending commmand (" + msg + ") to server");
 			try {
 				out.write(msg + "\n");
 				out.flush();
@@ -58,7 +60,6 @@ public class ConnectionController extends Thread {
 	}
 
 	public void disconnect() {
-		network.removeConnection(this);
 		this.running = false;
 	}
 

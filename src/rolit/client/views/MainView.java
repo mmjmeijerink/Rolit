@@ -2,9 +2,7 @@ package rolit.client.views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -187,6 +185,18 @@ public class MainView extends JFrame implements LoggingInterface {
 	}
 
 	// Getters en setters
+	public void connectMode() {
+		mainPanel.remove(getBoardPanel());
+		mainPanel.add(getChatPanel());
+		this.repaint();
+	}
+	
+	public void gameMode() {
+		mainPanel.remove(getConnectPanel());
+		mainPanel.add(getBoardPanel());
+		this.repaint();
+	}
+
 	public void setHost(String host) {
 		if(host != null) {
 			hostField.setText(host);
@@ -212,5 +222,4 @@ public class MainView extends JFrame implements LoggingInterface {
 			System.out.println(" " + msg);
 		}
 	}
-
 }
