@@ -7,13 +7,13 @@ import rolit.server.controllers.ConnectionController;
 
 public class Board {
 
-	public static final int DIMENTION = 8;
+	public static final int DIMENSION = 8;
 	private ArrayList<Slot>  	slots;
 	
 	public Board() {
 		slots = new ArrayList<Slot>();
 		
-		for(int i = 0; i < DIMENTION * DIMENTION; i++) {
+		for(int i = 0; i < DIMENSION * DIMENSION; i++) {
 			Slot aSlot = new Slot();
 			slots.add(aSlot);
 		}
@@ -72,7 +72,7 @@ public class Board {
 	}
 	
 	public int checkAbove(int slotNo, int color, int steps) {
-		int slotAbove = slotNo - DIMENTION;
+		int slotAbove = slotNo - DIMENSION;
 		int result;
 		if(slotAbove < 0) {
 			// Checkt of het volgende slot buiten het bord is.
@@ -92,9 +92,9 @@ public class Board {
 	}
 	
 	public int checkRightAbove(int slotNo, int color, int steps) {
-		int slotRightAbove = slotNo - DIMENTION + 1;
+		int slotRightAbove = slotNo - DIMENSION + 1;
 		int result;
-		if(slotRightAbove < 0 || (slotRightAbove != 0 && (slotRightAbove % DIMENTION) == 0)) {
+		if(slotRightAbove < 0 || (slotRightAbove != 0 && (slotRightAbove % DIMENSION) == 0)) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -114,7 +114,7 @@ public class Board {
 	public int checkRight(int slotNo, int color, int steps) {
 		int slotRight = slotNo + 1;
 		int result;
-		if(slotRight != 0 && (slotRight % DIMENTION) == 0) {
+		if(slotRight != 0 && (slotRight % DIMENSION) == 0) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -132,9 +132,9 @@ public class Board {
 	}
 	
 	public int checkRightBelow(int slotNo, int color, int steps) {
-		int slotRightBelow = slotNo + DIMENTION + 1;
+		int slotRightBelow = slotNo + DIMENSION + 1;
 		int result;
-		if(slotRightBelow > DIMENTION*DIMENTION || (slotRightBelow != 0 && (slotRightBelow % DIMENTION) == 0)) {
+		if(slotRightBelow > DIMENSION*DIMENSION || (slotRightBelow != 0 && (slotRightBelow % DIMENSION) == 0)) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -152,9 +152,9 @@ public class Board {
 	}
 	
 	public int checkBelow(int slotNo, int color, int steps) {
-		int slotBelow = slotNo + DIMENTION;
+		int slotBelow = slotNo + DIMENSION;
 		int result;
-		if(slotBelow > DIMENTION*DIMENTION) {
+		if(slotBelow > DIMENSION*DIMENSION) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -172,9 +172,9 @@ public class Board {
 	}
 	
 	public int checkLeftBelow(int slotNo, int color, int steps) {
-		int slotLeftBelow = slotNo + DIMENTION - 1;
+		int slotLeftBelow = slotNo + DIMENSION - 1;
 		int result;
-		if(slotLeftBelow > DIMENTION*DIMENTION || (slotLeftBelow > 0 && (slotLeftBelow % DIMENTION) == 7)) {
+		if(slotLeftBelow > DIMENSION*DIMENSION || (slotLeftBelow > 0 && (slotLeftBelow % DIMENSION) == DIMENSION - 1)) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -194,7 +194,7 @@ public class Board {
 	public int checkLeft(int slotNo, int color, int steps) {
 		int slotLeft = slotNo - 1;
 		int result;
-		if(slotLeft > 0 && (slotLeft % DIMENTION) == 7) {
+		if(slotLeft > 0 && (slotLeft % DIMENSION) == DIMENSION - 1) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -212,9 +212,9 @@ public class Board {
 	}
 	
 	public int checkLeftAbove(int slotNo, int color, int steps) {
-		int slotLeftAbove = slotNo - DIMENTION + 1;
+		int slotLeftAbove = slotNo - DIMENSION + 1;
 		int result;
-		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % DIMENTION) == 7))) {
+		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % DIMENSION) == DIMENSION - 1))) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -235,9 +235,9 @@ public class Board {
 		String result = "";
 		for(Slot aSlot: slots){
 			result = result + "| " + aSlot.getValue();
-			if(slots.indexOf(aSlot) != 0 && (slots.indexOf(aSlot) % DIMENTION) == 7) {
+			if(slots.indexOf(aSlot) != 0 && (slots.indexOf(aSlot) % DIMENSION) == DIMENSION - 1) {
 				result = result + " |\n";
-				for(int i = 0; i < DIMENTION ; i++) {
+				for(int i = 0; i < DIMENSION ; i++) {
 					result = result + "---";
 				}
 				result = result + "\n";
@@ -253,17 +253,22 @@ public class Board {
 			a = b;
 			b = aTmp;
 		}
-		int aModulo = a % DIMENTION;
-		int bModulo = b % DIMENTION;
+		int aModulo = a % DIMENSION;
+		int bModulo = b % DIMENSION;
 		int difference = a - b;
 		
 		if(difference < aModulo) { // Staan op de zelfde rij horizontaal
 			for(int i = 1; i < difference; i++) {
 				slots.get(a-i).setValue(color);
 			}
-		}
-		if(aModulo == bModulo) { // Staan op de zelfde rij verticaal
-			
+		} else if(aModulo == bModulo) { // Staan op de zelfde rij verticaal
+			int aTmp = a;
+			while(aTmp != b && aTmp > 0) { // aTmp > 0 voor de zekerheid om infinite loop te voorkomen
+				if(aTmp != a) {
+					slots.get(aTmp).setValue(color);
+				}
+				aTmp = aTmp - DIMENSION;
+			}	
 		}
 		
 	}
