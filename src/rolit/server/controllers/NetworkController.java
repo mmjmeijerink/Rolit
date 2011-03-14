@@ -126,15 +126,14 @@ public class NetworkController extends Thread implements Observer {
 										// Turn changes
 									} else {
 										appController.log("Domove command from " + sender.toString() + " FAILED, move is impossible " + msg);
-										appController.log(participatingGame.getBoard().toString());
-										// Kick player
+										kickGamer(sender.getGamer());
 									}
 								} catch(NumberFormatException e) {
 									appController.log("Domove command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
 								}
 							} else {
 								appController.log("Domove command from " + sender.toString() + " FAILED, does not have the turn.");
-								// Kick player
+								kickGamer(sender.getGamer());
 							}
 						} else {
 							appController.log("Domove command from " + sender.toString() + " FAILED, player is not in game.");
@@ -243,12 +242,40 @@ public class NetworkController extends Thread implements Observer {
 			Game aGame = new Game(gamers);
 			aGame.addObserver(this);
 			games.add(aGame);
-
-
-			String turnCommand = "turn " + players.get(0).getGamer().getName();
-
-			for(ConnectionController player: players) {
-				player.sendCommand(turnCommand);
+			nextTurn(aGame);
+		}
+	}
+	
+	private void kickGamer(Gamer toBeKicked) {
+		appController.log("Kicking " + toBeKicked.getName() + " ...");
+		Game participatingGame = null;
+		for(Game aGame: games) {
+			for(Gamer aGamer: aGame.getGamers()) {
+				if(aGamer == toBeKicked) {
+					participatingGame = aGame;
+				}
+			}
+		}	
+		if(participatingGame != null) {
+			
+			for(ConnectionController connection: connections) {
+				for(Gamer aGamer: participatingGame.getGamers()) {
+					if(aGamer == connection.getGamer()) {
+						connection.sendCommand("kick " + toBeKicked.getName());
+					}
+				}
+			}
+			participatingGame.removeGamer(toBeKicked);
+			toBeKicked.setColor(0);
+		}
+	}
+	
+	private void nextTurn(Game aGame) {
+		for(ConnectionController connection: connections) {
+			for(Gamer aGamer: aGame.getGamers()) {
+				if(aGamer == connection.getGamer()) {
+					connection.sendCommand("turn " + aGame.getCurrent().getName());
+				}
 			}
 		}
 	}
@@ -256,7 +283,9 @@ public class NetworkController extends Thread implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		if(arg0.getClass().equals(Game.class)) {
-			appController.log(((Game) arg0).getBoard().toString());
+			Game game = (Game) arg0;
+			appController.log(game.getBoard().toString());
+			nextTurn(game);
 		}
 	}
 
