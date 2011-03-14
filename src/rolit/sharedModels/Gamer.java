@@ -36,6 +36,7 @@ public class Gamer {
 				takesPart = true;
 			} else {
 				takesPart = false;
+				System.out.println("Player is not taking part.");
 			}
 		} else {
 			System.out.println("Error: could not change gamer color value because value is invalid.");
@@ -57,5 +58,14 @@ public class Gamer {
 	
 	public boolean isTakingPart() {
 		return takesPart;
+	}
+	
+	public String toString() {
+		String result = name;
+		if (takesPart) {
+			result = result + " takes part in game with color: " + color;
+			
+		}
+		return result;
 	}
 }

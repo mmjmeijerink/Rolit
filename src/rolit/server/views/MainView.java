@@ -3,6 +3,7 @@ package rolit.server.views;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -64,9 +65,10 @@ public class MainView extends JFrame implements LoggingInterface {
 		connectButton.addActionListener(viewController);
 
 		JLabel logLable = new JLabel("Log:");
-		logArea = new JTextArea("", 15, 50);
+		logArea = new JTextArea("", 13, 74);
 		logArea.setEditable(false);
 		logArea.setLineWrap(true);
+		logArea.setFont(new Font("Monaco", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(logArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		// Indelen layout
