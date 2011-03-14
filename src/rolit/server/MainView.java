@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 
 public class MainView extends JFrame implements LoggingInterface {
 
+	private static final long serialVersionUID = 1L;
 	private JButton   				connectButton;
 	private JTextField				portField;
 	private JTextArea 				logArea;

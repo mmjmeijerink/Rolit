@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import rolit.sharedModels.Gamer;
+
 public class ConnectionController extends Thread {
 
 	private NetworkController   network;
@@ -59,15 +61,15 @@ public class ConnectionController extends Thread {
 		this.running = false;
 	}
 
-	public Gamer gamer() {
+	public Gamer getGamer() {
 		return gamer;
 	}
 	
-	public Socket socket() {
+	public Socket getSocket() {
 		return socket;
 	}
 	
 	public String toString() {
-		return gamer.name + " (" + socket.getInetAddress() + ")";
+		return gamer.getName() + " (" + socket.getInetAddress() + ")";
 	}
 }
