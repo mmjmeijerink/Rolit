@@ -4,17 +4,22 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import rolit.sharedModels.Game;
+import rolit.sharedModels.Gamer;
+
 public class NetworkController extends Thread {
 	private ApplicationController				appController;
 	private int									port;
 	private InetAddress							host;
 	private ArrayList<ConnectionController>  	connections;
 	private ArrayList<ConnectionController>		waitingForGame;
+	private ArrayList<Game>						games;
 
 	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller) {
 		super();
 		connections 	= new ArrayList<ConnectionController>();
 		waitingForGame 	= new ArrayList<ConnectionController>();
+		games			= new ArrayList<Game>();
 		appController = controller;
 		port = aPort;
 		host = aHost;
@@ -173,22 +178,29 @@ public class NetworkController extends Thread {
 	}
 	
 	public void startGame(ArrayList<ConnectionController> players) {
-		
-		String command = "startgame";
-		String logEntry = "Starting a game between";
-		int i = 0;
-		for(ConnectionController player: players) {
-			i++;
-			if(i < 4) {
-				command = command + " " + player.getGamer().getName();
-				logEntry = logEntry + ", " + player.toString();
-			} else {
-				players.remove(player);
+		if(players.size() > 1 && players.size() < 5) {
+			String command = "startgame";
+			String logEntry = "Starting a game between";
+			int i = 0;
+			for(ConnectionController player: players) {
+				i++;
+				if(i < 4) {
+					command = command + " " + player.getGamer().getName();
+					logEntry = logEntry + ", " + player.toString();
+				} else {
+					players.remove(player);
+				}
 			}
-		}
-		appController.log(logEntry);
-		for(ConnectionController player: players) {
-			player.sendCommand(command);
+			appController.log(logEntry);
+			ArrayList<Gamer> gamers = new ArrayList<Gamer>();
+			
+			for(ConnectionController player: players) {
+				player.sendCommand(command);
+				waitingForGame.remove(player);
+				gamers.add(player.getGamer());
+			}
+			Game aGame = new Game(gamers);
+			games.add(aGame);
 		}
 	}
 

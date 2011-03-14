@@ -18,6 +18,7 @@ public class ApplicationController implements ActionListener,LoggingInterface {
             view.setHost(ip.getHostAddress());
         } catch (UnknownHostException e) {
         	view.log("Your system does not allow the server to know it's IP, you will not be able to start the server.");
+        	view.disableControls();
         }
         
 	}

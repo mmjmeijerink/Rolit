@@ -8,8 +8,13 @@ public class Game extends Observable {
 	private ArrayList<Gamer> gamers;
 	private Gamer current;
 
-	public Game(ArrayList<Gamer> gamers) {
+	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
+		gamers = aGamers;
+		for(int i = 0; i > gamers.size(); i++) {
+			gamers.get(i).setColor(i+1);
+		}
+		current = gamers.get(0);
 	}
 	
 	public boolean doMove(int i, Gamer aGamer) {

@@ -204,11 +204,11 @@ public class Board {
 		for(Slot aSlot: slots){
 			result = result + "| " + aSlot.getValue();
 			if(slots.indexOf(aSlot) != 0 && (slots.indexOf(aSlot) % DIMENTION) == 7) {
-				result = result + "| /n";
+				result = result + " |\n";
 				for(int i = 0; i < DIMENTION ; i++) {
 					result = result + "---";
 				}
-				result = result + "/n";
+				result = result + "\n";
 			}
 		}
 		return result;
