@@ -23,7 +23,18 @@ public class Board {
 	}
 	
 	public boolean checkMove(int slotNo, int color) {
-		return true;
+		boolean result = false;
+		if(checkAbove(slotNo,color,0) > -1 &&
+		   checkRightAbove(slotNo,color,0) > -1 &&
+		   checkRight(slotNo,color,0) > -1 &&
+		   checkRightBelow(slotNo,color,0) > -1 &&
+		   checkBelow(slotNo,color,0) > -1 &&
+		   checkLeftBelow(slotNo,color,0) > -1 &&
+		   checkLeft(slotNo,color,0) > -1 &&
+		   checkLeftAbove(slotNo,color,0) > -1) {
+			result = true;
+		}
+		return result;
 	}
 	
 	public int checkAbove(int slotNo, int color, int steps) {
@@ -31,6 +42,10 @@ public class Board {
 		int result;
 		if(slotAbove < 0) {
 			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if (slots.get(slotAbove).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
 			result = -1;
 		}
 		else if(steps > 0 && slots.get(slotAbove).getValue() == color) {
@@ -49,6 +64,10 @@ public class Board {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
+		else if (slots.get(slotRightAbove).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
+			result = -1;
+		}
 		else if(steps > 0 && slots.get(slotRightAbove).getValue() == color) {
 			// Checkt of het volgende slot de juiste kleur heeft.
 			result = slotRightAbove;
@@ -63,6 +82,10 @@ public class Board {
 		int result;
 		if(slotRight != 0 && (slotRight % 8) == 0) {
 			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if (slots.get(slotRight).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
 			result = -1;
 		}
 		else if(steps > 0 && slots.get(slotRight).getValue() == color) {
@@ -81,6 +104,10 @@ public class Board {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
+		else if (slots.get(slotRightBelow).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
+			result = -1;
+		}
 		else if(steps > 0 && slots.get(slotRightBelow).getValue() == color) {
 			// Checkt of het volgende slot de juiste kleur heeft.
 			result = slotRightBelow;
@@ -95,6 +122,10 @@ public class Board {
 		int result;
 		if(slotBelow > DIMENTION*DIMENTION) {
 			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if (slots.get(slotBelow).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
 			result = -1;
 		}
 		else if(steps > 0 && slots.get(slotBelow).getValue() == color) {
@@ -113,6 +144,10 @@ public class Board {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
+		else if (slots.get(slotLeftBelow).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
+			result = -1;
+		}
 		else if(steps > 0 && slots.get(slotLeftBelow).getValue() == color) {
 			// Checkt of het volgende slot de juiste kleur heeft.
 			result = slotLeftBelow;
@@ -129,6 +164,10 @@ public class Board {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
+		else if (slots.get(slotLeft).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
+			result = -1;
+		}
 		else if(steps > 0 && slots.get(slotLeft).getValue() == color) {
 			// Checkt of het volgende slot de juiste kleur heeft.
 			result = slotLeft;
@@ -143,6 +182,10 @@ public class Board {
 		int result;
 		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % 8) == 7))) {
 			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if (slots.get(slotLeftAbove).getValue() == Slot.EMPTY) {
+			// Checkt of het volgende vakje leeg is.
 			result = -1;
 		}
 		else if(steps > 0 && slots.get(slotLeftAbove).getValue() == color) {
