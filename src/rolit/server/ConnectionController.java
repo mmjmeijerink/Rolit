@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import rolit.sharedModels.Gamer;
+
 public class ConnectionController extends Thread {
 
 	private NetworkController   network;

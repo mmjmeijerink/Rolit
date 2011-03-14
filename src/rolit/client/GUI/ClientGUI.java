@@ -1,6 +1,7 @@
 package rolit.client.GUI;
 
 import rolit.game.*;
+import rolit.sharedModels.Board;
 import rolit.client.*;
 import java.awt.*;
 import java.awt.event.*;
