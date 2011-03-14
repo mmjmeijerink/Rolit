@@ -2,7 +2,6 @@ package rolit.client;
 
 import rolit.game.*;
 import rolit.sharedModels.Game;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
