@@ -24,16 +24,48 @@ public class Board {
 		slots.get(36).setValue(Slot.GREEN);
 	}
 	
+	public void doMove(int slotNo, int color) {
+			if(checkMove(slotNo,color)) {
+				slots.get(slotNo).setValue(color);
+				if(checkAbove(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkAbove(slotNo,color,0));
+				}
+				if(checkRightAbove(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkRightAbove(slotNo,color,0));
+				}
+				if(checkRight(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkRight(slotNo,color,0));
+				}
+				if(checkRightBelow(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkRightBelow(slotNo,color,0));
+				}
+				if(checkBelow(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkBelow(slotNo,color,0));
+				}
+				if(checkLeftBelow(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkLeftBelow(slotNo,color,0));
+				}
+				if(checkLeft(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkLeft(slotNo,color,0));
+				}
+				if(checkLeftAbove(slotNo,color,0) != -1) {
+					flipBetween(slotNo,checkLeftAbove(slotNo,color,0));
+				}
+			}
+	}
+	
 	public boolean checkMove(int slotNo, int color) {
 		boolean result = false;
-		if(checkAbove(slotNo,color,0) > -1 &&
-		   checkRightAbove(slotNo,color,0) > -1 &&
-		   checkRight(slotNo,color,0) > -1 &&
-		   checkRightBelow(slotNo,color,0) > -1 &&
-		   checkBelow(slotNo,color,0) > -1 &&
-		   checkLeftBelow(slotNo,color,0) > -1 &&
-		   checkLeft(slotNo,color,0) > -1 &&
-		   checkLeftAbove(slotNo,color,0) > -1) {
+		
+		if(slots.get(slotNo).getValue() == Slot.EMPTY && (
+		   checkAbove(slotNo,color,0) > -1 ||
+		   checkRightAbove(slotNo,color,0) > -1 ||
+		   checkRight(slotNo,color,0) > -1 ||
+		   checkRightBelow(slotNo,color,0) > -1 ||
+		   checkBelow(slotNo,color,0) > -1 ||
+		   checkLeftBelow(slotNo,color,0) > -1 ||
+		   checkLeft(slotNo,color,0) > -1 ||
+		   checkLeftAbove(slotNo,color,0) > -1)) {
 			result = true;
 		}
 		return result;
@@ -214,4 +246,25 @@ public class Board {
 		return result;
 	}
 	
+	public void flipBetween(int a, int b) {
+		int color = slots.get(a).getValue();
+		if(a < b) {
+			int aTmp = a;
+			a = b;
+			b = aTmp;
+		}
+		int aModulo = a % DIMENTION;
+		int bModulo = b % DIMENTION;
+		int difference = a - b;
+		
+		if(difference < aModulo) { // Staan op de zelfde rij horizontaal
+			for(int i = 1; i < difference; i++) {
+				slots.get(a-i).setValue(color);
+			}
+		}
+		if(aModulo == bModulo) { // Staan op de zelfde rij verticaal
+			
+		}
+		
+	}
 }

@@ -21,7 +21,7 @@ public class Game extends Observable {
 		boolean result = false;
 		if(aGamer == current &&
 		   board.checkMove(i, aGamer.getColor())) {
-			
+			board.doMove(i, aGamer.getColor());
 			setChanged();
 			notifyObservers("Move");
 		}
@@ -41,4 +41,5 @@ public class Game extends Observable {
 	public Gamer getCurrent() {
 		return current;
 	}
+
 }

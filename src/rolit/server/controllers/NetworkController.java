@@ -7,7 +7,7 @@ import java.util.*;
 import rolit.sharedModels.Game;
 import rolit.sharedModels.Gamer;
 
-public class NetworkController extends Thread {
+public class NetworkController extends Thread implements Observer {
 	private ApplicationController				appController;
 	private int									port;
 	private InetAddress							host;
@@ -199,8 +199,24 @@ public class NetworkController extends Thread {
 				waitingForGame.remove(player);
 				gamers.add(player.getGamer());
 			}
+			
 			Game aGame = new Game(gamers);
+			aGame.addObserver(this);
 			games.add(aGame);
+			
+			
+			String turnCommand = "turn " + players.get(0).getGamer().getName();
+			
+			for(ConnectionController player: players) {
+				player.sendCommand(turnCommand);
+			}
+		}
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		if(arg0.getClass().equals(Game.class)) {
+			appController.log(((Game) arg0).getBoard().toString());
 		}
 	}
 
