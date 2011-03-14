@@ -22,8 +22,8 @@ public class Board {
 		slots.get(36).setValue(Slot.GREEN);
 	}
 	
-	public void checkMove(int slotNo, int color) {
-		
+	public boolean checkMove(int slotNo, int color) {
+		return true;
 	}
 	
 	public int checkAbove(int slotNo, int color, int steps) {
@@ -38,6 +38,54 @@ public class Board {
 			result = slotAbove;
 		} else {
 			result = checkAbove(slotAbove, color, ++steps);
+		}
+		return result;
+	}
+	
+	public int checkRightAbove(int slotNo, int color, int steps) {
+		int slotRightAbove = slotNo - DIMENTION + 1;
+		int result;
+		if(slotRightAbove < 0 || (slotRightAbove != 0 && (slotRightAbove % 8) == 0)) {
+			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if(steps > 0 && slots.get(slotRightAbove).getValue() == color) {
+			// Checkt of het volgende slot de juiste kleur heeft.
+			result = slotRightAbove;
+		} else {
+			result = checkRightAbove(slotRightAbove, color, ++steps);
+		}
+		return result;
+	}
+	
+	public int checkRight(int slotNo, int color, int steps) {
+		int slotRight = slotNo + 1;
+		int result;
+		if(slotRight != 0 && (slotRight % 8) == 0) {
+			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if(steps > 0 && slots.get(slotRight).getValue() == color) {
+			// Checkt of het volgende slot de juiste kleur heeft.
+			result = slotRight;
+		} else {
+			result = checkRight(slotRight, color, ++steps);
+		}
+		return result;
+	}
+	
+	public int checkRightBelow(int slotNo, int color, int steps) {
+		int slotRightBelow = slotNo + DIMENTION + 1;
+		int result;
+		if(slotRightBelow > DIMENTION*DIMENTION || (slotRightBelow != 0 && (slotRightBelow % 8) == 0)) {
+			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if(steps > 0 && slots.get(slotRightBelow).getValue() == color) {
+			// Checkt of het volgende slot de juiste kleur heeft.
+			result = slotRightBelow;
+		} else {
+			result = checkRightBelow(slotRightBelow, color, ++steps);
 		}
 		return result;
 	}
@@ -58,6 +106,22 @@ public class Board {
 		return result;
 	}
 	
+	public int checkLeftBelow(int slotNo, int color, int steps) {
+		int slotLeftBelow = slotNo + DIMENTION - 1;
+		int result;
+		if(slotLeftBelow > DIMENTION*DIMENTION || (slotLeftBelow > 0 && (slotLeftBelow % 8) == 7)) {
+			// Checkt of het volgende slot buiten het bord is.
+			result = -1;
+		}
+		else if(steps > 0 && slots.get(slotLeftBelow).getValue() == color) {
+			// Checkt of het volgende slot de juiste kleur heeft.
+			result = slotLeftBelow;
+		} else {
+			result = checkLeftBelow(slotLeftBelow, color, ++steps);
+		}
+		return result;
+	}
+	
 	public int checkLeft(int slotNo, int color, int steps) {
 		int slotLeft = slotNo - 1;
 		int result;
@@ -74,19 +138,21 @@ public class Board {
 		return result;
 	}
 	
-	public int checkRight(int slotNo, int color, int steps) {
-		int slotLeft = slotNo + 1;
+	public int checkLeftAbove(int slotNo, int color, int steps) {
+		int slotLeftAbove = slotNo - DIMENTION + 1;
 		int result;
-		if(slotLeft != 0 && (slotLeft % 8) == 0) {
+		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % 8) == 7))) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
-		else if(steps > 0 && slots.get(slotLeft).getValue() == color) {
+		else if(steps > 0 && slots.get(slotLeftAbove).getValue() == color) {
 			// Checkt of het volgende slot de juiste kleur heeft.
-			result = slotLeft;
+			result = slotLeftAbove;
 		} else {
-			result = checkLeft(slotLeft, color, ++steps);
+			result = checkLeftAbove(slotLeftAbove, color, ++steps);
 		}
 		return result;
 	}
+	
+	
 }
