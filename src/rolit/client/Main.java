@@ -1,12 +1,9 @@
 package rolit.client;
 
-import rolit.server.controllers.ApplicationController;
+import rolit.client.controllers.ApplicationController;
 
 public class Main {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		ApplicationController appController = new ApplicationController();
 		appController.view().log(	"        Rolit Client by Thijs Scheepers and Mart Meijerink" +

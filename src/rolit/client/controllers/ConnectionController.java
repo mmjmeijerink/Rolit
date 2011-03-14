@@ -7,17 +7,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import rolit.server.models.LoggingInterface;
+import rolit.client.models.LoggingInterface;
 import rolit.sharedModels.Gamer;
 
 public class ConnectionController extends Thread {
 
-	private NetworkController   network;
-	private Socket           	socket;
-	private BufferedReader   	in;
-	private BufferedWriter   	out;
+	private NetworkController	network;
+	private Socket				socket;
+	private BufferedReader		in;
+	private BufferedWriter		out;
 
-	private boolean			 	running = true;
+	private boolean				running = true;
 	private LoggingInterface	log;
 	private Gamer				gamer;
 

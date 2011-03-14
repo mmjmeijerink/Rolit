@@ -1,106 +1,189 @@
 package rolit.client.views;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import rolit.server.controllers.ApplicationController;
-import rolit.server.models.LoggingInterface;
-
-
+import rolit.client.controllers.ApplicationController;
+import rolit.client.models.LoggingInterface;
+import rolit.sharedModels.Board;
 
 public class MainView extends JFrame implements LoggingInterface {
 
 	private static final long serialVersionUID = 1L;
-	private JButton   				connectButton;
-	private JTextField				portField;
-	private JTextArea 				logArea;
-	private JTextField				hostField;
-	private ApplicationController	viewController;
+	private JPanel mainPanel = null, connectPanel = null, boardPanel = null, chatPanel = null;
+	private JButton[] places = new JButton[Board.DIMENSION * Board.DIMENSION];
+	private JButton connectButton;
+	private JTextField hostField, portField, nickField, chatField = null;
+	private JMenuBar menuBar = null;
+	private JTextArea logArea = null;
+	private ApplicationController viewController;
 
 	public MainView(ApplicationController aController) {
-		super("Rolit Server");
+		super("Rolit Client");
 
 		viewController = aController;
-		buildView();
-		setVisible(true);
+		initialize();
+	}
 
-		addWindowListener(new WindowAdapter() {
+	/** Initializes the components of the GUI. */
+	private void initialize() {
+		this.setSize(450, 450);
+		this.setMinimumSize(new Dimension(400, 450));
+		this.setContentPane(getContentPane());
+		
+		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				e.getWindow().dispose();
 			}
+
 			public void windowClosed(WindowEvent e) {
 				System.exit(0);
 			}
+		});
+
+		this.setVisible(true);
+	}
+	
+	public JPanel getContentPane() {
+		if (mainPanel == null) {
+			mainPanel = new JPanel();
+			mainPanel.setLayout(new BorderLayout());
+			mainPanel.add(getMenu(), BorderLayout.NORTH);
+			mainPanel.add(getConnectPanel(), BorderLayout.CENTER);
+			mainPanel.add(getChatPanel(), BorderLayout.SOUTH);
 		}
-		);
+		return mainPanel;
+	}
+	
+	private JMenuBar getMenu() {
+		if(menuBar == null) {
+			menuBar = new JMenuBar();
+			
+			JMenu fileMenu = new JMenu("File");
+			JMenuItem exitMenuItem = new JMenuItem("Exit");
+			exitMenuItem.addActionListener(viewController);
+			exitMenuItem.setActionCommand("Exit");
+			
+			JMenu helpMenu = new JMenu("Help");
+			JMenuItem aboutMenuItem = new JMenuItem("About");
+			
+			fileMenu.add(exitMenuItem);
+			menuBar.add(fileMenu);
+			
+			helpMenu.add(aboutMenuItem);
+			menuBar.add(helpMenu);
+		}
+		return menuBar;
 	}
 
-	/** Bouwt de daadwerkelijke GUI. */
-	public void buildView() {
-		setSize(645,375);
+	private JPanel getConnectPanel() {
+		if (connectPanel == null) {
+			connectPanel = new JPanel(new GridBagLayout());
+			JPanel pp = new JPanel(new GridLayout(3, 2));
 
-		JLabel hostLable 	= new JLabel("Hostname: ");
-		hostField 			= new JTextField("", 12);
-		hostField.setToolTipText("Your IP address");
-		hostField.setEditable(false);
+			JLabel lbAddress = new JLabel("Hostname:");
+			hostField = new JTextField(null, 12);
 
-		JLabel portLable = new JLabel("Port: ");
-		portField        = new JTextField("1337", 5);
-		portField.setToolTipText("Set port for the server to use, you can only use ports that are not in use.");
+			JLabel lbPort = new JLabel("Port:");
+			portField = new JTextField(null, 5);
 
-		connectButton = new JButton("(Re)start the server");
-		connectButton.addActionListener(viewController);
+			JLabel lbName = new JLabel("Name:");
+			nickField = new JTextField();
 
-		JLabel logLable = new JLabel("Log:");
-		logArea = new JTextArea("", 15, 50);
-		logArea.setEditable(false);
-		logArea.setLineWrap(true);
-		JScrollPane scrollPane = new JScrollPane(logArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			pp.add(lbAddress);
+			pp.add(hostField);
+			pp.add(lbPort);
+			pp.add(portField);
+			pp.add(lbName);
+			pp.add(nickField);
 
-		// Indelen layout
-		JPanel grid = new JPanel(new GridLayout(2,2));
-		grid.add(hostLable);
-		grid.add(hostField);
-		grid.add(portLable);
-		grid.add(portField);
-
-		JPanel flowAbove = new JPanel(new FlowLayout());
-		flowAbove.add(grid, BorderLayout.WEST);
-		flowAbove.add(connectButton, BorderLayout.EAST);
-
-		JPanel flowBelow = new JPanel();
-		flowBelow.setLayout(new BorderLayout());
-		flowBelow.add(logLable);
-		flowBelow.add(scrollPane, BorderLayout.SOUTH);
-
-		Container container = getContentPane();
-		container.setLayout(new FlowLayout());
-		container.add(flowAbove); container.add(flowBelow);
-		this.setResizable(false);
+			connectButton = new JButton("Connect");
+			connectButton.addActionListener(viewController);
+			connectButton.setActionCommand("Connect");
+			
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.gridx = 1;
+			connectPanel.add(pp, constraints);
+			constraints.gridx = 2;
+			connectPanel.add(connectButton, constraints);
+		}
+		return connectPanel;
 	}
 
-	public void disableControls() {
-		portField.setEnabled(false);
-		hostField.setEnabled(false);
-		connectButton.setEnabled(false);
+	private JPanel getBoardPanel() {
+		if (boardPanel == null) {
+			boardPanel = new JPanel();
+			boardPanel.setLayout(new GridBagLayout());
+
+			for (int i = 0; i < places.length; i++) {
+				places[i] = new JButton();
+				places[i].setMargin(new Insets(5, 5, 5, 5));
+				places[i].setActionCommand(i + "");
+				places[i].setText(i + "");
+
+				int row = i % Board.DIMENSION;
+				int col = i / Board.DIMENSION;
+
+				GridBagConstraints constraints = new GridBagConstraints();
+				constraints.gridx = row;
+				constraints.gridy = col;
+				constraints.fill = GridBagConstraints.BOTH;
+
+				boardPanel.add(places[i], constraints);
+			}
+
+			places[27].setBackground(new Color(255, 0, 0));
+			places[28].setBackground(new Color(255, 255, 0));
+			places[35].setBackground(new Color(0, 0, 255));
+			places[36].setBackground(new Color(0, 255, 0));
+		}
+		return boardPanel;
 	}
 
-	public void enableControls() {
-		portField.setEnabled(true);
-		hostField.setEnabled(true);
-		connectButton.setEnabled(true);
+	private JPanel getChatPanel() {
+		if (chatPanel == null) {
+			chatPanel = new JPanel();
+			chatPanel.setLayout(new BorderLayout());
+
+			logArea = new JTextArea();			
+			logArea.setEditable(false);
+			logArea.setRows(7);
+			logArea.setColumns(20);
+			logArea.setLineWrap(true);
+			JScrollPane scrollPane = new JScrollPane(logArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+			chatPanel.add(scrollPane, BorderLayout.NORTH);
+			chatPanel.add(getChatField(), BorderLayout.SOUTH);
+		}
+		return chatPanel;
+	}
+	
+	public JTextField getChatField() {
+		if(chatField == null) {
+			chatField = new JTextField();
+			chatField.addKeyListener(viewController);
+		}
+		return chatField;
 	}
 
 	// Getters en setters
