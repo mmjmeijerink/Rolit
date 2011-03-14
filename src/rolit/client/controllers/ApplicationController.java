@@ -2,28 +2,22 @@ package rolit.client.controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import rolit.server.models.LoggingInterface;
-import rolit.server.views.MainView;
+import rolit.client.models.LoggingInterface;
+import rolit.client.views.MainView;
 
 
-public class ApplicationController implements ActionListener,LoggingInterface {
-	private MainView 			view;
-	private NetworkController 	network;
+public class ApplicationController implements ActionListener, KeyListener, LoggingInterface {
+	
+	private MainView			view;
+	private NetworkController	network;
 	
 	public ApplicationController() {
 		view = new MainView(this);
-		
-		try {
-            InetAddress ip = InetAddress.getLocalHost();
-            view.setHost(ip.getHostAddress());
-        } catch (UnknownHostException e) {
-        	view.log("Your system does not allow the server to know it's IP, you will not be able to start the server.");
-        	view.disableControls();
-        }
-        
 	}
 	
 	//Getters en setters
@@ -41,8 +35,8 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if(event.getSource() == view.connectButton()) {
-			log("Starting the server...");
+		if(event.getSource().equals(view.connectButton())) {
+			log("Connection to the server...");
 			
 			InetAddress host;
 			try {    
@@ -55,7 +49,7 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			int port = 1337; // Default port
 			try {
 				port = Integer.parseInt(view.port());
-				if (port<1 && port > 65535) {
+				if (port < 1 && port > 65535) {
 					log("Port has to be in the range [1-65535], using 1337 default.");
 					port = 1337; // Default port
 				}
@@ -66,10 +60,29 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			if(host != null) {
 				network = new NetworkController(host, port, this);
 				network.start();
-				view.disableControls();
 			}
-			
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent event) {
+		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent event) {
+		if(event.getKeyCode() == KeyEvent.VK_ENTER && event.getSource().equals(view.getChatField())) {
+			String msg = view.getChatField().getText();
+			view.getChatField().setText(null);
+			view.log(msg + "\n");
+			network..sendMessage(msg);
+		}
 	}
 }
