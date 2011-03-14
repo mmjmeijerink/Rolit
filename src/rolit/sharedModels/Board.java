@@ -3,7 +3,7 @@ package rolit.sharedModels;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import rolit.server.ConnectionController;
+import rolit.server.controllers.ConnectionController;
 
 public class Board {
 
