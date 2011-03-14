@@ -68,7 +68,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkAbove(int slotNo, int color, int steps) {
+	private int checkAbove(int slotNo, int color, int steps) {
 		int slotAbove = slotNo - DIMENSION;
 		int result;
 		if(slotAbove < 0) {
@@ -88,7 +88,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkRightAbove(int slotNo, int color, int steps) {
+	private int checkRightAbove(int slotNo, int color, int steps) {
 		int slotRightAbove = slotNo - DIMENSION + 1;
 		int result;
 		if(slotRightAbove < 0 || (slotRightAbove != 0 && (slotRightAbove % DIMENSION) == 0)) {
@@ -108,7 +108,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkRight(int slotNo, int color, int steps) {
+	private int checkRight(int slotNo, int color, int steps) {
 		int slotRight = slotNo + 1;
 		int result;
 		if(slotRight != 0 && (slotRight % DIMENSION) == 0) {
@@ -128,7 +128,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkRightBelow(int slotNo, int color, int steps) {
+	private int checkRightBelow(int slotNo, int color, int steps) {
 		int slotRightBelow = slotNo + DIMENSION + 1;
 		int result;
 		if(slotRightBelow > DIMENSION*DIMENSION || (slotRightBelow != 0 && (slotRightBelow % DIMENSION) == 0)) {
@@ -148,7 +148,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkBelow(int slotNo, int color, int steps) {
+	private int checkBelow(int slotNo, int color, int steps) {
 		int slotBelow = slotNo + DIMENSION;
 		int result;
 		if(slotBelow > DIMENSION*DIMENSION) {
@@ -168,7 +168,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkLeftBelow(int slotNo, int color, int steps) {
+	private int checkLeftBelow(int slotNo, int color, int steps) {
 		int slotLeftBelow = slotNo + DIMENSION - 1;
 		int result;
 		if(slotLeftBelow > DIMENSION*DIMENSION || (slotLeftBelow > 0 && (slotLeftBelow % DIMENSION) == DIMENSION - 1)) {
@@ -188,7 +188,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkLeft(int slotNo, int color, int steps) {
+	private int checkLeft(int slotNo, int color, int steps) {
 		int slotLeft = slotNo - 1;
 		int result;
 		if(slotLeft > 0 && (slotLeft % DIMENSION) == DIMENSION - 1) {
@@ -208,7 +208,7 @@ public class Board {
 		return result;
 	}
 	
-	public int checkLeftAbove(int slotNo, int color, int steps) {
+	private int checkLeftAbove(int slotNo, int color, int steps) {
 		int slotLeftAbove = slotNo - DIMENSION + 1;
 		int result;
 		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % DIMENSION) == DIMENSION - 1))) {
@@ -243,7 +243,7 @@ public class Board {
 		return result;
 	}
 	
-	public void flipBetween(int a, int b) {
+	private void flipBetween(int a, int b) {
 		int color = slots.get(a).getValue();
 		if(a < b) {
 			int aTmp = a;
