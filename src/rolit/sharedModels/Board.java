@@ -21,6 +21,16 @@ public class Board {
 		slots.get(36).setValue(Slot.GREEN);
 	}
 	
+	public boolean isFull() {
+		boolean result = true;
+		for(Slot aSlot: slots) {
+			if(aSlot.getValue() == Slot.EMPTY) {
+				result = false;
+			}
+		}
+		return result;
+	}
+	
 	public void doMove(int slotNo, int color) {
 			if(checkMove(slotNo,color)) {
 				slots.get(slotNo).setValue(color);

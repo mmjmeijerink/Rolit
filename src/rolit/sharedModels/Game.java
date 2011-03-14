@@ -7,6 +7,7 @@ public class Game extends Observable {
 	private Board board;
 	private ArrayList<Gamer> gamers;
 	private Gamer current;
+	private boolean ended;
 
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
@@ -21,6 +22,7 @@ public class Game extends Observable {
 		boolean result = false;
 		if(aGamer == current && board.checkMove(i, aGamer.getColor())) {
 			board.doMove(i, aGamer.getColor());
+			checkIfEnded();
 			nextTurn();
 			setChanged();
 			notifyObservers("Move");
@@ -29,11 +31,22 @@ public class Game extends Observable {
 		return result;
 	}
 	
+	private void checkIfEnded() {
+		if(board.isFull() || gamers.size() < 2) {
+			ended = true;
+		}
+	}
+	
+	public boolean isEnded() {
+		return ended;
+	}
+	
 	public void removeGamer(Gamer toBeRemoved) {
 		if(current == toBeRemoved) {
 			nextTurn();
 		}
 		gamers.remove(toBeRemoved);
+		checkIfEnded();
 		setChanged();
 		notifyObservers("Gamer Removed");
 	}

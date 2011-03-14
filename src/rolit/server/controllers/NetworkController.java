@@ -279,13 +279,21 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 	}
-
+	
+	private void endGame(Game aGame) { 
+		
+	}
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		if(arg0.getClass().equals(Game.class)) {
 			Game game = (Game) arg0;
 			appController.log(game.getBoard().toString());
-			nextTurn(game);
+			if(game.isEnded()) {
+				endGame(game);
+			} else {
+				nextTurn(game);
+			}
 		}
 	}
 
