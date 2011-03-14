@@ -61,15 +61,15 @@ public class ConnectionController extends Thread {
 		this.running = false;
 	}
 
-	public Gamer gamer() {
+	public Gamer getGamer() {
 		return gamer;
 	}
 	
-	public Socket socket() {
+	public Socket getSocket() {
 		return socket;
 	}
 	
 	public String toString() {
-		return gamer.name + " (" + socket.getInetAddress() + ")";
+		return gamer.getName() + " (" + socket.getInetAddress() + ")";
 	}
 }

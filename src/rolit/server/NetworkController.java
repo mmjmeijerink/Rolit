@@ -1,25 +1,19 @@
 package rolit.server;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
-import com.sun.tools.javac.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class NetworkController extends Thread {
 	private ApplicationController				appController;
 	private int									port;
 	private InetAddress							host;
-	private ArrayList<ConnectionController>  	threads;
+	private ArrayList<ConnectionController>  	connections;
 	private ArrayList<ConnectionController>		waitingForGame;
 
 	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller) {
 		super();
-		threads 		= new ArrayList<ConnectionController>();
+		connections 	= new ArrayList<ConnectionController>();
 		waitingForGame 	= new ArrayList<ConnectionController>();
 		appController = controller;
 		port = aPort;
@@ -46,7 +40,7 @@ public class NetworkController extends Thread {
 
 	public void broadcastCommand(String msg) {
 		if(msg != null) {
-			for(ConnectionController client: threads){
+			for(ConnectionController client: connections){
 				client.sendCommand(msg);
 			}
 			appController.log("Broadcasted: " + msg);
@@ -62,15 +56,15 @@ public class NetworkController extends Thread {
 				/* Execute command "connect" */
 				
 				if(splitCommand.size() == 2) {
-					if(sender.gamer().name.equals("[NOT CONNECTED]")) {
+					if(sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 						String possibleName = splitCommand.get(1);
 						int i = 1;
 						while(!checkName(possibleName)) {
 							possibleName = possibleName+Integer.toString(i);
 							i++;
 						}
-						sender.gamer().name = possibleName;
-						appController.log("Connection from " + sender.socket().getInetAddress() + " has identified itself as: " + possibleName);
+						sender.getGamer().setName(possibleName);
+						appController.log("Connection from " + sender.getSocket().getInetAddress() + " has identified itself as: " + possibleName);
 						sender.sendCommand("ackconnect "+possibleName);
 					} else {
 						appController.log(sender.toString() + " tries to but is already identified.");
@@ -81,11 +75,11 @@ public class NetworkController extends Thread {
 				
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
-				if(!sender.gamer().name.equals("[NOT CONNECTED]")) {
+				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 					if(splitCommand.size() == 2) {
 						try {
 							int requestedSize = Integer.parseInt(splitCommand.get(1));
-							if(sender.gamer().setRequestedGameSize(requestedSize)) {
+							if(sender.getGamer().setRequestedGameSize(requestedSize)) {
 								if(!waitingForGame.contains(sender)) {
 									waitingForGame.add(sender);
 								}
@@ -115,13 +109,13 @@ public class NetworkController extends Thread {
 	}
 
 	public void addConnection(ConnectionController connection) {
-		threads.add(connection);
+		connections.add(connection);
 	}
 
 	public void removeConnection(ConnectionController connection) {
-		if(threads.contains(connection)) {
+		if(connections.contains(connection)) {
 			appController.log(connection.toString() + " disconnects");
-			threads.remove(connection);
+			connections.remove(connection);
 		} else {
 			appController.log("Tries to remove connection that does not exist");
 		}
@@ -130,8 +124,8 @@ public class NetworkController extends Thread {
 	public boolean checkName(String name) {
 		boolean result = true;
 		if(name != null) {
-			for(ConnectionController client: threads){
-				if(client.gamer().name.equals(name)) {
+			for(ConnectionController client: connections){
+				if(client.getGamer().getName().equals(name)) {
 					result = false;
 				}
 			}
@@ -144,13 +138,13 @@ public class NetworkController extends Thread {
 		ArrayList<ConnectionController> startingWith = null;
 		
 		for(ConnectionController masterClient: waitingForGame){
-			int minimalSize = masterClient.gamer().getRequestedGameSize();
+			int minimalSize = masterClient.getGamer().getRequestedGameSize();
 			ArrayList<ConnectionController> readyToStart = new ArrayList<ConnectionController>();
 			readyToStart.add(masterClient);
 			for(ConnectionController slaveClient: waitingForGame) {
 				if(masterClient != slaveClient) {
-					if(minimalSize < slaveClient.gamer().getRequestedGameSize()) {
-						minimalSize = slaveClient.gamer().getRequestedGameSize();
+					if(minimalSize < slaveClient.getGamer().getRequestedGameSize()) {
+						minimalSize = slaveClient.getGamer().getRequestedGameSize();
 					}
 					if(minimalSize > readyToStart.size()) {
 						readyToStart.add(slaveClient);
@@ -186,7 +180,7 @@ public class NetworkController extends Thread {
 		for(ConnectionController player: players) {
 			i++;
 			if(i < 4) {
-				command = command + " " + player.gamer().name;
+				command = command + " " + player.getGamer().getName();
 				logEntry = logEntry + ", " + player.toString();
 			} else {
 				players.remove(player);

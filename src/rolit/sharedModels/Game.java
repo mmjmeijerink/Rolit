@@ -12,15 +12,20 @@ public class Game extends Observable {
 		board = new Board();
 	}
 	
-	public void doMove(int i, Gamer aGamer) {
+	public boolean doMove(int i, Gamer aGamer) {
+		boolean result = false;
+		if(aGamer == current &&
+		   board.checkMove(i, aGamer.getColor())) {
+			
+			setChanged();
+			notifyObservers("Move");
+		}
+		return result;
 		//board.setColor(i, current.getColor());
-		setChanged();
-		notifyObservers("Move");
-	}
-	
-	public void checkMove(int i, Gamer aGamer) {
 		
 	}
+	
+	
 	
 	// Setters en getters
 	

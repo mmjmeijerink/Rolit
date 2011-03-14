@@ -3,6 +3,8 @@ package rolit.sharedModels;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import rolit.server.ConnectionController;
+
 public class Board {
 
 	public static final int DIMENTION = 8;
@@ -60,7 +62,7 @@ public class Board {
 	public int checkRightAbove(int slotNo, int color, int steps) {
 		int slotRightAbove = slotNo - DIMENTION + 1;
 		int result;
-		if(slotRightAbove < 0 || (slotRightAbove != 0 && (slotRightAbove % 8) == 0)) {
+		if(slotRightAbove < 0 || (slotRightAbove != 0 && (slotRightAbove % DIMENTION) == 0)) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -80,7 +82,7 @@ public class Board {
 	public int checkRight(int slotNo, int color, int steps) {
 		int slotRight = slotNo + 1;
 		int result;
-		if(slotRight != 0 && (slotRight % 8) == 0) {
+		if(slotRight != 0 && (slotRight % DIMENTION) == 0) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -100,7 +102,7 @@ public class Board {
 	public int checkRightBelow(int slotNo, int color, int steps) {
 		int slotRightBelow = slotNo + DIMENTION + 1;
 		int result;
-		if(slotRightBelow > DIMENTION*DIMENTION || (slotRightBelow != 0 && (slotRightBelow % 8) == 0)) {
+		if(slotRightBelow > DIMENTION*DIMENTION || (slotRightBelow != 0 && (slotRightBelow % DIMENTION) == 0)) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -140,7 +142,7 @@ public class Board {
 	public int checkLeftBelow(int slotNo, int color, int steps) {
 		int slotLeftBelow = slotNo + DIMENTION - 1;
 		int result;
-		if(slotLeftBelow > DIMENTION*DIMENTION || (slotLeftBelow > 0 && (slotLeftBelow % 8) == 7)) {
+		if(slotLeftBelow > DIMENTION*DIMENTION || (slotLeftBelow > 0 && (slotLeftBelow % DIMENTION) == 7)) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -160,7 +162,7 @@ public class Board {
 	public int checkLeft(int slotNo, int color, int steps) {
 		int slotLeft = slotNo - 1;
 		int result;
-		if(slotLeft > 0 && (slotLeft % 8) == 7) {
+		if(slotLeft > 0 && (slotLeft % DIMENTION) == 7) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -180,7 +182,7 @@ public class Board {
 	public int checkLeftAbove(int slotNo, int color, int steps) {
 		int slotLeftAbove = slotNo - DIMENTION + 1;
 		int result;
-		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % 8) == 7))) {
+		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % DIMENTION) == 7))) {
 			// Checkt of het volgende slot buiten het bord is.
 			result = -1;
 		}
@@ -197,5 +199,19 @@ public class Board {
 		return result;
 	}
 	
+	public String toString() {
+		String result = "";
+		for(Slot aSlot: slots){
+			result = result + "| " + aSlot.getValue();
+			if(slots.indexOf(aSlot) != 0 && (slots.indexOf(aSlot) % DIMENTION) == 7) {
+				result = result + "| /n";
+				for(int i = 0; i < DIMENTION ; i++) {
+					result = result + "---";
+				}
+				result = result + "/n";
+			}
+		}
+		return result;
+	}
 	
 }

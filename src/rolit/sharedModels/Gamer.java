@@ -1,8 +1,8 @@
 package rolit.sharedModels;
 
 public class Gamer {
-	public String name;
-	public boolean takesPart;
+	private String name;
+	private boolean takesPart;
 	private int requestedGameSize;
 	private int color; // Volgens de kleuren gedefineerd in Slot
 	
@@ -45,5 +45,17 @@ public class Gamer {
 	
 	public int getColor() {
 		return color;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String aName) {
+		name = aName;
+	}
+	
+	public boolean isTakingPart() {
+		return takesPart;
 	}
 }
