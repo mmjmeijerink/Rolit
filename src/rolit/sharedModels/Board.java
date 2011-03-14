@@ -1,9 +1,6 @@
 package rolit.sharedModels;
 
-import java.awt.Color;
 import java.util.ArrayList;
-
-import rolit.server.controllers.ConnectionController;
 
 public class Board {
 
@@ -269,6 +266,22 @@ public class Board {
 				}
 				aTmp = aTmp - DIMENSION;
 			}	
+		} else if(bModulo < aModulo) { // Staan op de dezelfde diagonaal, a rechts van b
+			int aTmp = a;
+			while(aTmp > b) {
+				if(aTmp != a) {
+					slots.get(aTmp).setValue(color);
+				}
+				aTmp = aTmp - DIMENSION - 1;
+			}
+		} else if(bModulo > aModulo) { // Staan op de dezelfde diagonaal, a links van b
+			int aTmp = a;
+			while(aTmp > b) {
+				if(aTmp != a) {
+					slots.get(aTmp).setValue(color);
+				}
+				aTmp = aTmp - DIMENSION + 1;
+			}
 		}
 		
 	}
