@@ -119,9 +119,10 @@ public class NetworkController extends Thread implements Observer {
 							if(participatingGame.getCurrent() == sender.getGamer()) {
 								try {
 									int slotToSet = Integer.parseInt(splitCommand.get(1));
-									if(participatingGame.doMove(slotToSet, sender.getGamer())) {
-										appController.log(sender.toString() + " has set " + splitCommand.get(1) + " in his game.");
+									if(participatingGame.checkMove(slotToSet, sender.getGamer())) {
 										moveDone(participatingGame,sender.getGamer(),slotToSet);
+										participatingGame.doMove(slotToSet, sender.getGamer());
+										appController.log(sender.toString() + " has set " + splitCommand.get(1) + " in his game.");
 									} else {
 										appController.log("Domove command from " + sender.toString() + " FAILED, move is impossible " + msg);
 										kickGamer(sender.getGamer());

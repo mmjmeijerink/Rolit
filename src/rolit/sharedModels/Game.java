@@ -17,16 +17,21 @@ public class Game extends Observable {
 		current = gamers.get(0);
 	}
 	
-	public boolean doMove(int i, Gamer aGamer) {
+	public boolean checkMove(int i, Gamer aGamer) {
 		boolean result = false;
 		if(aGamer == current && board.checkMove(i, aGamer.getColor())) {
+			result = true;
+		}
+		return result;
+	}
+	
+	public void doMove(int i, Gamer aGamer) {
+		if(checkMove(i,aGamer)) {
 			board.doMove(i, aGamer.getColor());
 			nextTurn();
 			setChanged();
 			notifyObservers("Move");
-			result = true;
 		}
-		return result;
 	}
 	
 	public int getPointsOf(Gamer aGamer) {
