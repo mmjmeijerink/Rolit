@@ -10,19 +10,17 @@ import rolit.sharedModels.Gamer;
 public class NetworkController extends Thread implements Observer {
 	private ApplicationController				appController;
 	private int									port;
-	private InetAddress							host;
 	private ArrayList<ConnectionController>  	connections;
 	private ArrayList<ConnectionController>		waitingForGame;
 	private ArrayList<Game>						games;
 
-	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller) {
+	public NetworkController(int aPort, ApplicationController controller) {
 		super();
 		connections 	= new ArrayList<ConnectionController>();
 		waitingForGame 	= new ArrayList<ConnectionController>();
 		games			= new ArrayList<Game>();
 		appController = controller;
 		port = aPort;
-		host = aHost;
 	}
 
 	public void run() {
@@ -123,7 +121,7 @@ public class NetworkController extends Thread implements Observer {
 									int slotToSet = Integer.parseInt(splitCommand.get(1));
 									if(participatingGame.doMove(slotToSet, sender.getGamer())) {
 										appController.log(sender.toString() + " has set " + splitCommand.get(1) + " in his game.");
-										// Turn changes
+										moveDone(participatingGame,sender.getGamer(),slotToSet);
 									} else {
 										appController.log("Domove command from " + sender.toString() + " FAILED, move is impossible " + msg);
 										kickGamer(sender.getGamer());
@@ -281,7 +279,32 @@ public class NetworkController extends Thread implements Observer {
 	}
 	
 	private void endGame(Game aGame) { 
+		String command = "endgame ";
+		String logEntry = "Ending a game between";
+		for(Gamer aGamer: aGame.getGamers()) {
+				command = command + " " + aGame.getPointsOf(aGamer);
+				logEntry = logEntry + ", " + aGamer.getName() + " (" + aGame.getPointsOf(aGamer) + ")";
+			
+		}
+		appController.log(logEntry);
 		
+		for(ConnectionController connection: connections) {
+			for(Gamer aGamer: aGame.getGamers()) {
+				if(aGamer == connection.getGamer()) {
+					connection.sendCommand(command);
+				}
+			}
+		}
+	}
+	
+	private void moveDone(Game aGame, Gamer mover, int slot) {
+		for(ConnectionController connection: connections) {
+			for(Gamer aGamer: aGame.getGamers()) {
+				if(aGamer == connection.getGamer()) {
+					connection.sendCommand("movedone " + mover.getName() + " " + slot);
+				}
+			}
+		}
 	}
 	
 	@Override

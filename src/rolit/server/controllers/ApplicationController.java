@@ -44,13 +44,13 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 		if(event.getSource() == view.connectButton()) {
 			log("Starting the server...");
 			
-			InetAddress host;
+			/*InetAddress host;
 			try {    
 				host = InetAddress.getByName(view.host());
 			} catch (UnknownHostException e) {
 				host = null;
 				log("Hostname invalid.");
-			}
+			}*/
 			
 			int port = 1337; // Default port
 			try {
@@ -63,11 +63,9 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 				log("Port is not a valid number, using 1337 default.");
 			}
 			
-			if(host != null) {
-				network = new NetworkController(host, port, this);
-				network.start();
-				view.disableControls();
-			}
+			network = new NetworkController(port, this);
+			network.start();
+			view.disableControls();
 			
 		}
 		

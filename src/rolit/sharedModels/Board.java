@@ -31,6 +31,16 @@ public class Board {
 		return result;
 	}
 	
+	public int getPointsOfColor(int color) {
+		int result = 0;
+		for(Slot aSlot: slots) {
+			if(aSlot.getValue() == color) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
 	public void doMove(int slotNo, int color) {
 			if(checkMove(slotNo,color)) {
 				slots.get(slotNo).setValue(color);
