@@ -229,7 +229,7 @@ public class Board {
 	}
 	
 	private int checkLeftAbove(int slotNo, int color, int steps) {
-		int slotLeftAbove = slotNo - DIMENSION + 1;
+		int slotLeftAbove = slotNo - DIMENSION - 1;
 		int result;
 		if(slotLeftAbove < 0 || ((slotLeftAbove > 0 && (slotLeftAbove % DIMENSION) == DIMENSION - 1))) {
 			// Checkt of het volgende slot buiten het bord is.
@@ -245,6 +245,7 @@ public class Board {
 		} else {
 			result = checkLeftAbove(slotLeftAbove, color, ++steps);
 		}
+		//System.out.println("LeftAbove: "+result+" step "+steps);
 		return result;
 	}
 	
@@ -256,6 +257,25 @@ public class Board {
 				result = result + " |\n ";
 				for(int i = 0; i < DIMENSION ; i++) {
 					result = result + "----";
+				}
+				result = result + "-\n";
+			}
+		}
+		return result;
+	}
+	
+	public String layoutToString() {
+		String result = "\n";
+		for(Slot aSlot: slots){
+			result = result + " | ";
+			if(slots.indexOf(aSlot) < 10) {
+				result = result + "0";
+			}
+			result = result + slots.indexOf(aSlot);
+			if(slots.indexOf(aSlot) != 0 && (slots.indexOf(aSlot) % DIMENSION) == DIMENSION - 1) {
+				result = result + " |\n ";
+				for(int i = 0; i < DIMENSION ; i++) {
+					result = result + "-----";
 				}
 				result = result + "-\n";
 			}
