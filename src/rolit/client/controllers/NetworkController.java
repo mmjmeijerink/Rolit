@@ -54,12 +54,12 @@ public class NetworkController extends Thread {
 	
 	public void sendCommand(String msg) {
 		if(msg != null) {
-			appController.log("Sending commmand (" + msg + ") to server");
+			appController.log("Sending commmand (" + msg + ") to server \n");
 			try {
 				out.write(msg + "\n");
 				out.flush();
 			} catch (IOException e) {
-				appController.log("Sending commmand " + msg + " failed!");
+				appController.log("Sending commmand " + msg + " failed! \n");
 			}
 		}
 	}
@@ -72,12 +72,13 @@ public class NetworkController extends Thread {
 			//Handling the handshake of the server
 			appController.getGamer().setName(splitCommand.get(1));
 			appController.log("Connected to server with name " + splitCommand.get(1) + "\n");
+			appController.enteringLobby();
 		}
 		else if(splitCommand.get(0).equals("startgame")) {
 			//Handling the start of a game
 			appController.startGame((ArrayList<String>) splitCommand.subList(1, splitCommand.size()));
 			
-			appController.log("Game has started with ");
+			appController.log("Game has started with \n");
 			
 			for(int i = 1; i < splitCommand.size() - 2; i++) //second and third person in case of participation
 				appController.log(splitCommand.get(i) + ", ");
@@ -85,23 +86,18 @@ public class NetworkController extends Thread {
 			if(splitCommand.size() > 3)
 				appController.log("and ");
 			
-			appController.log(splitCommand.get(splitCommand.size() - 1) + ".\n");
+			appController.log(splitCommand.get(splitCommand.size() - 1) + ". \n");
 		}
 		else if(splitCommand.get(0).equals("turn")) {
 			//Handling a turn for the next player
-			if(appController.getGame() != null) {
-				//appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
-				
-				if(splitCommand.get(1).equals(appController.getGamer().getName())) {
-					appController.log("Your turn! \n");
-					appController.turn();
-				}
-				else {
-					appController.log(splitCommand.get(1) + "'s is now \n");
-				}
+			//appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
+			
+			if(splitCommand.get(1).equals(appController.getGamer().getName())) {
+				appController.log("Your turn! \n");
+				appController.turn();
 			}
 			else {
-				appController.log("Received a turn command from the server while not in game!");
+				appController.log(splitCommand.get(1) + "'s is now. \n");
 			}
 		}
 		else if(splitCommand.get(0).equals("movedone")) {
@@ -142,8 +138,6 @@ public class NetworkController extends Thread {
 			
 			for(int i = 2; i < splitCommand.size() - 2; i++)
 				appController.log(splitCommand.get(i));
-			
-			appController.log("\n");
 		}
 		else if(splitCommand.get(0).equals("challenged")) {
 			//Handling a challenge request
@@ -164,7 +158,7 @@ public class NetworkController extends Thread {
 	
 	//Getters and Setters
 	public void disconnect() {
-		appController.log("[Verbinding verbreken]");
+		appController.log("[Verbinding verbreken] \n");
 		try {
 			in.close();
 			out.close();
@@ -172,7 +166,7 @@ public class NetworkController extends Thread {
 		} catch (IOException e) {
 			System.err.println("Exceptie afgevangen: " + e.toString());
 		}
-		appController.log("[Verbinding verbroken]");
+		appController.log("[Verbinding verbroken] \n");
 		appController.connectionFailed();
 	}
 	

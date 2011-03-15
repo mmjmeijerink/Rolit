@@ -111,7 +111,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	@Override
-	public void keyPressed(KeyEvent event) {
+	public void keyTyped(KeyEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -123,7 +123,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	@Override
-	public void keyTyped(KeyEvent event) {
+	public void keyPressed(KeyEvent event) {
 		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER && network != null) {
 			String msg = view.getChatField().getText();
 			view.getChatField().setText(null);

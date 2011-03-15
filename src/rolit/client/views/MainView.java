@@ -134,7 +134,8 @@ public class MainView extends JFrame implements LoggingInterface {
 			boardPanel = new JPanel();
 			boardPanel.setLayout(new GridBagLayout());
 
-			for (int i = 0; i < places.size(); i++) {
+			for (int i = 0; i < Board.DIMENSION * Board.DIMENSION; i++) {
+				places.add(i, new JButton());
 				places.get(i).setMargin(new Insets(5, 5, 5, 5));
 				places.get(i).setActionCommand(i + "");
 				places.get(i).setText(i + "");
@@ -246,7 +247,7 @@ public class MainView extends JFrame implements LoggingInterface {
 
 	public void log(String msg) {
 		if(msg != null) {
-			logArea.append(" " + msg + "\n");
+			logArea.append(" " + msg);
 			logArea.setCaretPosition(logArea.getText().length());
 		}
 	}
