@@ -56,6 +56,13 @@ public class Game extends Observable {
 		notifyObservers("Gamer Removed");
 	}
 	
+	// Overbodig, en zou niet werken
+	/*public void giveTurn(String aGamer) {
+		while(!current.equals(aGamer)) {
+			nextTurn();
+		}
+	}*/
+	
 	private void nextTurn() {
 		int indexOfCurrent = gamers.indexOf(current);
 		int indexOfNext = indexOfCurrent + 1;
