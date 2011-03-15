@@ -7,6 +7,7 @@ public class Game extends Observable {
 	private Board board;
 	private ArrayList<Gamer> gamers;
 	private Gamer current;
+	private boolean ended;
 
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
@@ -19,15 +20,44 @@ public class Game extends Observable {
 	
 	public boolean doMove(int i, Gamer aGamer) {
 		boolean result = false;
-		if(aGamer == current &&
-		   board.checkMove(i, aGamer.getColor())) {
+		if(aGamer == current && board.checkMove(i, aGamer.getColor())) {
 			board.doMove(i, aGamer.getColor());
+			checkIfEnded();
+			nextTurn();
 			setChanged();
 			notifyObservers("Move");
+			result = true;
 		}
 		return result;
-		//board.setColor(i, current.getColor());
-		
+	}
+	
+	private void checkIfEnded() {
+		if(board.isFull() || gamers.size() < 2) {
+			ended = true;
+		}
+	}
+	
+	public boolean isEnded() {
+		return ended;
+	}
+	
+	public void removeGamer(Gamer toBeRemoved) {
+		if(current == toBeRemoved) {
+			nextTurn();
+		}
+		gamers.remove(toBeRemoved);
+		checkIfEnded();
+		setChanged();
+		notifyObservers("Gamer Removed");
+	}
+	
+	private void nextTurn() {
+		int indexOfCurrent = gamers.indexOf(current);
+		int indexOfNext = indexOfCurrent + 1;
+		if(indexOfNext >= gamers.size()) {
+			indexOfNext = 0;
+		}
+		current = gamers.get(indexOfNext);
 	}
 	
 	//Getters and Setters
@@ -50,5 +80,4 @@ public class Game extends Observable {
 		}
 		return result;
 	}
-
 }
