@@ -393,4 +393,8 @@ public class Board {
 		}
 
 	}
+	
+	public ArrayList<Slot> getSlots() {
+		return slots;
+	}
 }
