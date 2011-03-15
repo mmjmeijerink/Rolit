@@ -30,10 +30,7 @@ public class Game extends Observable {
 		
 	}
 	
-	
-	
-	// Setters en getters
-	
+	//Getters and Setters
 	public Board getBoard() {
 		return board;
 	}

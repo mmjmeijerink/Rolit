@@ -42,7 +42,7 @@ public class ConnectionController extends Thread {
 			}
 			
 			if (inlezen != null) {
-				network.executeCommand(inlezen,this);
+				network.executeCommand(inlezen);
 			} else disconnect();
 		}
 	}

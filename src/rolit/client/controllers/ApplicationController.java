@@ -6,21 +6,24 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.MainView;
+import rolit.sharedModels.*;
 
 
 public class ApplicationController implements ActionListener, KeyListener, LoggingInterface {
 	
 	private MainView			view;
 	private NetworkController	network;
+	private Game				game;
 	
 	public ApplicationController() {
 		view = new MainView(this);
 	}
 	
-	//Getters en setters
+	//Getters and setters
 	public MainView view() {
 		return view;
 	}
@@ -28,9 +31,37 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 	public void log(String logEntry) {
 		view.log(logEntry);
 	}
-	
+		
 	public void connectionFailed() {
 		view.connectMode();
+	}
+	
+	public void startGame(ArrayList<String> players) {
+		view.gameMode();
+		
+		int i = 1;
+		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
+		for(String name: players) {
+			Gamer participant = new Gamer();
+			participant.setName(name);
+			participant.setColor(i);
+			gamers.add(participant);
+			i++;
+		}
+		
+		game = new Game(gamers);
+	}
+	
+	public void enteringLobby() {
+		view.lobbyMode();
+	}
+	
+	public Game getGame() {
+		return game;
+	}
+	
+	public void turn() {
+		//TODO: Ask player for turn and send to server
 	}
 
 	@Override
@@ -78,7 +109,7 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 
 	@Override
 	public void keyTyped(KeyEvent event) {
-		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER) {
+		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER && network != null) {
 			String msg = view.getChatField().getText();
 			view.getChatField().setText(null);
 			log(msg + "\n");

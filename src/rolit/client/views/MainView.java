@@ -196,6 +196,13 @@ public class MainView extends JFrame implements LoggingInterface {
 		mainPanel.add(getBoardPanel());
 		this.repaint();
 	}
+	
+	public void lobbyMode() {
+		mainPanel.remove(getConnectPanel());
+		mainPanel.remove(getBoardPanel());
+		//mainPanel.add(getLobbyPanel()); LOBBY PANEL NOG MAKEN!
+		this.repaint();
+	}
 
 	public void setHost(String host) {
 		if(host != null) {
@@ -207,12 +214,16 @@ public class MainView extends JFrame implements LoggingInterface {
 		return connectButton;
 	}
 
+	public String host() {
+		return hostField.getText();
+	}
+	
 	public String port() {
 		return portField.getText();
 	}
-
-	public String host() {
-		return hostField.getText();
+	
+	public String nick() {
+		return nickField.getText();
 	}
 
 	public void log(String msg) {
