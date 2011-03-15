@@ -108,7 +108,7 @@ public class NetworkController extends Thread implements Observer {
 
 						Game participatingGame = null;
 						for(Game aGame: games) {
-							appController.log(games.toString());
+							//appController.log(games.toString());
 							for(Gamer aGamer: aGame.getGamers()) {
 								if(aGamer == sender.getGamer()) {
 									participatingGame = aGame;
@@ -145,7 +145,12 @@ public class NetworkController extends Thread implements Observer {
 					appController.log("Domove command from " + sender.toString() + " FAILED, not identified.");
 				}
 			} else if(splitCommand.get(0).equals("chat")) {
-
+				/* Execute command "chat" */
+				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					sendChat(msg.substring(5),sender);
+				} else {
+					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
+				}
 			} else {
 				appController.log("Command from " + sender.toString() + " misunderstoud: " + msg);
 			}
@@ -163,6 +168,10 @@ public class NetworkController extends Thread implements Observer {
 		} else {
 			appController.log("Tries to remove connection that does not exist");
 		}
+	}
+	
+	private void sendChat(String message, ConnectionController sender) {
+		
 	}
 
 	private boolean checkName(String name) {
@@ -280,7 +289,7 @@ public class NetworkController extends Thread implements Observer {
 	}
 	
 	private void endGame(Game aGame) { 
-		String command = "endgame ";
+		String command = "endgame";
 		String logEntry = "Ending a game between";
 		for(Gamer aGamer: aGame.getStartedWith()) {
 				if(aGame.getGamers().contains(aGamer)) {

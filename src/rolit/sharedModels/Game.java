@@ -16,7 +16,7 @@ public class Game extends Observable {
 			gamers.get(i).setColor(i+1);
 		}
 		current = gamers.get(0);
-		startedWith = gamers.clone();
+		startedWith = (ArrayList<Gamer>) gamers.clone();
 	}
 	
 	public boolean checkMove(int i, Gamer aGamer) {
