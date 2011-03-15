@@ -28,6 +28,7 @@ public class NetworkController extends Thread {
 			socket = new Socket(host, port);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			sendCommand("connect " + appController.getGamer().getName());
 			appController.log("Connecting to server on ip, " + host + ", and port, " + port + ". \n");
 			
 			String inlezen = null;
@@ -89,7 +90,7 @@ public class NetworkController extends Thread {
 		else if(splitCommand.get(0).equals("turn")) {
 			//Handling a turn for the next player
 			if(appController.getGame() != null) {
-				appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
+				//appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
 				
 				if(splitCommand.get(1).equals(appController.getGamer().getName())) {
 					appController.log("Your turn! \n");
@@ -104,9 +105,8 @@ public class NetworkController extends Thread {
 			}
 		}
 		else if(splitCommand.get(0).equals("movedone")) {
-			//Handling a move 
-			//TODO: Show move
-			Gamer gamer;
+			//Handling a move
+			Gamer gamer = null;
 			for(Gamer aGamer : appController.getGame().getGamers()) {
 				if(aGamer.getName().equals(splitCommand.get(1)))
 					gamer = aGamer;

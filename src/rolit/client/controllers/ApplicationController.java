@@ -101,6 +101,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				log("Port is not a valid number, using 1337 default.");
 			}
 			
+			gamer.setName(view.nick());
+			
 			if(host != null) {
 				network = new NetworkController(host, port, this);
 				network.start();
@@ -133,7 +135,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	@Override
 	public void update(Observable o, Object arg) {
 		if(((String) arg).equals("move") && o.getClass().equals(game)) {
-			view.movedone(game.getBoard().getSlots());
+			view.moveDone(game.getBoard().getSlots());
 		}
 	}
 }

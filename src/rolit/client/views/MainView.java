@@ -101,13 +101,13 @@ public class MainView extends JFrame implements LoggingInterface {
 			JPanel pp = new JPanel(new GridLayout(3, 2));
 
 			JLabel lbAddress = new JLabel("Hostname:");
-			hostField = new JTextField(null, 12);
+			hostField = new JTextField("130.89.122.73", 12);
 
 			JLabel lbPort = new JLabel("Port:");
-			portField = new JTextField(null, 5);
+			portField = new JTextField("1337", 5);
 
 			JLabel lbName = new JLabel("Name:");
-			nickField = new JTextField();
+			nickField = new JTextField("Mart");
 
 			pp.add(lbAddress);
 			pp.add(hostField);
