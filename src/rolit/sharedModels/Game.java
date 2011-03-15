@@ -7,6 +7,7 @@ public class Game extends Observable {
 	private Board board;
 	private ArrayList<Gamer> gamers;
 	private Gamer current;
+	private ArrayList<Gamer> startedWith;
 
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
@@ -15,6 +16,7 @@ public class Game extends Observable {
 			gamers.get(i).setColor(i+1);
 		}
 		current = gamers.get(0);
+		startedWith = gamers.clone();
 	}
 	
 	public boolean checkMove(int i, Gamer aGamer) {
@@ -88,6 +90,10 @@ public class Game extends Observable {
 	
 	public ArrayList<Gamer> getGamers() {
 		return gamers;
+	}
+	
+	public ArrayList<Gamer> getStartedWith() {
+		return startedWith;
 	}
 	
 	public String toString() {

@@ -282,8 +282,12 @@ public class NetworkController extends Thread implements Observer {
 	private void endGame(Game aGame) { 
 		String command = "endgame ";
 		String logEntry = "Ending a game between";
-		for(Gamer aGamer: aGame.getGamers()) {
-				command = command + " " + aGame.getPointsOf(aGamer);
+		for(Gamer aGamer: aGame.getStartedWith()) {
+				if(aGame.getGamers().contains(aGamer)) {
+					command = command + " " + aGame.getPointsOf(aGamer);
+				} else {
+					command = command + " 0";
+				}
 				logEntry = logEntry + ", " + aGamer.getName() + " (" + aGame.getPointsOf(aGamer) + ")";
 			
 		}
