@@ -89,7 +89,15 @@ public class NetworkController extends Thread implements Observer {
 		}
 		else if(splitCommand.get(0).equals("kick")) {
 			//Handling a kick
-			//TODO: Add action on player kicked
+			Gamer kicked = null;
+			boolean found = false;
+			for(int i = 0; i < appController.getGame().getGamers().size() && !found; i++) {
+				if(appController.getGame().getGamers().get(i).equals(splitCommand.get(1))) {
+					kicked = appController.getGame().getGamers().get(i);
+					found = true;
+				}
+			}
+			appController.getGame().removeGamer(kicked);
 		}
 		else if(splitCommand.get(0).equals("message")) {
 			//Handling a chat message
