@@ -15,6 +15,8 @@ public class BoardTest {
 		System.out.println(board.toString());
 		board.doMove(42, 3);
 		System.out.println(board.toString());
+		board.doMove(18, 4);
+		System.out.println(board.toString());
 	}
 	
 	public static void main(String[] args) {
