@@ -1,4 +1,4 @@
-package rolit.serverTest;
+package rolit.test.server;
 
 import java.io.*;
 import java.net.*;

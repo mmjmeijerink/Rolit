@@ -169,9 +169,34 @@ public class NetworkController extends Thread implements Observer {
 			appController.log("Tries to remove connection that does not exist");
 		}
 	}
-	
+
 	private void sendChat(String message, ConnectionController sender) {
-		
+		Game participatingGame = null;
+		for(Game aGame: games) {
+			for(Gamer aGamer: aGame.getGamers()) {
+				if(aGamer == sender.getGamer()) {
+					participatingGame = aGame;
+				}
+			}
+		}
+
+		if(participatingGame == null) {
+			for(ConnectionController aConnection: connections) {
+				if(!aConnection.getGamer().isTakingPart()) {
+					aConnection.sendCommand("message "+sender.getGamer().getName()+" "+message);
+				}
+			}
+		} else {
+			for(ConnectionController aConnection: connections) {
+				for(Gamer aGamer: participatingGame.getGamers()) {
+					if(aConnection.getGamer() == aGamer) {
+						aConnection.sendCommand("message "+sender.getGamer().getName()+" "+message);
+					}
+				}
+			}
+		}
+
+
 	}
 
 	private boolean checkName(String name) {
@@ -253,7 +278,7 @@ public class NetworkController extends Thread implements Observer {
 			nextTurn(aGame);
 		}
 	}
-	
+
 	private void kickGamer(Gamer toBeKicked) {
 		appController.log("Kicking " + toBeKicked.getName() + " ...");
 		Game participatingGame = null;
@@ -265,7 +290,7 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}	
 		if(participatingGame != null) {
-			
+
 			for(ConnectionController connection: connections) {
 				for(Gamer aGamer: participatingGame.getGamers()) {
 					if(aGamer == connection.getGamer()) {
@@ -277,7 +302,7 @@ public class NetworkController extends Thread implements Observer {
 			toBeKicked.setColor(0);
 		}
 	}
-	
+
 	private void nextTurn(Game aGame) {
 		for(ConnectionController connection: connections) {
 			for(Gamer aGamer: aGame.getGamers()) {
@@ -287,21 +312,21 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 	}
-	
+
 	private void endGame(Game aGame) { 
 		String command = "endgame";
 		String logEntry = "Ending a game between";
 		for(Gamer aGamer: aGame.getStartedWith()) {
-				if(aGame.getGamers().contains(aGamer)) {
-					command = command + " " + aGame.getPointsOf(aGamer);
-				} else {
-					command = command + " 0";
-				}
-				logEntry = logEntry + ", " + aGamer.getName() + " (" + aGame.getPointsOf(aGamer) + ")";
-			
+			if(aGame.getGamers().contains(aGamer)) {
+				command = command + " " + aGame.getPointsOf(aGamer);
+			} else {
+				command = command + " 0";
+			}
+			logEntry = logEntry + ", " + aGamer.getName() + " (" + aGame.getPointsOf(aGamer) + ")";
+
 		}
 		appController.log(logEntry);
-		
+
 		for(ConnectionController connection: connections) {
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == connection.getGamer()) {
@@ -310,7 +335,7 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 	}
-	
+
 	private void moveDone(Game aGame, Gamer mover, int slot) {
 		for(ConnectionController connection: connections) {
 			for(Gamer aGamer: aGame.getGamers()) {
@@ -320,7 +345,7 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 	}
-	
+
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		if(arg0.getClass().equals(Game.class)) {
