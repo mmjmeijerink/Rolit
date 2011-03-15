@@ -7,20 +7,23 @@ import java.awt.event.KeyListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.MainView;
 import rolit.sharedModels.*;
 
-
-public class ApplicationController implements ActionListener, KeyListener, LoggingInterface {
+public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
 	
 	private MainView			view;
 	private NetworkController	network;
-	private Game				game;
+	private Game				game = null;
+	private Gamer				gamer;
 	
 	public ApplicationController() {
 		view = new MainView(this);
+		gamer = new Gamer();
 	}
 	
 	//Getters and setters
@@ -32,6 +35,23 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 		view.log(logEntry);
 	}
 		
+	public void turn() {
+		//TODO: Ask player for turn and send to server
+	}
+	
+	public Gamer getGamer() {
+		return gamer;
+	}
+	
+	public Game getGame() {
+		return game;
+	}
+	
+	public void move(Gamer gamer, int index) {
+		game.doMove(index, gamer);
+	}
+	
+	//Views
 	public void connectionFailed() {
 		view.connectMode();
 	}
@@ -56,14 +76,7 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 		view.lobbyMode();
 	}
 	
-	public Game getGame() {
-		return game;
-	}
-	
-	public void turn() {
-		//TODO: Ask player for turn and send to server
-	}
-
+	//Event handlers
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(event.getSource().equals(view.connectButton())) {
@@ -114,6 +127,13 @@ public class ApplicationController implements ActionListener, KeyListener, Loggi
 			view.getChatField().setText(null);
 			log(msg + "\n");
 			network.sendCommand("chat " + msg);
+		}
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if(((String) arg).equals("move") && o.getClass().equals(game)) {
+			view.movedone(game.getBoard().getSlots());
 		}
 	}
 }

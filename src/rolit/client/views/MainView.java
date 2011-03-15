@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,13 +24,13 @@ import javax.swing.JTextField;
 
 import rolit.client.controllers.ApplicationController;
 import rolit.client.models.LoggingInterface;
-import rolit.sharedModels.Board;
+import rolit.sharedModels.*;
 
 public class MainView extends JFrame implements LoggingInterface {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel = null, connectPanel = null, boardPanel = null, chatPanel = null;
-	private JButton[] places = new JButton[Board.DIMENSION * Board.DIMENSION];
+	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField, chatField = null;
 	private JMenuBar menuBar = null;
@@ -133,11 +134,10 @@ public class MainView extends JFrame implements LoggingInterface {
 			boardPanel = new JPanel();
 			boardPanel.setLayout(new GridBagLayout());
 
-			for (int i = 0; i < places.length; i++) {
-				places[i] = new JButton();
-				places[i].setMargin(new Insets(5, 5, 5, 5));
-				places[i].setActionCommand(i + "");
-				places[i].setText(i + "");
+			for (int i = 0; i < places.size(); i++) {
+				places.get(i).setMargin(new Insets(5, 5, 5, 5));
+				places.get(i).setActionCommand(i + "");
+				places.get(i).setText(i + "");
 
 				int row = i % Board.DIMENSION;
 				int col = i / Board.DIMENSION;
@@ -147,13 +147,13 @@ public class MainView extends JFrame implements LoggingInterface {
 				constraints.gridy = col;
 				constraints.fill = GridBagConstraints.BOTH;
 
-				boardPanel.add(places[i], constraints);
+				boardPanel.add(places.get(i), constraints);
 			}
 
-			places[27].setBackground(new Color(255, 0, 0));
-			places[28].setBackground(new Color(255, 255, 0));
-			places[35].setBackground(new Color(0, 0, 255));
-			places[36].setBackground(new Color(0, 255, 0));
+			places.get(27).setBackground(new Color(255, 0, 0));
+			places.get(28).setBackground(new Color(255, 255, 0));
+			places.get(35).setBackground(new Color(0, 0, 255));
+			places.get(36).setBackground(new Color(0, 255, 0));
 		}
 		return boardPanel;
 	}
@@ -184,7 +184,7 @@ public class MainView extends JFrame implements LoggingInterface {
 		return chatField;
 	}
 
-	// Getters en setters
+	//View modes
 	public void connectMode() {
 		mainPanel.remove(getBoardPanel());
 		mainPanel.add(getChatPanel());
@@ -203,7 +203,25 @@ public class MainView extends JFrame implements LoggingInterface {
 		//mainPanel.add(getLobbyPanel()); LOBBY PANEL NOG MAKEN!
 		this.repaint();
 	}
-
+	
+	//Getters and Setters
+	public void moveDone(ArrayList<Slot> slots) {
+		for(int i = 0; i < places.size(); i++) {
+			if(slots.get(i).getValue() == Slot.RED) {
+				places.get(i).setBackground(new Color(255, 0, 0));
+			}
+			else if(slots.get(i).getValue() == Slot.GREEN) {
+				places.get(i).setBackground(new Color(0, 255, 0));
+			}
+			else if(slots.get(i).getValue() == Slot.YELLOW) {
+				places.get(i).setBackground(new Color(255, 255, 0));
+			}
+			else if(slots.get(i).getValue() == Slot.BLUE) {
+				places.get(i).setBackground(new Color(0, 0, 255));
+			}
+		}
+	}
+	
 	public void setHost(String host) {
 		if(host != null) {
 			hostField.setText(host);
@@ -230,7 +248,6 @@ public class MainView extends JFrame implements LoggingInterface {
 		if(msg != null) {
 			logArea.append(" " + msg + "\n");
 			logArea.setCaretPosition(logArea.getText().length());
-			System.out.println(" " + msg);
 		}
 	}
 }

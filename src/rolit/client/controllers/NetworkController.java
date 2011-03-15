@@ -6,14 +6,15 @@ import java.util.*;
 
 import rolit.sharedModels.*;
 
-public class NetworkController extends Thread implements Observer {
+public class NetworkController extends Thread {
 	
-	private ApplicationController				appController;
-	private int									port;
-	private InetAddress							host;
-	private ConnectionController				socket;
-	private ArrayList<String>					lobby = new ArrayList<String>();
-	
+	private ApplicationController	appController;
+	private int						port;
+	private InetAddress				host;
+	private Socket					socket;
+	private ArrayList<String>		lobby = new ArrayList<String>();
+	private BufferedReader			in;
+	private BufferedWriter			out;
 
 	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller) {
 		super();
@@ -24,19 +25,42 @@ public class NetworkController extends Thread implements Observer {
 
 	public void run() {
 		try {
-			Socket server = new Socket(host, port);
+			socket = new Socket(host, port);
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			appController.log("Connecting to server on ip, " + host + ", and port, " + port + ". \n");
 			
-			socket = new ConnectionController(this, server, appController);
-			socket.start();
+			String inlezen = null;
+			while(true) {
+				try {
+					inlezen = in.readLine();  
+				} catch (IOException e) {
+					inlezen = null;
+				}
+				
+				if (inlezen != null) {
+					executeCommand(inlezen);
+				}
+				else {
+					disconnect();
+				}
+			}
 		} catch (IOException e){
 			appController.log("Cannot connect to server! \n");
 			appController.connectionFailed();
 		}
 	}
 	
-	public void sendCommand(String command) {
-		socket.sendCommand(command);
+	public void sendCommand(String msg) {
+		if(msg != null) {
+			appController.log("Sending commmand (" + msg + ") to server");
+			try {
+				out.write(msg + "\n");
+				out.flush();
+			} catch (IOException e) {
+				appController.log("Sending commmand " + msg + " failed!");
+			}
+		}
 	}
 
 	public void executeCommand(String msg) {
@@ -45,7 +69,7 @@ public class NetworkController extends Thread implements Observer {
 		
 		if(splitCommand.get(0).equals("ackconnect")) {
 			//Handling the handshake of the server
-			socket.getGamer().setName(splitCommand.get(1));
+			appController.getGamer().setName(splitCommand.get(1));
 			appController.log("Connected to server with name " + splitCommand.get(1) + "\n");
 		}
 		else if(splitCommand.get(0).equals("startgame")) {
@@ -65,9 +89,9 @@ public class NetworkController extends Thread implements Observer {
 		else if(splitCommand.get(0).equals("turn")) {
 			//Handling a turn for the next player
 			if(appController.getGame() != null) {
-				appController.getGame().giveTurn(splitCommand.get(1)); //TODO: giveTurn() in class game
+				appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
 				
-				if(splitCommand.get(1).equals(socket.getGamer().getName())) {
+				if(splitCommand.get(1).equals(appController.getGamer().getName())) {
 					appController.log("Your turn! \n");
 					appController.turn();
 				}
@@ -82,15 +106,28 @@ public class NetworkController extends Thread implements Observer {
 		else if(splitCommand.get(0).equals("movedone")) {
 			//Handling a move 
 			//TODO: Show move
+			Gamer gamer;
+			for(Gamer aGamer : appController.getGame().getGamers()) {
+				if(aGamer.getName().equals(splitCommand.get(1)))
+					gamer = aGamer;
+			}
+			appController.move(gamer, Integer.parseInt(splitCommand.get(2)));
 		}
 		else if(splitCommand.get(0).equals("endgame")) {
 			//Handling the end of a game
-			//TODO: End game, show winner and return to lobby
+			appController.log("The game has ended: \n");
+			
+			for(int i = 1; i < splitCommand.size() - 1; i ++) {
+				appController.log(String.format(" %20s scored %2d points. \n", appController.getGame().getGamers().get(i).getName(), splitCommand.get(i)));
+			}
+			
+			appController.enteringLobby();
 		}
 		else if(splitCommand.get(0).equals("kick")) {
 			//Handling a kick
 			Gamer kicked = null;
 			boolean found = false;
+			
 			for(int i = 0; i < appController.getGame().getGamers().size() && !found; i++) {
 				if(appController.getGame().getGamers().get(i).equals(splitCommand.get(1))) {
 					kicked = appController.getGame().getGamers().get(i);
@@ -125,14 +162,21 @@ public class NetworkController extends Thread implements Observer {
 				appController.log(splitCommand.get(i));
 	}
 	
+	//Getters and Setters
+	public void disconnect() {
+		appController.log("[Verbinding verbreken]");
+		try {
+			in.close();
+			out.close();
+			socket.close();
+		} catch (IOException e) {
+			System.err.println("Exceptie afgevangen: " + e.toString());
+		}
+		appController.log("[Verbinding verbroken]");
+		appController.connectionFailed();
+	}
+	
 	public ArrayList<String> getLobby() {
 		return lobby;
-	}
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		if(arg0.getClass().equals(Game.class)) {
-			appController.log(((Game) arg0).getBoard().toString());
-		}
 	}
 }
