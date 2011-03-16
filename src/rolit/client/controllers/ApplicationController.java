@@ -61,7 +61,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
-		for(String name: players) {
+		for(String name : players) {
 			Gamer participant = new Gamer();
 			participant.setName(name);
 			participant.setColor(i);
