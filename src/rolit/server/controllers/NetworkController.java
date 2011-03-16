@@ -152,7 +152,7 @@ public class NetworkController extends Thread implements Observer {
 					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
 				}
 			} else {
-				appController.log("Command from " + sender.toString() + " misunderstoud: " + msg);
+				appController.log("Command from " + sender.toString() + " misunderstood: " + msg);
 			}
 		}
 	}

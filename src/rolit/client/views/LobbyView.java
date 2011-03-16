@@ -8,8 +8,14 @@ import java.util.*;
 import javax.swing.*;
 
 public class LobbyView extends JFrame implements AlertableView {
-	private JSlider amount;
-	private JList lobbyList;
+	private JSpinner joinSpinner;
+	private JButton joinButton;
+	private JButton chalangeButton;
+	private JButton chatButton;
+	private JTextArea chatArea;
+	private JTextField chatMessage;
+	private JList challangeList;
+	private JProgressBar joinLoader;
 	private ApplicationController viewController;
 
 	public LobbyView(ApplicationController aController) {
@@ -46,17 +52,25 @@ public class LobbyView extends JFrame implements AlertableView {
         JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         JTextArea jTextArea1 = new javax.swing.JTextArea();
         JProgressBar jProgressBar1 = new javax.swing.JProgressBar();
+        ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        JRadioButton jRadioButton1 = new javax.swing.JRadioButton();
+        JRadioButton jRadioButton2 = new javax.swing.JRadioButton();
+        
+        joinSpinner = jSpinner1;
+        joinButton = jButton1;
+        joinLoader = jProgressBar1;
+        chalangeButton = jButton2;
+        chatArea = jTextArea1;
+        chatMessage = jTextField1;
+        chatButton = jButton3;
+        challangeList = jList1;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Minimal players:");
 
         jButton2.setText("Challange");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //jButton2ActionPerformed(evt);
-            }
-        });
+        jButton2.addActionListener(viewController);
 
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -70,11 +84,18 @@ public class LobbyView extends JFrame implements AlertableView {
         jLabel2.setText("In the lobby:");
 
         jButton1.setText("Quick Join");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //jButton1ActionPerformed(evt);
-            }
-        });
+        jButton1.addActionListener(viewController);
+        
+        joinLoader.setVisible(false);
+
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("Human");
+        jRadioButton1.addActionListener(viewController);
+
+        buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setText("Computer");
+        jRadioButton2.addActionListener(viewController);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -83,22 +104,24 @@ public class LobbyView extends JFrame implements AlertableView {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jRadioButton2, 0, 0, Short.MAX_VALUE)
+                    .add(jRadioButton1, 0, 0, Short.MAX_VALUE)
                     .add(jButton1, 0, 0, Short.MAX_VALUE)
                     .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jSpinner1)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jProgressBar1, 0, 0, Short.MAX_VALUE))
-                .add(23, 23, 23)
+                .add(24, 24, 24)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel2)
-                    .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE))
+                    .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(20, Short.MAX_VALUE)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -107,6 +130,10 @@ public class LobbyView extends JFrame implements AlertableView {
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jSpinner1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jRadioButton1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jRadioButton2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .add(18, 18, 18)
@@ -117,11 +144,9 @@ public class LobbyView extends JFrame implements AlertableView {
         );
 
         jButton3.setText("Chat");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //jButton3ActionPerformed(evt);
-            }
-        });
+        jButton3.addActionListener(viewController);
+        
+        jTextField1.addKeyListener(viewController);
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -148,7 +173,7 @@ public class LobbyView extends JFrame implements AlertableView {
                     .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jButton3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -168,11 +193,45 @@ public class LobbyView extends JFrame implements AlertableView {
         );
 
         pack();
+        
+       
 	}
 	
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message,
                 "Lobby Alert", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public int getSpinnerValue() {
+		javax.swing.SpinnerNumberModel myModel = (javax.swing.SpinnerNumberModel)(joinSpinner.getModel());
+        int value = myModel.getNumber().intValue();
+		return value;
+		
+	}
+	
+	public JButton getJoinButton() {
+		return joinButton;
+	}
+	
+	public JTextField getChatMessage() {
+		return chatMessage;
+	}
+	
+	public JTextArea getChatArea() {
+		return chatArea;
+	}
+	
+	public JButton getChatButton() {
+		return chatButton;
+	}
+	
+	public void startLoading() {
+		joinLoader.setVisible(true);
+		joinLoader.setIndeterminate(true);
+	}
+	
+	public void stopLoading() {
+		joinLoader.setVisible(false);
 	}
 	
 }

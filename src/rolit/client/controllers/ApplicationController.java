@@ -29,8 +29,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private Gamer				gamer;
 	
 	public ApplicationController() {
-		//view = new MainView(this);
-		gamer = new Gamer();
 		connectView = new ConnectView(this);
 	}
 	
@@ -50,7 +48,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 		
-	public void turn() {
+	public void myTurn() {
 		//TODO: Ask player for turn and send to server
 	}
 	
@@ -62,7 +60,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		return game;
 	}
 	
-	public void move(Gamer gamer, int index) {
+	public void handleMove(Gamer gamer, int index) {
 		game.doMove(index, gamer);
 	}
 	
@@ -73,14 +71,18 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		connectView.setVisible(true);
 	}
 	
-	public void connectionAstablished() {
-		connectView.disableControlls();
+	public void connectionAstablished(String gamerName) {
 		connectView.setVisible(false);
+		if(gamer == null) {
+			gamer = new Gamer();
+		} 
+		gamer.setName(gamerName);
 		if(lobbyView == null) {
 			lobbyView = new LobbyView(this);
 		} else {
 			lobbyView.setVisible(true);
 		}
+		
 		
 	}
 	
@@ -100,14 +102,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		game = new Game(gamers);
 	}
 	
-	public void enteringLobby() {
-		view.lobbyMode();
-	}
-	
 	//Event handlers
 	public void actionPerformed(ActionEvent event) {
-		if(connectView != null && event.getSource().equals(connectView.getConnectButton())) {
+		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
 			log("Connection to the server...");
+			connectView.disableControlls();
 			
 			InetAddress host;
 			try {    
@@ -128,21 +127,39 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 			
 			if(host != null && port > 0) {
-				gamer.setName(connectView.getName());
-				network = new NetworkController(host, port, this);
+				network = new NetworkController(host, port, this,"connect " + connectView.getNick());
 				network.start();
+				
 			}
+		} else if(lobbyView != null && event.getSource() == lobbyView.getJoinButton()) {
+			if(network != null) {
+				network.sendCommand("join "+lobbyView.getSpinnerValue());
+				lobbyView.startLoading();
+			}
+		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
+			sendChat(lobbyView.getChatMessage().getText());
+		}
+	}
+	
+	public void handleChat(String msg, String sender) {
+		if(lobbyView != null && lobbyView.isVisible()) {
+			lobbyView.getChatArea().append(sender + " says: " + msg + "\n");
 		}
 	}
 
 	public void keyReleased(KeyEvent event) {
-		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER && network != null) {
-			String msg = view.getChatField().getText();
-			view.getChatField().setText(null);
+		if(lobbyView != null && event.getSource().equals(lobbyView.getChatMessage()) && event.getKeyCode() == KeyEvent.VK_ENTER ) {
+			sendChat(lobbyView.getChatMessage().getText());
+		}
+		
+	}
+	
+	public void sendChat(String msg) {
+		if(lobbyView != null && network != null) {
+			lobbyView.getChatMessage().setText("");
 			log(msg + "\n");
 			network.sendCommand("chat " + msg);
 		}
-		
 	}
 
 	public void update(Observable o, Object arg) {
