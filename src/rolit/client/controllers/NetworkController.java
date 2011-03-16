@@ -29,7 +29,6 @@ public class NetworkController extends Thread {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			sendCommand("connect " + appController.getGamer().getName());
-			appController.log("Connecting to server on ip, " + host + ", and port, " + port + ". \n");
 			
 			String inlezen = null;
 			while(true) {
