@@ -64,4 +64,25 @@ public class ConnectView extends JFrame {
 		this.setResizable(false);
 	}
 	
+	public void alert(String message) {
+		JOptionPane.showMessageDialog(this, message,
+                "Connection Alert", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public String getHost() {
+		return hostField.getText();
+	}
+	
+	public String getPort() {
+		return portField.getText();
+	}
+	
+	public String getNick() {
+		return nickField.getText();
+	}
+	
+	public JButton getConnectButton() {
+		return connectButton;
+	}
+	
 }

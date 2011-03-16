@@ -37,6 +37,13 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	public void log(String logEntry) {
 		System.out.println(" " + logEntry);
 	}
+	
+	public void logWithAlert(String logEntry) {
+		log(logEntry);
+		if (connectView.isVisible()) {
+			connectView.alert(logEntry);
+		}
+	}
 		
 	public void turn() {
 		//TODO: Ask player for turn and send to server
@@ -82,63 +89,50 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	//Event handlers
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if(event.getSource().equals(view.connectButton())) {
+		if(connectView != null && event.getSource().equals(connectView.getConnectButton())) {
 			log("Connection to the server...");
 			
 			InetAddress host;
 			try {    
-				host = InetAddress.getByName(view.host());
+				host = InetAddress.getByName(connectView.getHost());
 			} catch (UnknownHostException e) {
 				host = null;
-				log("Hostname invalid.");
+				logWithAlert("Hostname invalid.");
 			}
 			
-			int port = 1337; // Default port
+			int port = -1;
 			try {
-				port = Integer.parseInt(view.port());
+				port = Integer.parseInt(connectView.getPort());
 				if (port < 1 && port > 65535) {
-					log("Port has to be in the range [1-65535], using 1337 default.");
-					port = 1337; // Default port
+					logWithAlert("Port has to be in the range [1-65535].");
 				}
 			} catch (NumberFormatException e) {
-				log("Port is not a valid number, using 1337 default.");
+				logWithAlert("Port is not a valid number.");
 			}
 			
-			gamer.setName(view.nick());
-			
-			if(host != null) {
+			if(host != null && port > 0) {
 				network = new NetworkController(host, port, this);
 				network.start();
 			}
 		}
 	}
 
-	@Override
-	public void keyTyped(KeyEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void keyReleased(KeyEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent event) {
 		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER && network != null) {
 			String msg = view.getChatField().getText();
 			view.getChatField().setText(null);
 			log(msg + "\n");
 			network.sendCommand("chat " + msg);
 		}
+		
 	}
 
-	@Override
 	public void update(Observable o, Object arg) {
 		if(((String) arg).equals("move") && o.getClass().equals(game)) {
 			view.moveDone(game.getBoard().getSlots());
 		}
 	}
+	
+	public void keyTyped(KeyEvent event) {}
+	public void keyPressed(KeyEvent event) {}
 }
