@@ -19,6 +19,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -29,12 +30,13 @@ import rolit.sharedModels.*;
 public class MainView extends JFrame implements LoggingInterface {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel mainPanel = null, connectPanel = null, boardPanel = null, chatPanel = null;
+	private JPanel mainPanel = null, connectPanel = null, lobbyPanel = null, boardPanel = null, chatPanel = null;
 	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField, chatField = null;
 	private JMenuBar menuBar = null;
 	private JTextArea logArea = null;
+	private JSlider amount = null;
 	private ApplicationController viewController;
 
 	public MainView(ApplicationController aController) {
@@ -68,7 +70,8 @@ public class MainView extends JFrame implements LoggingInterface {
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
 			mainPanel.add(getMenu(), BorderLayout.NORTH);
-			mainPanel.add(getConnectPanel(), BorderLayout.CENTER);
+			//mainPanel.add(getConnectPanel(), BorderLayout.CENTER);
+			mainPanel.add(getLobbyPanel(), BorderLayout.CENTER);
 			mainPanel.add(getChatPanel(), BorderLayout.SOUTH);
 		}
 		return mainPanel;
@@ -128,6 +131,31 @@ public class MainView extends JFrame implements LoggingInterface {
 		}
 		return connectPanel;
 	}
+	
+	private JPanel getLobbyPanel() {
+		if(lobbyPanel == null) {
+			lobbyPanel = new JPanel();
+			
+			JLabel players = new JLabel("Amount of players: ");
+			
+			amount = new JSlider();
+			amount.setMaximum(4);
+			amount.setMinimum(2);
+			amount.setSnapToTicks(true);
+			amount.setToolTipText(amount.getValue() + " players");
+			amount.addChangeListener(viewController);
+			
+			JButton joinButton = new JButton("Join");
+			joinButton.addActionListener(viewController);
+			joinButton.setActionCommand("Join");
+			
+			
+			lobbyPanel.add(players, BorderLayout.WEST);
+			lobbyPanel.add(amount, BorderLayout.EAST);
+			lobbyPanel.add(joinButton, BorderLayout.SOUTH);
+		}
+		return lobbyPanel;
+	}
 
 	private JPanel getBoardPanel() {
 		if (boardPanel == null) {
@@ -138,6 +166,7 @@ public class MainView extends JFrame implements LoggingInterface {
 				places.add(i, new JButton());
 				places.get(i).setMargin(new Insets(5, 5, 5, 5));
 				places.get(i).setActionCommand(i + "");
+				places.get(i).addActionListener(viewController);
 				places.get(i).setText(i + "");
 
 				int row = i % Board.DIMENSION;
@@ -201,7 +230,7 @@ public class MainView extends JFrame implements LoggingInterface {
 	public void lobbyMode() {
 		mainPanel.remove(getConnectPanel());
 		mainPanel.remove(getBoardPanel());
-		//mainPanel.add(getLobbyPanel()); LOBBY PANEL NOG MAKEN!
+		mainPanel.add(getLobbyPanel());
 		this.repaint();
 	}
 	
@@ -220,6 +249,23 @@ public class MainView extends JFrame implements LoggingInterface {
 			else if(slots.get(i).getValue() == Slot.BLUE) {
 				places.get(i).setBackground(new Color(0, 0, 255));
 			}
+		}
+	}
+	
+	public void enableBoard(Board board) {
+		for(int i = 0; i < board.getSlots().size(); i++) {
+			if(board.checkMove(i, viewController.getGamer().getColor())) {
+				places.get(i).setEnabled(true);
+			}
+			else {
+				places.get(i).setEnabled(false);
+			}
+		}
+	}
+	
+	public void disableBoard(Board board) {
+		for(JButton place : places) {
+			place.setEnabled(false);
 		}
 	}
 	
@@ -244,7 +290,11 @@ public class MainView extends JFrame implements LoggingInterface {
 	public String nick() {
 		return nickField.getText();
 	}
-
+	
+	public int amount() {
+		return amount.getValue();
+	}
+	
 	public void log(String msg) {
 		if(msg != null) {
 			logArea.append(" " + msg);
