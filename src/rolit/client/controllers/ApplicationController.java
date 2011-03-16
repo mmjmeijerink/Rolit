@@ -11,19 +11,22 @@ import java.util.Observable;
 import java.util.Observer;
 
 import rolit.client.models.LoggingInterface;
+import rolit.client.views.ConnectView;
 import rolit.client.views.MainView;
 import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
 	
 	private MainView			view;
+	private ConnectView			connectView;
 	private NetworkController	network;
 	private Game				game = null;
 	private Gamer				gamer;
 	
 	public ApplicationController() {
-		view = new MainView(this);
-		gamer = new Gamer();
+		//view = new MainView(this);
+		//gamer = new Gamer();
+		connectView = new ConnectView(this);
 	}
 	
 	//Getters and setters
@@ -32,7 +35,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 	
 	public void log(String logEntry) {
-		view.log(logEntry);
+		System.out.println(" " + logEntry);
 	}
 		
 	public void turn() {
