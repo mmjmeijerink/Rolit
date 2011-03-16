@@ -12,7 +12,6 @@ public class NetworkController extends Thread {
 	private int						port;
 	private InetAddress				host;
 	private Socket					socket;
-	private ArrayList<String>		lobby = new ArrayList<String>();
 	private BufferedReader			in;
 	private BufferedWriter			out;
 
@@ -89,7 +88,8 @@ public class NetworkController extends Thread {
 		}
 		else if(splitCommand.get(0).equals("turn")) {
 			//Handling a turn for the next player
-			//appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
+			//TODO: Letting the game class know which player is on turn and keep track of it
+			//appController.getGame().nextTurn(); //splitCommand.get(1));
 			
 			if(splitCommand.get(1).equals(appController.getGamer().getName())) {
 				appController.log("Your turn! \n");
@@ -144,10 +144,11 @@ public class NetworkController extends Thread {
 		}
 		else if(splitCommand.get(0).equals("lobby")) {
 			//Handling a lobby event
-			lobby.clear();
+			ArrayList<String> lobby = new ArrayList<String>();
 			for(int i = 1; i < splitCommand.size(); i++) {
 				lobby.add(splitCommand.get(i));
 			}
+			appController.lobbyUpdate(lobby);
 		}
 		else //TODO: Remove in final version! Wrong commands will be ignored!
 			appController.log("Unknown command received: \n");
@@ -167,9 +168,5 @@ public class NetworkController extends Thread {
 		}
 		appController.log("[Verbinding verbroken] \n");
 		appController.connectionFailed();
-	}
-	
-	public ArrayList<String> getLobby() {
-		return lobby;
 	}
 }

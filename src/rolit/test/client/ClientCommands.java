@@ -76,6 +76,7 @@ public class ClientCommands {
 	
 	private void receive() {
 		client.log("Server response received: \n");
+		client.
 	}
 	
 	private void error(String arg) {

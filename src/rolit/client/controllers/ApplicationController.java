@@ -22,10 +22,11 @@ import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, ChangeListener, LoggingInterface {
 	
-	private MainView			view;
-	private NetworkController	network;
-	private Game				game = null;
-	private Gamer				gamer;
+	private MainView				view;
+	private NetworkController		network;
+	private Game					game = null;
+	private Gamer					gamer;
+	private ArrayList<String>		lobby = new ArrayList<String>();
 	
 	public ApplicationController() {
 		view = new MainView(this);
@@ -56,6 +57,14 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	
 	public void move(Gamer gamer, int index) {
 		game.doMove(index, gamer);
+	}
+	
+	public void lobbyUpdate(ArrayList<String> newLobby) {
+		lobby = newLobby;
+	}
+	
+	public ArrayList<String> getLobby() {
+		return lobby;
 	}
 	
 	//Views
@@ -120,6 +129,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		else {
 			//TODO: check op button en geef index door aan de server
 			network.sendCommand("move " + event.getActionCommand());
+			view.disableBoard(game.getBoard());
 		}
 	}
 

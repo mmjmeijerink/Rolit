@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -37,6 +38,7 @@ public class MainView extends JFrame implements LoggingInterface {
 	private JMenuBar menuBar = null;
 	private JTextArea logArea = null;
 	private JSlider amount = null;
+	private JList lobbyList = null;
 	private ApplicationController viewController;
 
 	public MainView(ApplicationController aController) {
@@ -70,8 +72,8 @@ public class MainView extends JFrame implements LoggingInterface {
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
 			mainPanel.add(getMenu(), BorderLayout.NORTH);
-			//mainPanel.add(getConnectPanel(), BorderLayout.CENTER);
-			mainPanel.add(getLobbyPanel(), BorderLayout.CENTER);
+			mainPanel.add(getConnectPanel(), BorderLayout.CENTER);
+			//mainPanel.add(getLobbyPanel(), BorderLayout.CENTER);
 			mainPanel.add(getChatPanel(), BorderLayout.SOUTH);
 		}
 		return mainPanel;
@@ -135,8 +137,14 @@ public class MainView extends JFrame implements LoggingInterface {
 	private JPanel getLobbyPanel() {
 		if(lobbyPanel == null) {
 			lobbyPanel = new JPanel();
+			GridBagLayout grid = new GridBagLayout();
+			lobbyPanel.setLayout(grid);
+			
+			GridBagConstraints constraints = new GridBagConstraints();
 			
 			JLabel players = new JLabel("Amount of players: ");
+			constraints.gridx = 1;
+			lobbyPanel.add(players, constraints);
 			
 			amount = new JSlider();
 			amount.setMaximum(4);
@@ -144,15 +152,23 @@ public class MainView extends JFrame implements LoggingInterface {
 			amount.setSnapToTicks(true);
 			amount.setToolTipText(amount.getValue() + " players");
 			amount.addChangeListener(viewController);
+			constraints.gridy = 2;
+			lobbyPanel.add(amount, constraints);
 			
 			JButton joinButton = new JButton("Join");
 			joinButton.addActionListener(viewController);
 			joinButton.setActionCommand("Join");
+			constraints.gridy = 3;
+			lobbyPanel.add(joinButton, constraints);
 			
-			
-			lobbyPanel.add(players, BorderLayout.WEST);
-			lobbyPanel.add(amount, BorderLayout.EAST);
-			lobbyPanel.add(joinButton, BorderLayout.SOUTH);
+			lobbyList = new JList();
+			//lobbyList.setListData(viewController.getLobby().toArray());
+			Object[] namen = {"Mart", "Thijs", "iemand", "en nog iemand"};
+			lobbyList.setListData(namen);
+			constraints.gridx = 2;
+			constraints.gridy = 1;
+			constraints.gridheight = 3;
+			lobbyPanel.add(lobbyList, constraints);
 		}
 		return lobbyPanel;
 	}
