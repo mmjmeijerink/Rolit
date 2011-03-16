@@ -13,7 +13,7 @@ public class LobbyView extends JFrame implements AlertableView {
 	private ApplicationController viewController;
 
 	public LobbyView(ApplicationController aController) {
-		super("Connect to a Rolit server");
+		super("Welcome to the Lobby");
 		viewController = aController;
 		buildView();
 		this.setVisible(true);
@@ -30,47 +30,144 @@ public class LobbyView extends JFrame implements AlertableView {
 	
 	/** Bouwt de daadwerkelijke GUI. */
 	public void buildView() {
-		this.setSize(500, 150);
-		this.setMinimumSize(new Dimension(500, 150));
 		
-		JPanel lobbyPanel = new JPanel();
-		GridBagLayout grid = new GridBagLayout();
-		lobbyPanel.setLayout(grid);
 		
-		GridBagConstraints constraints = new GridBagConstraints();
-		
-		JLabel players = new JLabel("Amount of players: ");
-		constraints.gridx = 1;
-		lobbyPanel.add(players, constraints);
-		
-		amount = new JSlider();
-		amount.setMaximum(4);
-		amount.setMinimum(2);
-		amount.setSnapToTicks(true);
-		amount.setToolTipText(amount.getValue() + " players");
-		amount.addChangeListener(viewController);
-		constraints.gridy = 2;
-		lobbyPanel.add(amount, constraints);
-		
-		JButton joinButton = new JButton("Join");
-		joinButton.addActionListener(viewController);
-		joinButton.setActionCommand("Join");
-		constraints.gridy = 3;
-		lobbyPanel.add(joinButton, constraints);
-		
-		lobbyList = new JList();
-		//lobbyList.setListData(viewController.getLobby().toArray());
-		Object[] namen = {"Mart", "Thijs", "iemand", "en nog iemand"};
-		lobbyList.setListData(namen);
-		constraints.gridx = 2;
-		constraints.gridy = 1;
-		constraints.gridheight = 3;
-		lobbyPanel.add(lobbyList, constraints);
-			
-		Container container = getContentPane();
-		container.setLayout(new FlowLayout());
-		container.add(lobbyPanel);
-		this.setResizable(false);
+		JPanel jPanel1 = new javax.swing.JPanel();
+        JLabel jLabel1 = new javax.swing.JLabel();
+        JButton jButton2 = new javax.swing.JButton();
+        JButton jButton1 = new javax.swing.JButton();
+        JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        JList jList1 = new javax.swing.JList();
+        JSpinner jSpinner1 = new javax.swing.JSpinner();
+        JLabel jLabel2 = new javax.swing.JLabel();
+        JPanel jPanel2 = new javax.swing.JPanel();
+        JTextField jTextField1 = new javax.swing.JTextField();
+        JButton jButton3 = new javax.swing.JButton();
+        JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
+        JTextArea jTextArea1 = new javax.swing.JTextArea();
+        JProgressBar jProgressBar1 = new javax.swing.JProgressBar();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Minimal players:");
+
+        jButton2.setText("Challange");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //jButton2ActionPerformed(evt);
+            }
+        });
+
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(2, 2, 4, 1));
+
+        jLabel2.setText("In the lobby:");
+
+        jButton1.setText("Quick Join");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //jButton1ActionPerformed(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jButton1, 0, 0, Short.MAX_VALUE)
+                    .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jSpinner1)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jProgressBar1, 0, 0, Short.MAX_VALUE))
+                .add(23, 23, 23)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel2)
+                    .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jSpinner1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(18, 18, 18)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jButton2)
+                    .add(jButton1))
+                .add(17, 17, 17))
+        );
+
+        jButton3.setText("Chat");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //jButton3ActionPerformed(evt);
+            }
+        });
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton3)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton3))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pack();
 	}
 	
 	public void alert(String message) {
