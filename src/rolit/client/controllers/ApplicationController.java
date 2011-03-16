@@ -10,22 +10,27 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.ConnectView;
+import rolit.client.views.LobbyView;
 import rolit.client.views.MainView;
 import rolit.sharedModels.*;
 
-public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
+public class ApplicationController implements Observer, ActionListener, KeyListener, ChangeListener, LoggingInterface {
 	
 	private MainView			view;
 	private ConnectView			connectView;
+	private LobbyView			lobbyView;
 	private NetworkController	network;
 	private Game				game = null;
 	private Gamer				gamer;
 	
 	public ApplicationController() {
 		//view = new MainView(this);
-		//gamer = new Gamer();
+		gamer = new Gamer();
 		connectView = new ConnectView(this);
 	}
 	
@@ -63,7 +68,20 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	
 	//Views
 	public void connectionFailed() {
-		view.connectMode();
+		logWithAlert("Connection failure, the server may be down.");
+		connectView.enableControlls();
+		connectView.setVisible(true);
+	}
+	
+	public void connectionAstablished() {
+		connectView.disableControlls();
+		connectView.setVisible(false);
+		if(lobbyView == null) {
+			lobbyView = new LobbyView(this);
+		} else {
+			lobbyView.setVisible(true);
+		}
+		
 	}
 	
 	public void startGame(ArrayList<String> players) {
@@ -87,7 +105,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 	
 	//Event handlers
-	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(connectView != null && event.getSource().equals(connectView.getConnectButton())) {
 			log("Connection to the server...");
@@ -111,6 +128,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 			
 			if(host != null && port > 0) {
+				gamer.setName(connectView.getName());
 				network = new NetworkController(host, port, this);
 				network.start();
 			}
@@ -135,4 +153,10 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	
 	public void keyTyped(KeyEvent event) {}
 	public void keyPressed(KeyEvent event) {}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -7,13 +7,13 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-public class ConnectView extends JFrame {
+public class ConnectView extends JFrame implements AlertableView {
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField;
 	private ApplicationController viewController;
 
 	public ConnectView(ApplicationController aController) {
-		super("Rolit Client");
+		super("Connect to a Rolit server");
 		viewController = aController;
 		buildView();
 		this.setVisible(true);
@@ -67,6 +67,20 @@ public class ConnectView extends JFrame {
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message,
                 "Connection Alert", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public void enableControlls() {
+		hostField.setEnabled(true);
+		portField.setEnabled(true);
+		nickField.setEnabled(true);
+		connectButton.setEnabled(true);
+	}
+	
+	public void disableControlls() {
+		hostField.setEnabled(false);
+		portField.setEnabled(false);
+		nickField.setEnabled(false);
+		connectButton.setEnabled(false);
 	}
 	
 	public String getHost() {

@@ -7,7 +7,7 @@ import java.util.*;
 import rolit.sharedModels.*;
 
 public class NetworkController extends Thread {
-	
+
 	private ApplicationController	appController;
 	private int						port;
 	private InetAddress				host;
@@ -28,30 +28,23 @@ public class NetworkController extends Thread {
 			socket = new Socket(host, port);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			sendCommand("connect " + appController.getGamer().getName());
+
 			appController.log("Connecting to server on ip, " + host + ", and port, " + port + ". \n");
-			
-			String inlezen = null;
+			//sendCommand("connect " + appController.getGamer().getName());
+			appController.connectionAstablished();
+
 			while(true) {
-				try {
-					inlezen = in.readLine();  
-				} catch (IOException e) {
-					inlezen = null;
-				}
-				
-				if (inlezen != null) {
-					executeCommand(inlezen);
-				}
-				else {
-					disconnect();
+				String ingelezen = in.readLine();
+				if (ingelezen != null) {
+					executeCommand(ingelezen);
 				}
 			}
+
 		} catch (IOException e){
-			appController.log("Cannot connect to server! \n");
-			appController.connectionFailed();
+			disconnect();
 		}
 	}
-	
+
 	public void sendCommand(String msg) {
 		if(msg != null) {
 			appController.log("Sending commmand (" + msg + ") to server \n");
@@ -67,7 +60,7 @@ public class NetworkController extends Thread {
 	public void executeCommand(String msg) {
 		String[] regexCommand = (msg.split("\\s+"));
 		ArrayList<String> splitCommand = new ArrayList<String>(Arrays.asList(regexCommand));
-		
+
 		if(splitCommand.get(0).equals("ackconnect")) {
 			//Handling the handshake of the server
 			appController.getGamer().setName(splitCommand.get(1));
@@ -77,21 +70,21 @@ public class NetworkController extends Thread {
 		else if(splitCommand.get(0).equals("startgame")) {
 			//Handling the start of a game
 			appController.startGame((ArrayList<String>) splitCommand.subList(1, splitCommand.size()));
-			
+
 			appController.log("Game has started with \n");
-			
+
 			for(int i = 1; i < splitCommand.size() - 2; i++) //second and third person in case of participation
 				appController.log(splitCommand.get(i) + ", ");
-			
+
 			if(splitCommand.size() > 3)
 				appController.log("and ");
-			
+
 			appController.log(splitCommand.get(splitCommand.size() - 1) + ". \n");
 		}
 		else if(splitCommand.get(0).equals("turn")) {
 			//Handling a turn for the next player
 			//appController.getGame().nextTurn(); //splitCommand.get(1)); //TODO: giveTurn() in class game
-			
+
 			if(splitCommand.get(1).equals(appController.getGamer().getName())) {
 				appController.log("Your turn! \n");
 				appController.turn();
@@ -112,18 +105,18 @@ public class NetworkController extends Thread {
 		else if(splitCommand.get(0).equals("endgame")) {
 			//Handling the end of a game
 			appController.log("The game has ended: \n");
-			
+
 			for(int i = 1; i < splitCommand.size() - 1; i ++) {
 				appController.log(String.format(" %20s scored %2d points. \n", appController.getGame().getGamers().get(i).getName(), splitCommand.get(i)));
 			}
-			
+
 			appController.enteringLobby();
 		}
 		else if(splitCommand.get(0).equals("kick")) {
 			//Handling a kick
 			Gamer kicked = null;
 			boolean found = false;
-			
+
 			for(int i = 0; i < appController.getGame().getGamers().size() && !found; i++) {
 				if(appController.getGame().getGamers().get(i).equals(splitCommand.get(1))) {
 					kicked = appController.getGame().getGamers().get(i);
@@ -135,7 +128,7 @@ public class NetworkController extends Thread {
 		else if(splitCommand.get(0).equals("message")) {
 			//Handling a chat message
 			appController.log(splitCommand.get(1) + ": ");
-			
+
 			for(int i = 2; i < splitCommand.size() - 2; i++)
 				appController.log(splitCommand.get(i));
 		}
@@ -152,24 +145,24 @@ public class NetworkController extends Thread {
 		}
 		else //TODO: Remove in final version! Wrong commands will be ignored!
 			appController.log("Unknown command received: \n");
-			for(int i = 0; i < splitCommand.size(); i++)
-				appController.log(splitCommand.get(i));
+		for(int i = 0; i < splitCommand.size(); i++)
+			appController.log(splitCommand.get(i));
 	}
-	
+
 	//Getters and Setters
 	public void disconnect() {
-		appController.log("[Verbinding verbreken] \n");
 		try {
 			in.close();
 			out.close();
 			socket.close();
+		} catch (NullPointerException e) {
+			appController.log("Nooit verbinding kunnen leggen.");
 		} catch (IOException e) {
 			System.err.println("Exceptie afgevangen: " + e.toString());
 		}
-		appController.log("[Verbinding verbroken] \n");
 		appController.connectionFailed();
 	}
-	
+
 	public ArrayList<String> getLobby() {
 		return lobby;
 	}
