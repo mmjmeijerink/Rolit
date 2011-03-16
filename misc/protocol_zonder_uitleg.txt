@@ -1,4 +1,6 @@
 S -> C
+-------
+
 ackconnect [name]
 
 challenged [name]
@@ -6,6 +8,8 @@ challenged [name]
 -----------------------------------------------------------------
 
 S -> C*
+-------
+
 startgame [name1] [name2] [name3] [name4]
 
 turn [name]
@@ -23,6 +27,8 @@ lobby [name1] [name2] [name3] etc
 -----------------------------------------------------------------
 
 C -> S
+-------
+
 connect [name]
 
 join [players]

@@ -76,15 +76,12 @@ public class NetworkController extends Thread {
 			//Handling the start of a game
 			appController.startGame((ArrayList<String>) splitCommand.subList(1, splitCommand.size()));
 			
-			appController.log("Game has started with \n");
+			appController.log("Game has started with: \n" + splitCommand.get(1));
 			
-			for(int i = 1; i < splitCommand.size() - 2; i++) //second and third person in case of participation
+			for(int i = 2; i < splitCommand.size() - 2; i++) //Second and third person in case of participation
 				appController.log(splitCommand.get(i) + ", ");
 			
-			if(splitCommand.size() > 3)
-				appController.log("and ");
-			
-			appController.log(splitCommand.get(splitCommand.size() - 1) + ". \n");
+			appController.log("and " + splitCommand.get(splitCommand.size() - 1) + ". \n");
 		}
 		else if(splitCommand.get(0).equals("turn")) {
 			//Handling a turn for the next player
