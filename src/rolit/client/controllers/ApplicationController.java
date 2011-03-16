@@ -6,27 +6,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.MainView;
-import rolit.sharedModels.*;
 
-public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
+
+public class ApplicationController implements ActionListener, KeyListener, LoggingInterface {
 	
 	private MainView			view;
 	private NetworkController	network;
-	private Game				game = null;
-	private Gamer				gamer;
 	
 	public ApplicationController() {
 		view = new MainView(this);
-		gamer = new Gamer();
 	}
 	
-	//Getters and setters
+	//Getters en setters
 	public MainView view() {
 		return view;
 	}
@@ -34,49 +28,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	public void log(String logEntry) {
 		view.log(logEntry);
 	}
-		
-	public void turn() {
-		//TODO: Ask player for turn and send to server
-	}
 	
-	public Gamer getGamer() {
-		return gamer;
-	}
-	
-	public Game getGame() {
-		return game;
-	}
-	
-	public void move(Gamer gamer, int index) {
-		game.doMove(index, gamer);
-	}
-	
-	//Views
 	public void connectionFailed() {
 		view.connectMode();
 	}
-	
-	public void startGame(ArrayList<String> players) {
-		view.gameMode();
-		
-		int i = 1;
-		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
-		for(String name : players) {
-			Gamer participant = new Gamer();
-			participant.setName(name);
-			participant.setColor(i);
-			gamers.add(participant);
-			i++;
-		}
-		
-		game = new Game(gamers);
-	}
-	
-	public void enteringLobby() {
-		view.lobbyMode();
-	}
-	
-	//Event handlers
+
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(event.getSource().equals(view.connectButton())) {
@@ -101,8 +57,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				log("Port is not a valid number, using 1337 default.");
 			}
 			
-			gamer.setName(view.nick());
-			
 			if(host != null) {
 				network = new NetworkController(host, port, this);
 				network.start();
@@ -111,7 +65,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	@Override
-	public void keyTyped(KeyEvent event) {
+	public void keyPressed(KeyEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -123,19 +77,12 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	@Override
-	public void keyPressed(KeyEvent event) {
-		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER && network != null) {
+	public void keyTyped(KeyEvent event) {
+		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER) {
 			String msg = view.getChatField().getText();
 			view.getChatField().setText(null);
 			log(msg + "\n");
 			network.sendCommand("chat " + msg);
-		}
-	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		if(((String) arg).equals("move") && o.getClass().equals(game)) {
-			view.moveDone(game.getBoard().getSlots());
 		}
 	}
 }
