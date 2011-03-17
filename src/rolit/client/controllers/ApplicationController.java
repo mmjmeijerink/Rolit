@@ -128,7 +128,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 		else {
 			//TODO: check op button en geef index door aan de server
-			network.sendCommand("move " + event.getActionCommand());
+			if(game.checkMove(Integer.parseInt(event.getActionCommand()), gamer));
+				network.sendCommand("move " + event.getActionCommand());
 			view.disableBoard(game.getBoard());
 		}
 	}

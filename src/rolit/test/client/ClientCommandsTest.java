@@ -56,7 +56,7 @@ public class ClientCommandsTest extends ApplicationController {
 	
 	private void chat() {
 		network.sendCommand("chat just a random message. And some more randomness");
-		network.sendCommand("chat With even more randomness in a second message.!!!! kldsjfal))#)?? @?@?? A*??");
+		network.sendCommand("chat With even more randomness in a second message.!!!! kldsj  fal)   )#)?? @?@?? A*??");
 	}
 	
 	private void challenge() {
@@ -68,9 +68,9 @@ public class ClientCommandsTest extends ApplicationController {
 	}
 	
 	//Getters and setters from super + test part added
-	//These setters correspond to a action called by the NetworkController in reaction on a server command
+	//These setters correspond to an action called by the NetworkController in reaction on a server command
 	public void turn() {
-		log("turn");
+		log("turn command received");
 		super.turn();
 		
 		//test part
@@ -78,7 +78,7 @@ public class ClientCommandsTest extends ApplicationController {
 	}
 	
 	public void move(Gamer gamer, int index) {
-		log("movdedone");
+		log("movdedone command received");
 		super.move(gamer, index);
 		
 		//test part
@@ -86,7 +86,7 @@ public class ClientCommandsTest extends ApplicationController {
 	}
 	
 	public void lobbyUpdate(ArrayList<String> newLobby) {
-		log("lobby");
+		log("lobby command received");
 		super.lobbyUpdate(newLobby);
 		
 		//test part
@@ -99,7 +99,7 @@ public class ClientCommandsTest extends ApplicationController {
 	}
 	
 	public void startGame(ArrayList<String> players) {
-		log("startgame");
+		log("startgame command received");
 		super.startGame(players);
 		
 		//test part
@@ -107,7 +107,7 @@ public class ClientCommandsTest extends ApplicationController {
 	}
 	
 	public void enteringLobby() {
-		log("ackconnect");
+		log("ackconnect command received");
 		super.enteringLobby();
 		
 		//test part
