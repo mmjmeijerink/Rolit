@@ -15,13 +15,14 @@ import javax.swing.event.ChangeListener;
 
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.ConnectView;
+import rolit.client.views.GameView;
 import rolit.client.views.LobbyView;
 import rolit.client.views.MainView;
 import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, ChangeListener, LoggingInterface {
 	
-	private MainView			view;
+	private GameView			gameView;
 	private ConnectView			connectView;
 	private LobbyView			lobbyView;
 	private NetworkController	network;
@@ -33,9 +34,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 	
 	//Getters and setters
-	public MainView view() {
-		return view;
-	}
 	
 	public void log(String logEntry) {
 		System.out.println(" " + logEntry);
@@ -87,12 +85,21 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 	
 	public void startGame(ArrayList<String> players) {
-		view.gameMode();
+		if(gameView == null) {
+			gameView = new GameView(this);
+		} else {
+			gameView.setVisible(true);
+		}
 		
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 		for(String name: players) {
-			Gamer participant = new Gamer();
+			Gamer participant;
+			if(name.equals(gamer.getName())) {
+				participant = new Gamer();
+			} else {
+				participant = gamer;
+			}
 			participant.setName(name);
 			participant.setColor(i);
 			gamers.add(participant);
@@ -164,7 +171,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 
 	public void update(Observable o, Object arg) {
 		if(((String) arg).equals("move") && o.getClass().equals(game)) {
-			view.moveDone(game.getBoard().getSlots());
+			//view.moveDone(game.getBoard().getSlots());
 		}
 	}
 	
