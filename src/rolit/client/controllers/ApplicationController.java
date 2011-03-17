@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.ConnectView;
 import rolit.client.views.GameView;
@@ -53,7 +50,14 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 		
 	public void myTurn() {
-		//TODO: Ask player for turn and send to server
+		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
+			int color = gamer.getColor();
+			if(game.getBoard().checkMove(i, color)) {
+				gameView.getSlotsList().get(i).setEnabled(true);
+			} else {
+				gameView.getSlotsList().get(i).setEnabled(false);
+			}
+		}
 	}
 	
 	public Gamer getGamer() {
@@ -64,23 +68,24 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		return game;
 	}
 	
-	public void handleMove(Gamer gamer, int index) {
-		game.doMove(index, gamer);
+	public void handleMove(Gamer aGamer, int index) {
+		game.doMove(index, aGamer);
+		updateGameView();
 	}
 	
 	private void updateGameView() {
-		for(int i = 0; i < Board.DIMENSION; i++) {
+		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 			int color = game.getBoard().getSlots().get(i).getValue();
-			if(color == 1) {
+			if(color == Slot.RED) {
 				gameView.getSlotsList().get(i).setBackground(Color.RED);
-			} else if(color == 2) {
+			} else if(color == Slot.GREEN) {
 				gameView.getSlotsList().get(i).setBackground(Color.GREEN);
-			} else if(color == 3) {
+			} else if(color == Slot.YELLOW) {
 				gameView.getSlotsList().get(i).setBackground(Color.YELLOW);
-			} else if(color == 4) {
+			} else if(color == Slot.BLUE) {
 				gameView.getSlotsList().get(i).setBackground(Color.BLUE);
 			} else {
-				gameView.getSlotsList().get(i).setBackground(Color.GRAY);
+				//gameView.getSlotsList().get(i).setBackground(Color.GRAY);
 			}
 		}
 		
@@ -170,6 +175,16 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			sendChat(lobbyView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
+		} else {
+			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
+				if(gameView != null && event.getSource() == gameView.getSlotsList().get(i)) {
+					game.doMove(i, gamer);
+					network.sendCommand("domove "+i);
+					updateGameView();
+					gameView.disableAllButtons();
+					
+				}
+			}
 		}
 	}
 	

@@ -53,6 +53,8 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 			places.get(i).setActionCommand(i + "");
 			places.get(i).setText("");
 			places.get(i).setOpaque(true);
+			places.get(i).setEnabled(false);
+			places.get(i).addActionListener(viewController);
 			//places.get(i).setMinimumSize(new Dimension(15,15));
 			//places.get(i).setMaximumSize(new Dimension(50,50));
 
