@@ -4,47 +4,49 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import rolit.client.models.LoggingInterface;
-import rolit.client.views.MainView;
+import rolit.client.views.ConnectView;
+import rolit.client.views.GameView;
+import rolit.client.views.LobbyView;
 import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, ChangeListener, LoggingInterface {
 	
-	private MainView				view;
-	private NetworkController		network;
-	private Game					game = null;
-	private Gamer					gamer;
-	private ArrayList<String>		lobby = new ArrayList<String>();
+	private GameView			gameView;
+	private ConnectView			connectView;
+	private LobbyView			lobbyView;
+	private NetworkController	network;
+	private Game				game = null;
+	private Gamer				gamer;
 	
 	public ApplicationController() {
-		view = new MainView(this);
-		gamer = new Gamer();
+		connectView = new ConnectView(this);
 	}
 	
 	//Getters and setters
-	public MainView view() {
-		return view;
-	}
 	
 	public void log(String logEntry) {
-		view.log(logEntry);
+		System.out.println(" " + logEntry);
 	}
 	
-	public void turn() {
+	public void logWithAlert(String logEntry) {
+		log(logEntry);
+		if (connectView.isVisible()) {
+			connectView.alert(logEntry);
+		}
+	}
+		
+	public void myTurn() {
 		//TODO: Ask player for turn and send to server
-		view.enableBoard(game.getBoard());
 	}
 	
 	public Gamer getGamer() {
@@ -55,117 +57,128 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		return game;
 	}
 	
-	public void move(Gamer gamer, int index) {
+	public void handleMove(Gamer gamer, int index) {
 		game.doMove(index, gamer);
-	}
-	
-	public void lobbyUpdate(ArrayList<String> newLobby) {
-		lobby = newLobby;
-	}
-	
-	public ArrayList<String> getLobby() {
-		return lobby;
 	}
 	
 	//Views
 	public void connectionFailed() {
-		view.connectMode();
+		logWithAlert("Connection failure, the server may be down.");
+		connectView.enableControlls();
+		connectView.setVisible(true);
+	}
+	
+	public void connectionAstablished(String gamerName) {
+		connectView.setVisible(false);
+		if(gamer == null) {
+			gamer = new Gamer();
+		} 
+		gamer.setName(gamerName);
+		if(lobbyView == null) {
+			lobbyView = new LobbyView(this);
+		} else {
+			lobbyView.setVisible(true);
+		}	
 	}
 	
 	public void startGame(ArrayList<String> players) {
-		view.gameMode();
+		if(gameView == null) {
+			gameView = new GameView(this);
+		} else {
+			gameView.setVisible(true);
+		}
+		lobbyView.setVisible(false);
 		
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
-		for(String name : players) {
-			Gamer participant = new Gamer();
+		for(String name: players) {
+			Gamer participant;
+			if(name.equals(gamer.getName())) {
+				participant = gamer;
+			} else {
+				participant = new Gamer();
+			}
 			participant.setName(name);
 			participant.setColor(i);
 			gamers.add(participant);
 			i++;
 		}
-	}
-	
-	public void enteringLobby() {
-		view.lobbyMode();
+		
+		game = new Game(gamers);
 	}
 	
 	//Event handlers
-	@Override
 	public void actionPerformed(ActionEvent event) {
-		if(event.getSource().equals(view.connectButton())) {
+		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
 			log("Connection to the server...");
+			connectView.disableControlls();
 			
 			InetAddress host;
 			try {    
-				host = InetAddress.getByName(view.host());
+				host = InetAddress.getByName(connectView.getHost());
 			} catch (UnknownHostException e) {
 				host = null;
-				log("Hostname invalid.");
+				logWithAlert("Hostname invalid.");
 			}
 			
-			int port = 1337; // Default port
+			int port = -1;
 			try {
-				port = Integer.parseInt(view.port());
+				port = Integer.parseInt(connectView.getPort());
 				if (port < 1 && port > 65535) {
-					log("Port has to be in the range [1-65535], using 1337 default.");
-					port = 1337; // Default port
+					logWithAlert("Port has to be in the range [1-65535].");
 				}
 			} catch (NumberFormatException e) {
-				log("Port is not a valid number, using 1337 default.");
+				logWithAlert("Port is not a valid number.");
 			}
 			
-			if(host != null) {
-				network = new NetworkController(host, port, this);
+			if(host != null && port > 0) {
+				network = new NetworkController(host, port, this,"connect " + connectView.getNick());
 				network.start();
+				
 			}
+		} else if(lobbyView != null && event.getSource() == lobbyView.getJoinButton()) {
+			if(network != null) {
+				network.sendCommand("join "+lobbyView.getSpinnerValue());
+				lobbyView.startLoading();
+			}
+		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
+			sendChat(lobbyView.getChatMessage().getText());
 		}
-		else if(event.getActionCommand().equals("Join")) {
-			network.sendCommand("join " + view.amount());
-		}
-		else if(event.getActionCommand().equals("Exit")) {
-			view.dispose();
-		}
-		else {
-			//TODO: check op button en geef index door aan de server
-			if(game.checkMove(Integer.parseInt(event.getActionCommand()), gamer));
-				network.sendCommand("move " + event.getActionCommand());
-			view.disableBoard(game.getBoard());
+	}
+	
+	public void handleChat(String msg, String sender) {
+		if(lobbyView != null && lobbyView.isVisible()) {
+			lobbyView.getChatArea().append(sender + " says: " + msg + "\n");
 		}
 	}
 
-	@Override
-	public void keyPressed(KeyEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void keyReleased(KeyEvent event) {
-		// TODO Auto-generated method stub
+		if(lobbyView != null && event.getSource().equals(lobbyView.getChatMessage()) && event.getKeyCode() == KeyEvent.VK_ENTER ) {
+			sendChat(lobbyView.getChatMessage().getText());
+		}
 		
 	}
-
-	@Override
-	public void keyTyped(KeyEvent event) {
-		if(event.getSource().equals(view.getChatField()) && event.getKeyCode() == KeyEvent.VK_ENTER) {
-			String msg = view.getChatField().getText();
-			view.getChatField().setText(null);
+	
+	public void sendChat(String msg) {
+		if(lobbyView != null && network != null) {
+			lobbyView.getChatMessage().setText("");
 			log(msg + "\n");
 			network.sendCommand("chat " + msg);
 		}
 	}
-	
-	@Override
+
 	public void update(Observable o, Object arg) {
 		if(((String) arg).equals("move") && o.getClass().equals(game)) {
-			view.moveDone(game.getBoard().getSlots());
+			//view.moveDone(game.getBoard().getSlots());
 		}
 	}
+	
+	public void keyTyped(KeyEvent event) {}
+	public void keyPressed(KeyEvent event) {}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		JSlider slider = (JSlider) e.getSource();
-		slider.setToolTipText(slider.getValue() + " players");
+		// TODO Auto-generated method stub
+		
 	}
 }
