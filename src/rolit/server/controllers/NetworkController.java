@@ -79,30 +79,34 @@ public class NetworkController extends Thread implements Observer {
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
-					if(splitCommand.size() == 2) {
-						try {
-							int requestedSize = Integer.parseInt(splitCommand.get(1));
-							if(sender.getGamer().setRequestedGameSize(requestedSize)) {
-								if(!waitingForGame.contains(sender)) {
-									waitingForGame.add(sender);
+					if(isInGame(sender.getGamer())) {
+						if(splitCommand.size() == 2) {
+							try {
+								int requestedSize = Integer.parseInt(splitCommand.get(1));
+								if(sender.getGamer().setRequestedGameSize(requestedSize)) {
+									if(!waitingForGame.contains(sender)) {
+										waitingForGame.add(sender);
+									}
+									appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
+									checkForGameStart();
+								} else {
+									appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter between [2-4]: " + msg);
 								}
-								appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
-								checkForGameStart();
-							} else {
-								appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter between [2-4]: " + msg);
+							} catch(NumberFormatException e) {
+								appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
 							}
-						} catch(NumberFormatException e) {
-							appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
+						} else {
+							appController.log("Join command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
 						}
 					} else {
-						appController.log("Join command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
+						appController.log("Join command from " + sender.toString() + " gamers is already ingame. " + msg);
 					}
 				} else {
 					appController.log("Join command from " + sender.toString() + " FAILED, not identified.");
 				}
 
 			} else if(splitCommand.get(0).equals("domove")) {
-				/* Execute command "dmove" */
+				/* Execute command "domove" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 					if(splitCommand.size() == 2) {
 
@@ -147,6 +151,7 @@ public class NetworkController extends Thread implements Observer {
 			} else if(splitCommand.get(0).equals("chat")) {
 				/* Execute command "chat" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					appController.log("Chat command from " + sender.toString() + " send: " + msg.substring(5));
 					sendChat(msg.substring(5),sender);
 				} else {
 					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
@@ -163,6 +168,9 @@ public class NetworkController extends Thread implements Observer {
 
 	public void removeConnection(ConnectionController connection) {
 		if(connections.contains(connection)) {
+			if(isInGame(connection.getGamer())) {
+				kickGamer(connection.getGamer());
+			}
 			appController.log(connection.toString() + " disconnects");
 			connections.remove(connection);
 		} else {
@@ -208,6 +216,20 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
+		return result;
+	}
+
+	private boolean isInGame(Gamer aGamer) {
+		boolean result = false;
+
+		for(Game aGame: games) {
+			for(Gamer inGameGamer: aGame.getGamers()) {
+				if(aGamer == inGameGamer) {
+					result = false;
+				}
+			}
+		}
+
 		return result;
 	}
 
