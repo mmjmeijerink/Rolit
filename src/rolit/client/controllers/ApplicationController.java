@@ -4,8 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -33,7 +35,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 	
 	//Getters and setters
-	
 	public void log(String logEntry) {
 		System.out.println(" " + logEntry);
 	}
