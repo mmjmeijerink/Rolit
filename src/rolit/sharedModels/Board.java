@@ -383,7 +383,7 @@ public class Board {
 		int bModulo = b % DIMENSION;
 		int difference = a - b;
 
-		if(difference < aModulo) { // Staan op de zelfde rij horizontaal
+		if(difference <= aModulo) { // Staan op de zelfde rij horizontaal
 			for(int i = 1; i < difference; i++) {
 				slots.get(a-i).setValue(color);
 			}
