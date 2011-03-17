@@ -79,7 +79,7 @@ public class NetworkController extends Thread implements Observer {
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
-					if(isInGame(sender.getGamer())) {
+					if(!isInGame(sender.getGamer())) {
 						if(splitCommand.size() == 2) {
 							try {
 								int requestedSize = Integer.parseInt(splitCommand.get(1));
