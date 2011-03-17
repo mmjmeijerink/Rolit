@@ -49,7 +49,7 @@ public class NetworkController extends Thread {
 
 	public void sendCommand(String msg) {
 		if(msg != null) {
-			appController.log("Sending commmand (" + msg + ") to server");
+			//appController.log("Sending commmand (" + msg + ") to server");
 			try {
 				out.write(msg + "\n");
 				out.flush();
@@ -120,7 +120,7 @@ public class NetworkController extends Thread {
 			appController.getGame().removeGamer(kicked);
 		}
 		else if(splitCommand.get(0).equals("message")) {
-			appController.log(splitCommand.get(1) + ": " + msg.substring(splitCommand.get(0).length() + splitCommand.get(1).length() + 2));
+			//appController.log(splitCommand.get(1) + ": " + msg.substring(splitCommand.get(0).length() + splitCommand.get(1).length() + 2));
 			appController.handleChat(msg.substring(splitCommand.get(0).length() + splitCommand.get(1).length() + 2),splitCommand.get(1));
 		}
 		else if(splitCommand.get(0).equals("challenged")) {
