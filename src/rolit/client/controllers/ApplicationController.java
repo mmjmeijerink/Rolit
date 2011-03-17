@@ -22,7 +22,7 @@ import rolit.client.views.GameView;
 import rolit.client.views.LobbyView;
 import rolit.sharedModels.*;
 
-public class ApplicationController implements Observer, ActionListener, KeyListener, ChangeListener, LoggingInterface {
+public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
 	
 	private GameView			gameView;
 	private ConnectView			connectView;
@@ -69,7 +69,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 	
 	private void updateGameView() {
-		for(int i = 0; i < game.getBoard().DIMENSION; i++) {
+		for(int i = 0; i < Board.DIMENSION; i++) {
 			int color = game.getBoard().getSlots().get(i).getValue();
 			if(color == 1) {
 				gameView.getSlotsList().get(i).setBackground(Color.RED);
@@ -210,10 +210,4 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	
 	public void keyTyped(KeyEvent event) {}
 	public void keyPressed(KeyEvent event) {}
-
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
