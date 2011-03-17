@@ -17,7 +17,6 @@ import rolit.client.models.LoggingInterface;
 import rolit.client.views.ConnectView;
 import rolit.client.views.GameView;
 import rolit.client.views.LobbyView;
-import rolit.client.views.MainView;
 import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, ChangeListener, LoggingInterface {
@@ -79,9 +78,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			lobbyView = new LobbyView(this);
 		} else {
 			lobbyView.setVisible(true);
-		}
-		
-		
+		}	
 	}
 	
 	public void startGame(ArrayList<String> players) {
@@ -90,15 +87,16 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else {
 			gameView.setVisible(true);
 		}
+		lobbyView.setVisible(false);
 		
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 		for(String name: players) {
 			Gamer participant;
 			if(name.equals(gamer.getName())) {
-				participant = new Gamer();
-			} else {
 				participant = gamer;
+			} else {
+				participant = new Gamer();
 			}
 			participant.setName(name);
 			participant.setColor(i);

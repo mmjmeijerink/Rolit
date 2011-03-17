@@ -9,7 +9,7 @@ import java.util.*;
 
 import javax.swing.*;
 
-public class GameView extends JFrame implements AlertableView {
+public class GameView extends JFrame implements AlertableView,ComponentListener {
 	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton chatButton;
 	private JTextArea chatArea;
@@ -32,48 +32,9 @@ public class GameView extends JFrame implements AlertableView {
 		});
 	}
 	
-	public GameView() {
-		super("Game on!");
-		//viewController = new ApplicationController();
-		buildView();
-		this.setVisible(true);
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				e.getWindow().dispose();
-			}
-
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-		
-		this.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
-                // This is only called when the user releases the mouse button.
-            	double widthButton = (((JFrame)e.getSource()).getWidth() - 80 - 8*50)/16;
-            	double heightButton = widthButton*1.5;
-            	if(heightButton < 15) {
-            		heightButton = 15;
-            		widthButton = 0;
-            	}
-            	if((heightButton+10)*16 > ((JFrame)e.getSource()).getHeight() - 200 ) {
-            		heightButton = ((((JFrame)e.getSource()).getHeight() - 200)/16)-10;
-            		widthButton = heightButton/1.5;
-            	}
-            	
-            	for(JButton button : places) {
-            		button.setMargin(new Insets((int)heightButton, (int)widthButton, (int)heightButton, (int)widthButton));
-            	}
-                //System.out.println("componentResized");
-            }
-        });
-	}
-	
 	/** Bouwt de daadwerkelijke GUI. */
 	public void buildView() {
 		
-		
-		JPanel jPanel1 = new javax.swing.JPanel();
         JPanel jPanel2 = new javax.swing.JPanel();
         JTextField jTextField1 = new javax.swing.JTextField();
         JButton jButton3 = new javax.swing.JButton();
@@ -165,7 +126,27 @@ public class GameView extends JFrame implements AlertableView {
 
         pack();
        
+        this.addComponentListener(this);
 	}
+	
+	public void componentResized(ComponentEvent e) {
+        // This is only called when the user releases the mouse button.
+    	double widthButton = (((JFrame)e.getSource()).getWidth() - 40 - 8*50)/16;
+    	double heightButton = widthButton*1.5;
+    	if(heightButton < 15) {
+    		heightButton = 15;
+    		widthButton = 0;
+    	}
+    	if((heightButton+10)*16 > ((JFrame)e.getSource()).getHeight() - 200 ) {
+    		heightButton = ((((JFrame)e.getSource()).getHeight() - 200)/16)-10;
+    		widthButton = heightButton/1.5;
+    	}
+    	
+    	for(JButton button : places) {
+    		button.setMargin(new Insets((int)heightButton, (int)widthButton, (int)heightButton, (int)widthButton));
+    	}
+        //System.out.println("componentResized");
+    }
 	
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message,
@@ -183,5 +164,9 @@ public class GameView extends JFrame implements AlertableView {
 	public JButton getChatButton() {
 		return chatButton;
 	}
+
+	public void componentHidden(ComponentEvent arg0) {}
+	public void componentMoved(ComponentEvent arg0) {}
+	public void componentShown(ComponentEvent arg0) {}
 	
 }
