@@ -53,6 +53,7 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 			places.get(i).setActionCommand(i + "");
 			places.get(i).setText("");
 			places.get(i).setOpaque(true);
+			places.get(1).setMinimumSize(new Dimension(10,10));
 
 			int row = i % Board.DIMENSION;
 			int col = i / Board.DIMENSION;
@@ -151,6 +152,16 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message,
                 "Lobby Alert", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public void disableAllButtons() {
+		for(JButton aButton: places) {
+			aButton.setEnabled(false);
+		}
+	}
+	
+	public ArrayList<JButton> getSlotsList() {
+		return places;
 	}
 	
 	public JTextField getChatMessage() {

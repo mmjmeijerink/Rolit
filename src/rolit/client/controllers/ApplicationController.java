@@ -1,5 +1,6 @@
 package rolit.client.controllers;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -37,6 +38,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	//Getters and setters
 	public void log(String logEntry) {
 		System.out.println(" " + logEntry);
+		if(lobbyView != null && lobbyView.isVisible()) {
+			lobbyView.getChatArea().append("[" + logEntry + "]\n");
+		} else if(gameView != null && gameView.isVisible()) {
+			gameView.getChatArea().append("[" + logEntry + "]\n");
+		}
 	}
 	
 	public void logWithAlert(String logEntry) {
@@ -60,6 +66,24 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	
 	public void handleMove(Gamer gamer, int index) {
 		game.doMove(index, gamer);
+	}
+	
+	private void updateGameView() {
+		for(int i = 0; i < game.getBoard().DIMENSION; i++) {
+			int color = game.getBoard().getSlots().get(i).getValue();
+			if(color == 1) {
+				gameView.getSlotsList().get(i).setBackground(Color.RED);
+			} else if(color == 2) {
+				gameView.getSlotsList().get(i).setBackground(Color.GREEN);
+			} else if(color == 3) {
+				gameView.getSlotsList().get(i).setBackground(Color.YELLOW);
+			} else if(color == 4) {
+				gameView.getSlotsList().get(i).setBackground(Color.BLUE);
+			} else {
+				gameView.getSlotsList().get(i).setBackground(Color.GRAY);
+			}
+		}
+		
 	}
 	
 	//Views
@@ -144,33 +168,43 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
 			sendChat(lobbyView.getChatMessage().getText());
+		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
+			sendChat(gameView.getChatMessage().getText());
 		}
 	}
 	
 	public void handleChat(String msg, String sender) {
 		if(lobbyView != null && lobbyView.isVisible()) {
 			lobbyView.getChatArea().append(sender + " says: " + msg + "\n");
+		} else if(gameView != null && gameView.isVisible()) {
+			gameView.getChatArea().append(sender + " says: " + msg + "\n");
 		}
 	}
 
 	public void keyReleased(KeyEvent event) {
 		if(lobbyView != null && event.getSource().equals(lobbyView.getChatMessage()) && event.getKeyCode() == KeyEvent.VK_ENTER ) {
 			sendChat(lobbyView.getChatMessage().getText());
+		} else if(gameView != null && event.getSource().equals(gameView.getChatMessage()) && event.getKeyCode() == KeyEvent.VK_ENTER ) {
+			sendChat(gameView.getChatMessage().getText());
 		}
 		
 	}
 	
 	public void sendChat(String msg) {
-		if(lobbyView != null && network != null) {
+		if(lobbyView != null && lobbyView.isVisible() && network != null) {
 			lobbyView.getChatMessage().setText("");
-			log(msg + "\n");
+			//log(msg + "\n");
+			network.sendCommand("chat " + msg);
+		} else if(gameView != null && gameView.isVisible() && network != null) {
+			gameView.getChatMessage().setText("");
+			//log(msg + "\n");
 			network.sendCommand("chat " + msg);
 		}
 	}
 
 	public void update(Observable o, Object arg) {
 		if(((String) arg).equals("move") && o.getClass().equals(game)) {
-			//view.moveDone(game.getBoard().getSlots());
+			updateGameView();
 		}
 	}
 	
