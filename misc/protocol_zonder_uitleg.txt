@@ -1,0 +1,44 @@
+S -> C
+-------
+
+ackconnect [name]
+
+challenged [name]
+
+-----------------------------------------------------------------
+
+S -> C*
+-------
+
+startgame [name1] [name2] [name3] [name4]
+
+turn [name]
+
+movedone [name] [number]
+
+endgame [points1] [points2] [points3] [points4]
+
+kick [name]
+
+message [name] [message]
+
+lobby [name1] [name2] [name3] etc
+
+-----------------------------------------------------------------
+
+C -> S
+-------
+
+connect [name]
+
+join [players]
+
+domove [number]
+
+chat [message]
+
+challenge [name1] [name2] [name3]
+
+challengeresponse [name] [boolean]
+
+-----------------------------------------------------------------
