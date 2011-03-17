@@ -168,9 +168,7 @@ public class NetworkController extends Thread implements Observer {
 
 	public void removeConnection(ConnectionController connection) {
 		if(connections.contains(connection)) {
-			if(isInGame(connection.getGamer())) {
-				kickGamer(connection.getGamer());
-			}
+			kickGamer(connection.getGamer());
 			appController.log(connection.toString() + " disconnects");
 			connections.remove(connection);
 		} else {
