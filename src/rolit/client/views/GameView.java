@@ -53,7 +53,8 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 			places.get(i).setActionCommand(i + "");
 			places.get(i).setText("");
 			places.get(i).setOpaque(true);
-			places.get(1).setMinimumSize(new Dimension(10,10));
+			//places.get(i).setMinimumSize(new Dimension(15,15));
+			//places.get(i).setMaximumSize(new Dimension(50,50));
 
 			int row = i % Board.DIMENSION;
 			int col = i / Board.DIMENSION;
@@ -65,6 +66,7 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 
 			boardPanel.add(places.get(i), constraints);
 		}
+		//componentResized(this);
 
 		places.get(27).setBackground(new Color(255, 0, 0));
 		places.get(28).setBackground(new Color(255, 255, 0));
@@ -134,6 +136,7 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
         // This is only called when the user releases the mouse button.
     	double widthButton = (((JFrame)e.getSource()).getWidth() - 40 - 8*50)/16;
     	double heightButton = widthButton*1.5;
+    	int buttonSize = (int)widthButton*2 + 10;
     	if(heightButton < 15) {
     		heightButton = 15;
     		widthButton = 0;
@@ -145,6 +148,7 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
     	
     	for(JButton button : places) {
     		button.setMargin(new Insets((int)heightButton, (int)widthButton, (int)heightButton, (int)widthButton));
+    		//button.setSize(buttonSize, buttonSize);
     	}
         //System.out.println("componentResized");
     }

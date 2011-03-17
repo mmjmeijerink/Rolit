@@ -193,11 +193,9 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	public void sendChat(String msg) {
 		if(lobbyView != null && lobbyView.isVisible() && network != null) {
 			lobbyView.getChatMessage().setText("");
-			//log(msg + "\n");
 			network.sendCommand("chat " + msg);
 		} else if(gameView != null && gameView.isVisible() && network != null) {
 			gameView.getChatMessage().setText("");
-			//log(msg + "\n");
 			network.sendCommand("chat " + msg);
 		}
 	}
