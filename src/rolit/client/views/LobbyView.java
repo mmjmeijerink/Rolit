@@ -10,11 +10,11 @@ import javax.swing.*;
 public class LobbyView extends JFrame implements AlertableView {
 	private JSpinner joinSpinner;
 	private JButton joinButton;
-	private JButton chalangeButton;
+	private JButton challengeButton;
 	private JButton chatButton;
 	private JTextArea chatArea;
 	private JTextField chatMessage;
-	private JList challangeList;
+	private JList challengeList;
 	private JProgressBar joinLoader;
 	private ApplicationController viewController;
 
@@ -59,11 +59,11 @@ public class LobbyView extends JFrame implements AlertableView {
         joinSpinner = jSpinner1;
         joinButton = jButton1;
         joinLoader = jProgressBar1;
-        chalangeButton = jButton2;
+        challengeButton = jButton2;
         chatArea = jTextArea1;
         chatMessage = jTextField1;
         chatButton = jButton3;
-        challangeList = jList1;
+        challengeList = jList1;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
