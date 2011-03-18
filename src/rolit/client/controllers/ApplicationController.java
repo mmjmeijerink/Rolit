@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JOptionPane;
+
 import rolit.client.models.LoggingInterface;
 import rolit.client.views.ConnectView;
 import rolit.client.views.GameView;
@@ -184,6 +186,19 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 					gameView.disableAllButtons();
 					
 				}
+			}
+		}
+	}
+	
+	public void challenged(ArrayList<String> gamers) {
+		if(lobbyView != null && lobbyView.isVisible()) {
+			int choice = lobbyView.challengeReceived(gamers);
+			
+			if(choice == JOptionPane.YES_OPTION) {
+				network.sendCommand("challengeresponse " + <name> + " true");
+			}
+			else if(choice == JOptionPane.NO_OPTION) {
+				network.sendCommand("challengeresponse " + <name> + " false");
 			}
 		}
 	}

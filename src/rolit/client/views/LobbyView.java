@@ -202,7 +202,7 @@ public class LobbyView extends JFrame implements AlertableView {
                 "Lobby Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
-	public void challengeReceived(ArrayList<String> gamers) {
+	public int challengeReceived(ArrayList<String> gamers) {
 		String message = "You received a challenge from ";
 		
 		if(gamers.size() == 1)
@@ -212,7 +212,8 @@ public class LobbyView extends JFrame implements AlertableView {
 		else if(gamers.size() == 3) 
 			message.concat(gamers.get(1) + ", " + gamers.get(2) + " and " + gamers.get(3) + ".");
 		
-		JOptionPane.showInputDialog(this, message, "Challenge received", JOptionPane.YES_NO_OPTION);
+		return JOptionPane.showConfirmDialog(this, message, "Challenge received", JOptionPane.YES_NO_OPTION);
+		
 	}
 	
 	public int getSpinnerValue() {

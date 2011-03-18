@@ -126,6 +126,11 @@ public class NetworkController extends Thread {
 		else if(splitCommand.get(0).equals("challenged")) {
 			//Handling a challenge request
 			//TODO: Add challenge mode
+			ArrayList<String> gamers = (ArrayList<String>)splitCommand.clone();
+			gamers.remove(0);
+			appController.challenged(gamers);
+
+			appController.log("Challenge received for a game with " + msg.substring(splitCommand.get(0).length() + 1));
 		}
 		else if(splitCommand.get(0).equals("lobby")) {
 			//Handling a lobby event
