@@ -69,9 +69,9 @@ public class ClientCommandsTest extends ApplicationController {
 	
 	//Getters and setters from super + test part added
 	//These setters correspond to an action called by the NetworkController in reaction on a server command
-	public void turn() {
+	public void myTurn() {
 		log("turn command received");
-		super.turn();
+		super.myTurn();
 		
 		//test part
 		

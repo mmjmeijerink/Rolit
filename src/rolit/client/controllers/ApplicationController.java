@@ -177,6 +177,15 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			sendChat(lobbyView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
+		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
+			String selectedGamers = "challenge";
+			Object[] selected = lobbyView.getChallengeList().getSelectedValues();
+			
+			for(int i = 0; i < selected.length; i++) {
+				selectedGamers.concat(" " + (String) selected[i]); 
+			}
+			network.sendCommand(selectedGamers);
+			
 		} else {
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 				if(gameView != null && event.getSource() == gameView.getSlotsList().get(i)) {
@@ -190,15 +199,19 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 	
-	public void challenged(ArrayList<String> gamers) {
+	public void challenge() {
+		
+	}
+	
+	public void challenged(String challenger) {
 		if(lobbyView != null && lobbyView.isVisible()) {
-			int choice = lobbyView.challengeReceived(gamers);
+			int choice = lobbyView.challengeReceived(challenger);
 			
 			if(choice == JOptionPane.YES_OPTION) {
-				network.sendCommand("challengeresponse " + <name> + " true");
+				network.sendCommand("challengeresponse " + challenger + " true");
 			}
 			else if(choice == JOptionPane.NO_OPTION) {
-				network.sendCommand("challengeresponse " + <name> + " false");
+				network.sendCommand("challengeresponse " + challenger + " false");
 			}
 		}
 	}
