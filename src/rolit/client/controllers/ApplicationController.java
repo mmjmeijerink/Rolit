@@ -98,6 +98,12 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		logWithAlert("Connection failure, the server may be down.");
 		connectView.enableControlls();
 		connectView.setVisible(true);
+		if(lobbyView != null && lobbyView.isVisible()) {
+			lobbyView.setVisible(false);
+		}
+		if(gameView != null && gameView.isVisible()) {
+			gameView.setVisible(false);
+		}
 	}
 	
 	public void connectionAstablished(String gamerName) {
@@ -119,7 +125,9 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else {
 			gameView.setVisible(true);
 		}
+		
 		lobbyView.setVisible(false);
+		lobbyView.stopLoading();
 		
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
@@ -253,6 +261,16 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		if(lobbyView != null && lobbyView.isVisible() && network != null) {
 			lobbyView.setChallengeList(network.getLobby());
 			//log("Lobby Updated");
+		}
+	}
+
+	public void endGame(String message) {
+		if(gameView != null  && lobbyView != null && gameView.isVisible() && network != null) {
+			gameView.setVisible(false);
+			lobbyView.stopLoading();
+			lobbyView.setVisible(true);
+			lobbyView.message(message);
+			game = null;
 		}
 	}
 }

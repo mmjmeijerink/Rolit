@@ -39,6 +39,8 @@ public class NetworkController extends Thread {
 				String ingelezen = in.readLine();
 				if (ingelezen != null) {
 					executeCommand(ingelezen);
+				} else {
+					disconnect();
 				}
 			}
 
@@ -99,11 +101,34 @@ public class NetworkController extends Thread {
 		}
 		else if(splitCommand.get(0).equals("endgame")) {
 			//Handling the end of a game
-			appController.log("The game has ended:");
-
-			for(int i = 1; i < splitCommand.size() - 1; i ++) {
-				appController.log(String.format(" %20s scored %2d points.", appController.getGame().getGamers().get(i).getName(), splitCommand.get(i)));
+			appController.log("The game has ended");
+			
+			String message = "The game has ended:\n";
+			int winnerIndex = 0;
+			int winnerPoints = 0;
+			boolean noWinner = false;
+			
+			for(int i = 0; i <  appController.getGame().getGamers().size() && i < splitCommand.size() + 1; i ++) {
+				String name = appController.getGame().getGamers().get(i).getName();
+				if(name.equals(appController.getGamer().getName())) {
+					name = "You have";
+				} else {
+					name = name + " has";
+				}
+				message = message + "Gamer: " + name + " scored " + splitCommand.get(i+1) + " points. \n";
+				if(Integer.parseInt(splitCommand.get(i+1)) > winnerPoints) {
+					winnerPoints = Integer.parseInt(splitCommand.get(i+1));
+					winnerIndex = i;
+					noWinner = false;
+				}else if(Integer.parseInt(splitCommand.get(i+1)) == winnerPoints) {
+					noWinner = true;
+				}
+				
 			}
+			if(!noWinner) {
+				message = message + "\n" + appController.getGame().getGamers().get(winnerIndex).getName() + " has won the match with " + winnerPoints + " points!";
+			}
+			appController.endGame(message);
 
 		}
 		else if(splitCommand.get(0).equals("kick")) {
@@ -149,9 +174,9 @@ public class NetworkController extends Thread {
 			out.close();
 			socket.close();
 		} catch (NullPointerException e) {
-			appController.log("Nooit verbinding kunnen leggen.");
+			appController.log("Could never connect at all.");
 		} catch (IOException e) {
-			System.err.println("Exceptie afgevangen: " + e.toString());
+			System.err.println("Exceptie catched: " + e.toString());
 		}
 		appController.connectionFailed();
 	}
