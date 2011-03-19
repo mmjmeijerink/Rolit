@@ -69,6 +69,7 @@ public class NetworkController extends Thread implements Observer {
 						sender.getGamer().setName(possibleName);
 						appController.log("Connection from " + sender.getSocket().getInetAddress() + " has identified itself as: " + possibleName);
 						sender.sendCommand("ackconnect "+possibleName);
+						broadcastLobby();
 					} else {
 						appController.log(sender.toString() + " tries to but is already identified.");
 					}
@@ -171,6 +172,7 @@ public class NetworkController extends Thread implements Observer {
 			kickGamer(connection.getGamer());
 			appController.log(connection.toString() + " disconnects");
 			connections.remove(connection);
+			broadcastLobby();
 		} else {
 			appController.log("Tries to remove connection that does not exist");
 		}
@@ -215,6 +217,38 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 		return result;
+	}
+	
+	private void broadcastLobby() {
+		
+		ArrayList<Gamer> gamersConnected = new ArrayList<Gamer>();
+		for(ConnectionController aConnection: connections) {
+			if(!aConnection.getGamer().getName().equals("[NOT CONNECTED]")) {
+				gamersConnected.add(aConnection.getGamer());
+			}
+		}
+		
+		ArrayList<Gamer> gamersInGame = new ArrayList<Gamer>();
+		for(Game aGame: games) {
+			for(Gamer aGamer: aGame.getGamers()) {
+				if(!aGamer.getName().equals("[NOT CONNECTED]")) {
+					gamersInGame.add(aGamer);
+				}
+			}
+		}
+		
+		ArrayList<Gamer> gamersInLobby = (ArrayList<Gamer>) gamersConnected.clone();
+		for(Gamer aGamer: gamersInGame) {
+			if(gamersInLobby.contains(aGamer)) {
+				gamersInLobby.remove(aGamer);
+			}
+		}
+		String command = "lobby";
+		for(Gamer aGamer: gamersInLobby) {
+			command = command + " " + aGamer.getName();
+		}
+		
+		broadcastCommand(command);
 	}
 
 	private boolean isInGame(Gamer aGamer) {

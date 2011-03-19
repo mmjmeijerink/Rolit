@@ -143,7 +143,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	public void actionPerformed(ActionEvent event) {
 		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
 			log("Connection to the server...");
-			connectView.disableControlls();
+			
 			
 			InetAddress host;
 			try {    
@@ -164,6 +164,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 			
 			if(host != null && port > 0) {
+				connectView.disableControlls();
 				network = new NetworkController(host, port, this,"connect " + connectView.getNick());
 				network.start();
 				
