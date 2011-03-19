@@ -35,10 +35,12 @@ public class NetworkController extends Thread {
 			
 			sendCommand(startupCommand);
 
-			while(true) {
+			while(!socket.isInputShutdown()) {
 				String ingelezen = in.readLine();
 				if (ingelezen != null) {
 					executeCommand(ingelezen);
+				} else {
+					disconnect();
 				}
 			}
 

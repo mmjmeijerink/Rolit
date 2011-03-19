@@ -98,6 +98,12 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		logWithAlert("Connection failure, the server may be down.");
 		connectView.enableControlls();
 		connectView.setVisible(true);
+		if(lobbyView != null && lobbyView.isVisible()) {
+			lobbyView.setVisible(false);
+		}
+		if(gameView != null && gameView.isVisible()) {
+			gameView.setVisible(false);
+		}
 	}
 	
 	public void connectionAstablished(String gamerName) {
