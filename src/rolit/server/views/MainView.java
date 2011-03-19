@@ -19,8 +19,6 @@ import javax.swing.JTextField;
 import rolit.server.controllers.ApplicationController;
 import rolit.server.models.LoggingInterface;
 
-
-
 public class MainView extends JFrame implements LoggingInterface {
 
 	private static final long serialVersionUID = 1L;

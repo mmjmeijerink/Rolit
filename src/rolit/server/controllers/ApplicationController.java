@@ -8,7 +8,6 @@ import java.net.UnknownHostException;
 import rolit.server.models.LoggingInterface;
 import rolit.server.views.MainView;
 
-
 public class ApplicationController implements ActionListener,LoggingInterface {
 	private MainView 			view;
 	private NetworkController 	network;
@@ -23,7 +22,6 @@ public class ApplicationController implements ActionListener,LoggingInterface {
         	view.log("Your system does not allow the server to know it's IP, you will not be able to start the server.");
         	view.disableControls();
         }
-        
 	}
 	
 	//Getters en setters
@@ -68,6 +66,5 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			view.disableControls();
 			
 		}
-		
 	}
 }
