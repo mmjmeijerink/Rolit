@@ -135,6 +135,7 @@ public class NetworkController extends Thread {
 			for(int i = 1; i < splitCommand.size(); i++) {
 				lobby.add(splitCommand.get(i));
 			}
+			appController.updateLobby();
 		}
 		else  {
 			appController.log("Unknown command received: "+msg);

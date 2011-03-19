@@ -248,4 +248,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	
 	public void keyTyped(KeyEvent event) {}
 	public void keyPressed(KeyEvent event) {}
+
+	public void updateLobby() {
+		if(lobbyView != null && lobbyView.isVisible() && network != null) {
+			lobbyView.setChallengeList(network.getLobby());
+			//log("Lobby Updated");
+		}
+	}
 }

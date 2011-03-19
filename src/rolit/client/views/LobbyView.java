@@ -73,10 +73,11 @@ public class LobbyView extends JFrame implements AlertableView {
         jButton2.addActionListener(viewController);
 
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "No lobby command recieved" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        jList1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jList1);
 
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(2, 2, 4, 1));
@@ -237,6 +238,15 @@ public class LobbyView extends JFrame implements AlertableView {
 	
 	public JButton getChallengeButton() {
 		return challengeButton;
+	}
+	
+	public void setChallengeList(ArrayList<String> list) {
+		DefaultListModel listModel = new DefaultListModel();
+		for(String aString: list) {
+			listModel.addElement(aString);
+		}
+		challengeList.setModel(listModel);
+		
 	}
 	
 	public void startLoading() {
