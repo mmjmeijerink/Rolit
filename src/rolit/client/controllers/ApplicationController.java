@@ -199,10 +199,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 	
-	public void challenge() {
-		
-	}
-	
 	public void challenged(String challenger) {
 		if(lobbyView != null && lobbyView.isVisible()) {
 			int choice = lobbyView.challengeReceived(challenger);
