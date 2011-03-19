@@ -144,9 +144,9 @@ public class NetworkController extends Thread {
 					found = true;
 				}
 			}
-			if(found == true && kicked == appController.getGamer()) {
+			if(found && kicked == appController.getGamer()) {
 				appController.gotKicked();
-			} else if(found == true) {
+			} else if(found) {
 				appController.log(kicked.getName()+" got kicked.");
 				appController.getGame().removeGamer(kicked);
 			}
