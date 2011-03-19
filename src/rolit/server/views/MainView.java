@@ -116,7 +116,7 @@ public class MainView extends JFrame implements LoggingInterface {
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setFont(new Font("Monaco", Font.PLAIN, 14));
+        jTextArea1.setFont(new Font("Monaco", Font.PLAIN, 12));
         jScrollPane1.setViewportView(jTextArea1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
