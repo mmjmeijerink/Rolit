@@ -331,6 +331,8 @@ public class NetworkController extends Thread implements Observer {
 			games.add(aGame);
 			nextTurn(aGame);
 		}
+		
+		broadcastLobby();
 	}
 
 	private void kickGamer(Gamer toBeKicked) {
@@ -343,6 +345,7 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}	
+		
 		if(participatingGame != null) {
 
 			for(ConnectionController connection: connections) {
@@ -355,6 +358,8 @@ public class NetworkController extends Thread implements Observer {
 			participatingGame.removeGamer(toBeKicked);
 			toBeKicked.setColor(0);
 		}
+		
+		broadcastLobby();
 	}
 
 	private void nextTurn(Game aGame) {

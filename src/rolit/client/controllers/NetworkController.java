@@ -35,7 +35,7 @@ public class NetworkController extends Thread {
 			
 			sendCommand(startupCommand);
 
-			while(!socket.isInputShutdown()) {
+			while(true) {
 				String ingelezen = in.readLine();
 				if (ingelezen != null) {
 					executeCommand(ingelezen);
@@ -151,9 +151,9 @@ public class NetworkController extends Thread {
 			out.close();
 			socket.close();
 		} catch (NullPointerException e) {
-			appController.log("Nooit verbinding kunnen leggen.");
+			appController.log("Could never connect at all.");
 		} catch (IOException e) {
-			System.err.println("Exceptie afgevangen: " + e.toString());
+			System.err.println("Exceptie catched: " + e.toString());
 		}
 		appController.connectionFailed();
 	}
