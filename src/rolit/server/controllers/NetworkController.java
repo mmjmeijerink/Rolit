@@ -203,8 +203,6 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
-
-
 	}
 
 	private boolean checkName(String name) {
