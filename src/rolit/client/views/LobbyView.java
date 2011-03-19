@@ -203,6 +203,11 @@ public class LobbyView extends JFrame implements AlertableView {
                 "Lobby Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	public void message(String message) {
+		JOptionPane.showMessageDialog(this, message,
+                "Message", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
 	public int challengeReceived(String challenger) {
 		String message = "You received a challenge from " + challenger;
 		

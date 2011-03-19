@@ -393,6 +393,9 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
+		
+		games.remove(aGame);
+		broadcastLobby();
 	}
 
 	private void moveDone(Game aGame, Gamer mover, int slot) {
