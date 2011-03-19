@@ -63,7 +63,7 @@ public class NetworkController extends Thread implements Observer {
 						String possibleName = splitCommand.get(1);
 						int i = 1;
 						while(!checkName(possibleName)) {
-							possibleName = possibleName+Integer.toString(i);
+							possibleName = splitCommand.get(1)+Integer.toString(i);
 							i++;
 						}
 						sender.getGamer().setName(possibleName);
@@ -171,6 +171,9 @@ public class NetworkController extends Thread implements Observer {
 		if(connections.contains(connection)) {
 			kickGamer(connection.getGamer());
 			appController.log(connection.toString() + " disconnects");
+			if(waitingForGame.contains(connection)){
+				waitingForGame.remove(connection);
+			}
 			connections.remove(connection);
 			broadcastLobby();
 		} else {
@@ -268,7 +271,44 @@ public class NetworkController extends Thread implements Observer {
 	private void checkForGameStart() {
 		appController.log("Checks if games can be started...");
 		ArrayList<ConnectionController> startingWith = null;
-
+		ArrayList<ConnectionController> with2min = new ArrayList<ConnectionController>();
+		ArrayList<ConnectionController> with3min = new ArrayList<ConnectionController>();
+		ArrayList<ConnectionController> with4min = new ArrayList<ConnectionController>();
+		
+		for(ConnectionController aConnection: waitingForGame) {
+			if(aConnection.getGamer().getRequestedGameSize() <= 2) {
+				with2min.add(aConnection);
+			}
+		}
+		for(ConnectionController aConnection: waitingForGame) {
+			if(aConnection.getGamer().getRequestedGameSize() <= 3) {
+				with3min.add(aConnection);
+			}
+		}
+		for(ConnectionController aConnection: waitingForGame) {
+			if(aConnection.getGamer().getRequestedGameSize() <= 4) {
+				with4min.add(aConnection);
+			}
+		}
+		
+		if(with4min.size() >= 4) {
+			startingWith = new ArrayList<ConnectionController>();
+			for(int i = 0; i < 4; i++) {
+				startingWith.add(with4min.get(i));
+			}
+		} else if(with3min.size() >= 3) {
+			startingWith = new ArrayList<ConnectionController>();
+			for(int i = 0; i < 3; i++) {
+				startingWith.add(with3min.get(i));
+			}
+		}  else if(with2min.size() >= 2) {
+			startingWith = new ArrayList<ConnectionController>();
+			for(int i = 0; i < 2; i++) {
+				startingWith.add(with2min.get(i));
+			}
+		}
+		
+		/*
 		for(ConnectionController masterClient: waitingForGame){
 			int minimalSize = masterClient.getGamer().getRequestedGameSize();
 			ArrayList<ConnectionController> readyToStart = new ArrayList<ConnectionController>();
@@ -278,7 +318,7 @@ public class NetworkController extends Thread implements Observer {
 					if(minimalSize < slaveClient.getGamer().getRequestedGameSize()) {
 						minimalSize = slaveClient.getGamer().getRequestedGameSize();
 					}
-					if(minimalSize > readyToStart.size()) {
+					if(minimalSize >= readyToStart.size()) {
 						readyToStart.add(slaveClient);
 					} else {
 						startingWith = readyToStart;
@@ -289,6 +329,7 @@ public class NetworkController extends Thread implements Observer {
 				startingWith = readyToStart;
 			}
 		}
+		*/
 
 		if(startingWith != null) {
 			for(ConnectionController starting: startingWith) {
@@ -310,13 +351,14 @@ public class NetworkController extends Thread implements Observer {
 			String logEntry = "Starting a game between";
 			int i = 0;
 			for(ConnectionController player: players) {
-				i++;
+				
 				if(i < 4) {
 					command = command + " " + player.getGamer().getName();
 					logEntry = logEntry + ", " + player.toString();
 				} else {
 					players.remove(player);
 				}
+				i++;
 			}
 			appController.log(logEntry);
 			ArrayList<Gamer> gamers = new ArrayList<Gamer>();

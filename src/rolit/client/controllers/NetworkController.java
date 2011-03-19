@@ -120,7 +120,7 @@ public class NetworkController extends Thread {
 					winnerPoints = Integer.parseInt(splitCommand.get(i+1));
 					winnerIndex = i;
 					noWinner = false;
-				}else if(Integer.parseInt(splitCommand.get(i+1)) == winnerPoints) {
+				} else if(Integer.parseInt(splitCommand.get(i+1)) == winnerPoints) {
 					noWinner = true;
 				}
 				
