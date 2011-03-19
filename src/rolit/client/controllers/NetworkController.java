@@ -135,14 +135,21 @@ public class NetworkController extends Thread {
 			//Handling a kick
 			Gamer kicked = null;
 			boolean found = false;
+			
+			
 
 			for(int i = 0; i < appController.getGame().getGamers().size() && !found; i++) {
-				if(appController.getGame().getGamers().get(i).equals(splitCommand.get(1))) {
+				if(appController.getGame().getGamers().get(i).getName().equals(splitCommand.get(1))) {
 					kicked = appController.getGame().getGamers().get(i);
 					found = true;
 				}
 			}
-			appController.getGame().removeGamer(kicked);
+			if(found == true && kicked == appController.getGamer()) {
+				appController.gotKicked();
+			} else if(found == true) {
+				appController.log(kicked.getName()+" got kicked.");
+				appController.getGame().removeGamer(kicked);
+			}
 		}
 		else if(splitCommand.get(0).equals("message")) {
 			//appController.log(splitCommand.get(1) + ": " + msg.substring(splitCommand.get(0).length() + splitCommand.get(1).length() + 2));

@@ -273,4 +273,9 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			game = null;
 		}
 	}
+
+	public void gotKicked() {
+		// TODO Auto-generated method stub
+		
+	}
 }
