@@ -155,6 +155,23 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
 				}
+			} else if(splitCommand.get(0).equals("challenge")) {
+				/* Execute command "challenge" */
+				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					if(!sender.getGamer().getName().equals(splitCommand.get(1))) {
+						
+						for(Gamer aGamer: gamersInLobby()) {
+							if(aGamer.getName().equals(splitCommand.get(1))) {
+								appController.log("Gamer " + aGamer.getName() + " challenged by " + sender.getGamer().getName());
+								challenge(aGamer,sender.getGamer());
+							}
+						}
+					} else {
+						appController.log("Challenge command from " + sender.toString() + " FAILED, tries to challenge itself.");
+					}
+				} else {
+					appController.log("Challenge command from " + sender.toString() + " FAILED, not identified.");
+				}
 			} else {
 				appController.log("Command from " + sender.toString() + " misunderstood: " + msg);
 			}
@@ -176,6 +193,14 @@ public class NetworkController extends Thread implements Observer {
 			broadcastLobby();
 		} else {
 			appController.log("Tries to remove connection that does not exist");
+		}
+	}
+	
+	private void challenge(Gamer challenged, Gamer challenger) {
+		for(ConnectionController aConnection: connections) {
+			if(aConnection.getGamer() == challenged) {
+				aConnection.sendCommand("challenged " + challenger.getName());
+			}
 		}
 	}
 
@@ -221,6 +246,16 @@ public class NetworkController extends Thread implements Observer {
 	}
 	
 	private void broadcastLobby() {
+		
+		String command = "lobby";
+		for(Gamer aGamer: gamersInLobby()) {
+			command = command + " " + aGamer.getName();
+		}
+		
+		broadcastCommand(command);
+	}
+	
+	private ArrayList<Gamer> gamersInLobby() {
 		ArrayList<Gamer> gamersConnected = new ArrayList<Gamer>();
 		for(ConnectionController aConnection: connections) {
 			if(!aConnection.getGamer().getName().equals("[NOT CONNECTED]")) {
@@ -243,12 +278,7 @@ public class NetworkController extends Thread implements Observer {
 				gamersInLobby.remove(aGamer);
 			}
 		}
-		String command = "lobby";
-		for(Gamer aGamer: gamersInLobby) {
-			command = command + " " + aGamer.getName();
-		}
-		
-		broadcastCommand(command);
+		return gamersInLobby;
 	}
 
 	private boolean isInGame(Gamer aGamer) {
