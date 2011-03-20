@@ -1,13 +1,13 @@
 package rolit.client.views;
 
-import rolit.client.controllers.*;
-
-import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+import rolit.client.controllers.*;
+
 public class LobbyView extends JFrame implements AlertableView {
+	
 	private JSpinner joinSpinner;
 	private JButton joinButton;
 	private JButton challengeButton;
@@ -34,10 +34,8 @@ public class LobbyView extends JFrame implements AlertableView {
 		});
 	}
 	
-	/** Bouwt de daadwerkelijke GUI. */
+	/** Builds the GUI */
 	public void buildView() {
-		
-		
 		JPanel jPanel1 = new javax.swing.JPanel();
         JLabel jLabel1 = new javax.swing.JLabel();
         JButton jButton2 = new javax.swing.JButton();
@@ -192,20 +190,15 @@ public class LobbyView extends JFrame implements AlertableView {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
         pack();
-        
-       
 	}
 	
 	public void alert(String message) {
-		JOptionPane.showMessageDialog(this, message,
-                "Lobby Alert", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, "Lobby Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	public void message(String message) {
-		JOptionPane.showMessageDialog(this, message,
-                "Message", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, "Message", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public int challengeReceived(String challenger) {
@@ -216,9 +209,8 @@ public class LobbyView extends JFrame implements AlertableView {
 	
 	public int getSpinnerValue() {
 		javax.swing.SpinnerNumberModel myModel = (javax.swing.SpinnerNumberModel)(joinSpinner.getModel());
-        int value = myModel.getNumber().intValue();
-		return value;
 		
+		return myModel.getNumber().intValue();
 	}
 	
 	public JButton getJoinButton() {
@@ -251,7 +243,6 @@ public class LobbyView extends JFrame implements AlertableView {
 			listModel.addElement(aString);
 		}
 		challengeList.setModel(listModel);
-		
 	}
 	
 	public void startLoading() {
@@ -261,6 +252,5 @@ public class LobbyView extends JFrame implements AlertableView {
 	
 	public void stopLoading() {
 		joinLoader.setVisible(false);
-	}
-	
+	}	
 }

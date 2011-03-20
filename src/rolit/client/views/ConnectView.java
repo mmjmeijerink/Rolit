@@ -1,13 +1,12 @@
 package rolit.client.views;
 
-import rolit.client.controllers.*;
-
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import javax.swing.*;
 
+import rolit.client.controllers.*;
+
 public class ConnectView extends JFrame implements AlertableView {
+	
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField;
 	private ApplicationController viewController;
@@ -28,7 +27,7 @@ public class ConnectView extends JFrame implements AlertableView {
 		});
 	}
 	
-	/** Bouwt de daadwerkelijke GUI. */
+	/** Builds the GUI. */
 	public void buildView() {
 		JLabel jLabel5 = new javax.swing.JLabel();
         JButton jButton2 = new javax.swing.JButton();
@@ -44,20 +43,15 @@ public class ConnectView extends JFrame implements AlertableView {
         nickField = jTextField4;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel5.setText("Server address:");
-
+        
         jButton2.setText("Connect");
         jButton2.addActionListener(viewController);
-
+        
+        jLabel5.setText("Server address:");
         jLabel6.setText("Poort:");
-
         jTextField6.setText("127.0.0.1");
-
         jTextField5.setText("1337");
-
         jLabel7.setText("Nickname:");
-
         jTextField4.setText("Sjaakbonenstaak");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -102,8 +96,7 @@ public class ConnectView extends JFrame implements AlertableView {
 	}
 	
 	public void alert(String message) {
-		JOptionPane.showMessageDialog(this, message,
-                "Connection Alert", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, "Connection Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	public void enableControlls() {
@@ -134,6 +127,5 @@ public class ConnectView extends JFrame implements AlertableView {
 	
 	public JButton getConnectButton() {
 		return connectButton;
-	}
-	
+	}	
 }

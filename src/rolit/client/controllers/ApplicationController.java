@@ -90,7 +90,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				//gameView.getSlotsList().get(i).setBackground(Color.GRAY);
 			}
 		}
-		
 	}
 	
 	//Views
@@ -112,6 +111,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gamer = new Gamer();
 		} 
 		gamer.setName(gamerName);
+		
 		if(lobbyView == null) {
 			lobbyView = new LobbyView(this);
 		} else {
@@ -152,7 +152,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
 			log("Connection to the server...");
 			
-			
 			InetAddress host;
 			try {    
 				host = InetAddress.getByName(connectView.getHost());
@@ -173,9 +172,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			
 			if(host != null && port > 0) {
 				connectView.disableControlls();
-				network = new NetworkController(host, port, this,"connect " + connectView.getNick());
+				network = new NetworkController(host, port, this, "connect " + connectView.getNick());
 				network.start();
-				
 			}
 		} else if(lobbyView != null && event.getSource() == lobbyView.getJoinButton()) {
 			if(network != null) {
@@ -194,7 +192,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				selectedGamers.concat(" " + (String) selected[i]); 
 			}
 			network.sendCommand(selectedGamers);
-			
 		} else {
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 				if(gameView != null && event.getSource() == gameView.getSlotsList().get(i)) {
@@ -202,7 +199,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 					network.sendCommand("domove "+i);
 					updateGameView();
 					gameView.disableAllButtons();
-					
 				}
 			}
 		}
@@ -237,7 +233,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else if(gameView != null && event.getSource().equals(gameView.getChatMessage()) && event.getKeyCode() == KeyEvent.VK_ENTER ) {
 			sendChat(gameView.getChatMessage().getText());
 		}
-		
 	}
 	
 	public void sendChat(String msg) {

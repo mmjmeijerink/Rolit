@@ -43,8 +43,7 @@ public class NetworkController extends Thread {
 					disconnect();
 				}
 			}
-
-		} catch (IOException e){
+		} catch (IOException e) {
 			disconnect();
 		}
 	}
@@ -73,7 +72,6 @@ public class NetworkController extends Thread {
 		}
 		else if(splitCommand.get(0).equals("startgame")) {
 			//Handling the start of a game
-			
 			ArrayList<String> playerList = (ArrayList<String>)splitCommand.clone();
 			playerList.remove(0);
 			appController.startGame(playerList);
@@ -81,7 +79,6 @@ public class NetworkController extends Thread {
 			appController.log("Game has started with " + msg.substring(splitCommand.get(0).length() + 1));
 		}
 		else if(splitCommand.get(0).equals("turn")) {
-			
 			if(splitCommand.get(1).equals(appController.getGamer().getName())) {
 				appController.log("Your turn!");
 				appController.myTurn();
@@ -123,21 +120,17 @@ public class NetworkController extends Thread {
 				} else if(Integer.parseInt(splitCommand.get(i+1)) == winnerPoints) {
 					noWinner = true;
 				}
-				
 			}
 			if(!noWinner) {
 				message = message + "\n" + appController.getGame().getGamers().get(winnerIndex).getName() + " has won the match with " + winnerPoints + " points!";
 			}
 			appController.endGame(message);
-
 		}
 		else if(splitCommand.get(0).equals("kick")) {
 			//Handling a kick
 			Gamer kicked = null;
 			boolean found = false;
 			
-			
-
 			for(int i = 0; i < appController.getGame().getGamers().size() && !found; i++) {
 				if(appController.getGame().getGamers().get(i).getName().equals(splitCommand.get(1))) {
 					kicked = appController.getGame().getGamers().get(i);

@@ -1,15 +1,16 @@
 package rolit.client.views;
 
-import rolit.client.controllers.*;
-import rolit.sharedModels.Board;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
 
-public class GameView extends JFrame implements AlertableView,ComponentListener {
+import rolit.client.controllers.*;
+import rolit.sharedModels.Board;
+
+public class GameView extends JFrame implements AlertableView, ComponentListener {
+	
 	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton chatButton;
 	private JTextArea chatArea;
@@ -32,7 +33,7 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 		});
 	}
 	
-	/** Bouwt de daadwerkelijke GUI. */
+	/** Builds the GUI. */
 	public void buildView() {
 		
         JPanel jPanel2 = new javax.swing.JPanel();
@@ -55,8 +56,6 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 			places.get(i).setOpaque(true);
 			places.get(i).setEnabled(false);
 			places.get(i).addActionListener(viewController);
-			//places.get(i).setMinimumSize(new Dimension(15,15));
-			//places.get(i).setMaximumSize(new Dimension(50,50));
 
 			int row = i % Board.DIMENSION;
 			int col = i / Board.DIMENSION;
@@ -130,7 +129,6 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
         );
 
         pack();
-       
         this.addComponentListener(this);
 	}
 	
@@ -156,8 +154,7 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
     }
 	
 	public void alert(String message) {
-		JOptionPane.showMessageDialog(this, message,
-                "Lobby Alert", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, "Lobby Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	public void disableAllButtons() {
@@ -185,5 +182,4 @@ public class GameView extends JFrame implements AlertableView,ComponentListener 
 	public void componentHidden(ComponentEvent arg0) {}
 	public void componentMoved(ComponentEvent arg0) {}
 	public void componentShown(ComponentEvent arg0) {}
-	
 }
