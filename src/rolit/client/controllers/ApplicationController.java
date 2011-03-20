@@ -22,18 +22,18 @@ import rolit.client.views.LobbyView;
 import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
-	
+
 	private GameView			gameView;
 	private ConnectView			connectView;
 	private LobbyView			lobbyView;
 	private NetworkController	network;
 	private Game				game = null;
 	private Gamer				gamer;
-	
+
 	public ApplicationController() {
 		connectView = new ConnectView(this);
 	}
-	
+
 	//Getters and setters
 	public void log(String logEntry) {
 		System.out.println(" " + logEntry);
@@ -43,14 +43,20 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gameView.getChatArea().append("[" + logEntry + "]\n");
 		}
 	}
-	
+
 	public void logWithAlert(String logEntry) {
 		log(logEntry);
 		if (connectView.isVisible()) {
 			connectView.alert(logEntry);
 		}
+		if (lobbyView.isVisible()) {
+			lobbyView.alert(logEntry);
+		}
+		if (gameView.isVisible()) {
+			gameView.alert(logEntry);
+		}
 	}
-		
+
 	public void myTurn() {
 		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 			int color = gamer.getColor();
@@ -61,20 +67,20 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		}
 	}
-	
+
 	public Gamer getGamer() {
 		return gamer;
 	}
-	
+
 	public Game getGame() {
 		return game;
 	}
-	
+
 	public void handleMove(Gamer aGamer, int index) {
 		game.doMove(index, aGamer);
 		updateGameView();
 	}
-	
+
 	private void updateGameView() {
 		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 			int color = game.getBoard().getSlots().get(i).getValue();
@@ -91,7 +97,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		}
 	}
-	
+
 	//Views
 	public void connectionFailed() {
 		logWithAlert("Connection failure, the server may be down.");
@@ -104,31 +110,31 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gameView.setVisible(false);
 		}
 	}
-	
+
 	public void connectionAstablished(String gamerName) {
 		connectView.setVisible(false);
 		if(gamer == null) {
 			gamer = new Gamer();
 		} 
 		gamer.setName(gamerName);
-		
+
 		if(lobbyView == null) {
 			lobbyView = new LobbyView(this);
 		} else {
 			lobbyView.setVisible(true);
 		}	
 	}
-	
+
 	public void startGame(ArrayList<String> players) {
 		if(gameView == null) {
 			gameView = new GameView(this);
 		} else {
 			gameView.setVisible(true);
 		}
-		
+
 		lobbyView.setVisible(false);
 		lobbyView.stopLoading();
-		
+
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 		for(String name: players) {
@@ -143,15 +149,15 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gamers.add(participant);
 			i++;
 		}
-		
+
 		game = new Game(gamers);
 	}
-	
+
 	//Event handlers
 	public void actionPerformed(ActionEvent event) {
 		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
 			log("Connection to the server...");
-			
+
 			InetAddress host;
 			try {    
 				host = InetAddress.getByName(connectView.getHost());
@@ -159,7 +165,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				host = null;
 				logWithAlert("Hostname invalid.");
 			}
-			
+
 			int port = -1;
 			try {
 				port = Integer.parseInt(connectView.getPort());
@@ -169,7 +175,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			} catch (NumberFormatException e) {
 				logWithAlert("Port is not a valid number.");
 			}
-			
+
 			if(host != null && port > 0) {
 				connectView.disableControlls();
 				network = new NetworkController(host, port, this, "connect " + connectView.getNick());
@@ -185,13 +191,26 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
-			String selectedGamers = "challenge";
-			Object[] selected = lobbyView.getChallengeList().getSelectedValues();
-			
-			for(int i = 0; i < selected.length; i++) {
-				selectedGamers.concat(" " + (String) selected[i]); 
+
+			if(lobbyView.getChallengeList().getSelectedValue() != null) {
+				String selectedGamers = "challenge " + lobbyView.getChallengeList().getSelectedValue();
+
+				/*//Object[] selected = lobbyView.getChallengeList().getSelectedValues();
+
+				for(int i = 0; i < selected.length; i++) {
+					selectedGamers.concat(" " + (String) selected[i]); 
+				}*/
+
+				if(!gamer.getName().equals( lobbyView.getChallengeList().getSelectedValue() )) {
+					network.sendCommand(selectedGamers);
+					lobbyView.startLoading();
+					log("You challengd " + lobbyView.getChallengeList().getSelectedValue());
+				} else {
+					logWithAlert("You can not challenge yourself.");
+				}
+			} else {
+				logWithAlert("You need to select someone if you want to challenge.");
 			}
-			network.sendCommand(selectedGamers);
 		} else {
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 				if(gameView != null && event.getSource() == gameView.getSlotsList().get(i)) {
@@ -203,11 +222,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		}
 	}
-	
+
 	public void challenged(String challenger) {
 		if(lobbyView != null && lobbyView.isVisible()) {
 			int choice = lobbyView.challengeReceived(challenger);
-			
+
 			if(choice == JOptionPane.YES_OPTION) {
 				network.sendCommand("challengeresponse " + challenger + " true");
 			}
@@ -216,7 +235,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		}
 	}
-	
+
 	public void handleChat(String msg, String sender) {
 		if(lobbyView != null && lobbyView.isVisible()) {
 			lobbyView.getChatArea().append(sender + " says: " + msg + "\n");
@@ -234,7 +253,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			sendChat(gameView.getChatMessage().getText());
 		}
 	}
-	
+
 	public void sendChat(String msg) {
 		if(lobbyView != null && lobbyView.isVisible() && network != null) {
 			lobbyView.getChatMessage().setText("");
@@ -250,7 +269,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			updateGameView();
 		}
 	}
-	
+
 	public void keyTyped(KeyEvent event) {}
 	public void keyPressed(KeyEvent event) {}
 
@@ -273,6 +292,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 
 	public void gotKicked() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
