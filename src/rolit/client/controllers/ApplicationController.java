@@ -191,7 +191,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
-
 			if(lobbyView.getChallengeList().getSelectedValue() != null) {
 				String selectedGamers = "challenge " + lobbyView.getChallengeList().getSelectedValue();
 
@@ -201,7 +200,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 					selectedGamers.concat(" " + (String) selected[i]); 
 				}*/
 
-				if(!gamer.getName().equals( lobbyView.getChallengeList().getSelectedValue() )) {
+				if(!gamer.getName().equals((String) lobbyView.getChallengeList().getSelectedValue())) {
 					network.sendCommand(selectedGamers);
 					lobbyView.startLoading();
 					log("You challengd " + lobbyView.getChallengeList().getSelectedValue());
@@ -291,7 +290,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	public void gotKicked() {
-		// TODO Auto-generated method stub
-
+		if(gameView != null  && lobbyView != null && gameView.isVisible() && network != null) {
+			gameView.setVisible(false);
+			lobbyView.stopLoading();
+			lobbyView.setVisible(true);
+			game = null;
+		}
 	}
 }
