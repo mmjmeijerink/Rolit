@@ -1,6 +1,7 @@
 package rolit.sharedModels;
 
 public class Gamer {
+	
 	private String name;
 	private boolean takesPart;
 	private int requestedGameSize;
@@ -14,12 +15,14 @@ public class Gamer {
 	
 	public boolean setRequestedGameSize(int size) {
 		boolean result;
+		
 		if(size > 1 && size < 5) {
 			result = true;
 			requestedGameSize = size;
 		} else {
 			result = false;
 		}
+		
 		return result;
 	}
 	
@@ -29,6 +32,7 @@ public class Gamer {
 	
 	public boolean setColor(int aColor) {
 		boolean result = false;
+		
 		if(aColor > -1 && aColor < 5) { 
 			color = aColor;
 			result = true;
@@ -41,6 +45,7 @@ public class Gamer {
 		} else {
 			System.out.println("Error: could not change gamer color value because value is invalid.");
 		}
+		
 		return result;
 	}
 	
@@ -62,10 +67,11 @@ public class Gamer {
 	
 	public String toString() {
 		String result = name;
+		
 		if (takesPart) {
 			result = result + " takes part in game with color: " + color;
-			
 		}
+		
 		return result;
 	}
 }

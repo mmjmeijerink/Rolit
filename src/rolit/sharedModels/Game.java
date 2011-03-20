@@ -12,18 +12,22 @@ public class Game extends Observable {
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
 		gamers = aGamers;
+		
 		for(int i = 0; i < gamers.size(); i++) {
 			gamers.get(i).setColor(i+1);
 		}
+		
 		current = gamers.get(0);
 		startedWith = (ArrayList<Gamer>) gamers.clone();
 	}
 	
 	public boolean checkMove(int i, Gamer aGamer) {
 		boolean result = false;
+		
 		if(aGamer == current && board.checkMove(i, aGamer.getColor())) {
 			result = true;
 		}
+		
 		return result;
 	}
 	
@@ -38,19 +42,23 @@ public class Game extends Observable {
 	
 	public int getPointsOf(Gamer aGamer) {
 		int result = 0;
+		
 		for(Gamer check: gamers) {
 			if (check == aGamer) {
 				result = board.getPointsOfColor(aGamer.getColor());
 			}
 		}
+		
 		return result;
 	}
 	
 	public boolean isEnded() {
 		boolean result = false;
+		
 		if(board.isFull() || gamers.size() < 2) {
 			result = true;
 		}
+		
 		return result;
 	}
 	
@@ -58,21 +66,16 @@ public class Game extends Observable {
 		if(current == toBeRemoved) {
 			nextTurn();
 		}
+		
 		gamers.remove(toBeRemoved);
 		setChanged();
 		notifyObservers("Gamer Removed");
 	}
 	
-	// Overbodig, en zou niet werken
-	/*public void giveTurn(String aGamer) {
-		while(!current.equals(aGamer)) {
-			nextTurn();
-		}
-	}*/
-	
 	private void nextTurn() {
 		int indexOfCurrent = gamers.indexOf(current);
 		int indexOfNext = indexOfCurrent + 1;
+		
 		if(indexOfNext >= gamers.size()) {
 			indexOfNext = 0;
 		}
@@ -98,9 +101,11 @@ public class Game extends Observable {
 	
 	public String toString() {
 		String result = "Game with: ";
+		
 		for(Gamer aGamer: gamers) {
 			result = result + aGamer.toString() + " ";
 		}
+		
 		return result;
 	}
 }

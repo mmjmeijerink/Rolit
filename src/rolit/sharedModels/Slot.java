@@ -1,6 +1,7 @@
 package rolit.sharedModels;
 
 public class Slot {
+	
 	public static final int EMPTY = 0;
 	public static final int RED = 1;
 	public static final int YELLOW = 3;
@@ -26,5 +27,4 @@ public class Slot {
 	public int getValue() {
 		return value;
 	}
-	
 }
