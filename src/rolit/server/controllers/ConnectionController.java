@@ -33,6 +33,7 @@ public class ConnectionController extends Thread {
 
 	public void run() {
 		String inlezen = null;
+		
 		while(this.running) {
 			try {
 				inlezen = in.readLine();  

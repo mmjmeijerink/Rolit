@@ -64,7 +64,6 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			network = new NetworkController(port, this);
 			network.start();
 			view.disableControls();
-			
 		}
 	}
 }

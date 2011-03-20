@@ -8,6 +8,7 @@ import rolit.sharedModels.Game;
 import rolit.sharedModels.Gamer;
 
 public class NetworkController extends Thread implements Observer {
+	
 	private ApplicationController				appController;
 	private int									port;
 	private ArrayList<ConnectionController>  	connections;
@@ -25,6 +26,7 @@ public class NetworkController extends Thread implements Observer {
 
 	public void run() {
 		ServerSocket server = null;
+		
 		try {
 			server = new ServerSocket(port);
 			appController.log("Server started on port: " + port);
@@ -76,7 +78,6 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Connect command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
 				}
-
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
@@ -105,12 +106,10 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Join command from " + sender.toString() + " FAILED, not identified.");
 				}
-
 			} else if(splitCommand.get(0).equals("domove")) {
 				/* Execute command "domove" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 					if(splitCommand.size() == 2) {
-
 						Game participatingGame = null;
 						for(Game aGame: games) {
 							//appController.log(games.toString());
@@ -142,7 +141,6 @@ public class NetworkController extends Thread implements Observer {
 						} else {
 							appController.log("Domove command from " + sender.toString() + " FAILED, player is not in game.");
 						}
-
 					} else {
 						appController.log("Domove command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
 					}
@@ -210,6 +208,7 @@ public class NetworkController extends Thread implements Observer {
 
 	private boolean checkName(String name) {
 		boolean result = true;
+		
 		if(name != null) {
 			for(ConnectionController client: connections){
 				if(client.getGamer().getName().equals(name)) {
@@ -217,11 +216,11 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
+		
 		return result;
 	}
 	
 	private void broadcastLobby() {
-		
 		ArrayList<Gamer> gamersConnected = new ArrayList<Gamer>();
 		for(ConnectionController aConnection: connections) {
 			if(!aConnection.getGamer().getName().equals("[NOT CONNECTED]")) {
@@ -278,11 +277,13 @@ public class NetworkController extends Thread implements Observer {
 				with2min.add(aConnection);
 			}
 		}
+		
 		for(ConnectionController aConnection: waitingForGame) {
 			if(aConnection.getGamer().getRequestedGameSize() <= 3) {
 				with3min.add(aConnection);
 			}
 		}
+		
 		for(ConnectionController aConnection: waitingForGame) {
 			if(aConnection.getGamer().getRequestedGameSize() <= 4) {
 				with4min.add(aConnection);
@@ -348,6 +349,7 @@ public class NetworkController extends Thread implements Observer {
 			String command = "startgame";
 			String logEntry = "Starting a game between";
 			int i = 0;
+			
 			for(ConnectionController player: players) {
 				
 				if(i < 4) {
@@ -460,5 +462,4 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 	}
-
 }

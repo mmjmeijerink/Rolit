@@ -1,17 +1,12 @@
 package rolit.server.views;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -46,7 +41,7 @@ public class MainView extends JFrame implements LoggingInterface {
 		);
 	}
 
-	/** Bouwt de daadwerkelijke GUI. */
+	/** Builds the GUI. */
 	public void buildView() {
 		/*setSize(645,375);
 
@@ -106,9 +101,7 @@ public class MainView extends JFrame implements LoggingInterface {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Hostname:");
-
         jLabel2.setText("Port:");
-
         jTextField2.setText("1337");
 
         jButton1.setText("Start the server");
@@ -197,5 +190,4 @@ public class MainView extends JFrame implements LoggingInterface {
 			System.out.println(" " + msg);
 		}
 	}
-
 }
