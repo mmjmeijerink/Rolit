@@ -112,7 +112,7 @@ public class NetworkController extends Thread {
 				} else {
 					name = name + " has";
 				}
-				message = message + "Gamer: " + name + " scored " + splitCommand.get(i+1) + " points. \n";
+				message = message + "" + name + " scored " + splitCommand.get(i+1) + " points. \n";
 				if(Integer.parseInt(splitCommand.get(i+1)) > winnerPoints) {
 					winnerPoints = Integer.parseInt(splitCommand.get(i+1));
 					winnerIndex = i;

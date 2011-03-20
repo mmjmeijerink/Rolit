@@ -8,11 +8,13 @@ import rolit.sharedModels.Game;
 import rolit.sharedModels.Gamer;
 
 public class NetworkController extends Thread implements Observer {
-	
+
 	private ApplicationController				appController;
 	private int									port;
 	private ArrayList<ConnectionController>  	connections;
 	private ArrayList<ConnectionController>		waitingForGame;
+	private ArrayList<Gamer>					challengerList;
+	private ArrayList<Gamer>					challengedList;
 	private ArrayList<Game>						games;
 
 	public NetworkController(int aPort, ApplicationController controller) {
@@ -20,13 +22,15 @@ public class NetworkController extends Thread implements Observer {
 		connections 	= new ArrayList<ConnectionController>();
 		waitingForGame 	= new ArrayList<ConnectionController>();
 		games			= new ArrayList<Game>();
+		challengedList	= new ArrayList<Gamer>();
+		challengerList	= new ArrayList<Gamer>();
 		appController = controller;
 		port = aPort;
 	}
 
 	public void run() {
 		ServerSocket server = null;
-		
+
 		try {
 			server = new ServerSocket(port);
 			appController.log("Server started on port: " + port);
@@ -158,19 +162,50 @@ public class NetworkController extends Thread implements Observer {
 			} else if(splitCommand.get(0).equals("challenge")) {
 				/* Execute command "challenge" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
-					if(!sender.getGamer().getName().equals(splitCommand.get(1))) {
-						
-						for(Gamer aGamer: gamersInLobby()) {
-							if(aGamer.getName().equals(splitCommand.get(1))) {
-								appController.log("Gamer " + aGamer.getName() + " challenged by " + sender.getGamer().getName());
-								challenge(aGamer,sender.getGamer());
+					if(gamersInLobby().contains(sender.getGamer())) {
+						if(!sender.getGamer().getName().equals(splitCommand.get(1))) {
+
+							for(Gamer aGamer: gamersInLobby()) {
+								if(aGamer.getName().equals(splitCommand.get(1))) {
+									appController.log("Gamer " + aGamer.getName() + " challenged by " + sender.getGamer().getName());
+									challenge(aGamer,sender.getGamer());
+								}
 							}
+						} else {
+							appController.log("Challenge command from " + sender.toString() + " FAILED, tries to challenge itself.");
 						}
 					} else {
-						appController.log("Challenge command from " + sender.toString() + " FAILED, tries to challenge itself.");
+						appController.log("Challenge command from " + sender.toString() + " FAILED, gamer is not in the lobby.");
 					}
 				} else {
 					appController.log("Challenge command from " + sender.toString() + " FAILED, not identified.");
+				}
+			} else if(splitCommand.get(0).equals("challengeresponse")) {
+				/* Execute command "challengeresponse" */
+				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					if(gamersInLobby().contains(sender.getGamer())) {
+						for(Gamer aGamer : gamersInLobby()) {
+							if(aGamer != sender.getGamer() && aGamer.getName().equals(splitCommand.get(1))) {
+								challengerList.remove(aGamer);
+								challengedList.remove(sender.getGamer());
+								if(splitCommand.get(2).equals("true")) {
+									for(ConnectionController aConnection: connections) {
+										if(aConnection.getGamer() == aGamer) {
+											ArrayList<ConnectionController> toStartWith = new ArrayList<ConnectionController>();
+											toStartWith.add(sender);
+											toStartWith.add(aConnection);
+											startGame(toStartWith);
+										}
+									}
+									
+								}
+							}
+						}	
+					} else {
+						appController.log("Challengeresponse command from " + sender.toString() + " FAILED, gamer is not in the lobby.");
+					}
+				} else {
+					appController.log("Challengeresponse command from " + sender.toString() + " FAILED, not identified.");
 				}
 			} else {
 				appController.log("Command from " + sender.toString() + " misunderstood: " + msg);
@@ -195,8 +230,10 @@ public class NetworkController extends Thread implements Observer {
 			appController.log("Tries to remove connection that does not exist");
 		}
 	}
-	
+
 	private void challenge(Gamer challenged, Gamer challenger) {
+		challengedList.add(challenged);
+		challengerList.add(challenger);
 		for(ConnectionController aConnection: connections) {
 			if(aConnection.getGamer() == challenged) {
 				aConnection.sendCommand("challenged " + challenger.getName());
@@ -233,7 +270,7 @@ public class NetworkController extends Thread implements Observer {
 
 	private boolean checkName(String name) {
 		boolean result = true;
-		
+
 		if(name != null) {
 			for(ConnectionController client: connections){
 				if(client.getGamer().getName().equals(name)) {
@@ -241,20 +278,20 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private void broadcastLobby() {
-		
+
 		String command = "lobby";
 		for(Gamer aGamer: gamersInLobby()) {
 			command = command + " " + aGamer.getName();
 		}
-		
+
 		broadcastCommand(command);
 	}
-	
+
 	private ArrayList<Gamer> gamersInLobby() {
 		ArrayList<Gamer> gamersConnected = new ArrayList<Gamer>();
 		for(ConnectionController aConnection: connections) {
@@ -262,7 +299,7 @@ public class NetworkController extends Thread implements Observer {
 				gamersConnected.add(aConnection.getGamer());
 			}
 		}
-		
+
 		ArrayList<Gamer> gamersInGame = new ArrayList<Gamer>();
 		for(Game aGame: games) {
 			for(Gamer aGamer: aGame.getGamers()) {
@@ -271,7 +308,7 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
-		
+
 		ArrayList<Gamer> gamersInLobby = (ArrayList<Gamer>) gamersConnected.clone();
 		for(Gamer aGamer: gamersInGame) {
 			if(gamersInLobby.contains(aGamer)) {
@@ -301,25 +338,25 @@ public class NetworkController extends Thread implements Observer {
 		ArrayList<ConnectionController> with2min = new ArrayList<ConnectionController>();
 		ArrayList<ConnectionController> with3min = new ArrayList<ConnectionController>();
 		ArrayList<ConnectionController> with4min = new ArrayList<ConnectionController>();
-		
+
 		for(ConnectionController aConnection: waitingForGame) {
 			if(aConnection.getGamer().getRequestedGameSize() <= 2) {
 				with2min.add(aConnection);
 			}
 		}
-		
+
 		for(ConnectionController aConnection: waitingForGame) {
 			if(aConnection.getGamer().getRequestedGameSize() <= 3) {
 				with3min.add(aConnection);
 			}
 		}
-		
+
 		for(ConnectionController aConnection: waitingForGame) {
 			if(aConnection.getGamer().getRequestedGameSize() <= 4) {
 				with4min.add(aConnection);
 			}
 		}
-		
+
 		if(with4min.size() >= 4) {
 			startingWith = new ArrayList<ConnectionController>();
 			for(int i = 0; i < 4; i++) {
@@ -336,7 +373,7 @@ public class NetworkController extends Thread implements Observer {
 				startingWith.add(with2min.get(i));
 			}
 		}
-		
+
 		/*
 		for(ConnectionController masterClient: waitingForGame){
 			int minimalSize = masterClient.getGamer().getRequestedGameSize();
@@ -358,16 +395,9 @@ public class NetworkController extends Thread implements Observer {
 				startingWith = readyToStart;
 			}
 		}
-		*/
+		 */
 
 		if(startingWith != null) {
-			for(ConnectionController starting: startingWith) {
-				if(waitingForGame.contains(starting)) {
-					waitingForGame.remove(starting);
-				} else {
-					appController.log("ERROR: Server tries to start game with someone who does not want to start");
-				}
-			}
 			startGame(startingWith);
 		} else {
 			appController.log("Not enough players to start a game");
@@ -375,13 +405,22 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	private void startGame(ArrayList<ConnectionController> players) {
+		
+		for(ConnectionController starting: players) {
+			if(waitingForGame.contains(starting)) {
+				waitingForGame.remove(starting);
+			} else {
+				appController.log("Server tries to start game with someone who does not want to start with join");
+			}
+		}
+		
 		if(players.size() > 1 && players.size() < 5) {
 			String command = "startgame";
 			String logEntry = "Starting a game between";
 			int i = 0;
-			
+
 			for(ConnectionController player: players) {
-				
+
 				if(i < 4) {
 					command = command + " " + player.getGamer().getName();
 					logEntry = logEntry + ", " + player.toString();
@@ -403,7 +442,7 @@ public class NetworkController extends Thread implements Observer {
 			games.add(aGame);
 			nextTurn(aGame);
 		}
-		
+
 		broadcastLobby();
 	}
 
@@ -417,7 +456,7 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}	
-		
+
 		if(participatingGame != null) {
 
 			for(ConnectionController connection: connections) {
@@ -430,7 +469,7 @@ public class NetworkController extends Thread implements Observer {
 			participatingGame.removeGamer(toBeKicked);
 			toBeKicked.setColor(0);
 		}
-		
+
 		broadcastLobby();
 	}
 
@@ -465,7 +504,7 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 		}
-		
+
 		games.remove(aGame);
 		broadcastLobby();
 	}

@@ -46,13 +46,13 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 
 	public void logWithAlert(String logEntry) {
 		log(logEntry);
-		if (connectView.isVisible()) {
+		if (connectView != null && connectView.isVisible()) {
 			connectView.alert(logEntry);
 		}
-		if (lobbyView.isVisible()) {
+		if (lobbyView != null && lobbyView.isVisible()) {
 			lobbyView.alert(logEntry);
 		}
-		if (gameView.isVisible()) {
+		if (gameView != null && gameView.isVisible()) {
 			gameView.alert(logEntry);
 		}
 	}
