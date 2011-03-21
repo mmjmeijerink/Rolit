@@ -84,6 +84,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         
         jButton4.setText("Hint?");
         jButton4.addActionListener(viewController);
+        jButton4.setEnabled(false);
         
         jTextField1.addKeyListener(viewController);
 

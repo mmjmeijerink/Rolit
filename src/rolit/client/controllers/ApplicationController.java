@@ -61,12 +61,19 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	public void myTurn() {
+		gameView.getHintButton().setEnabled(true);
 		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 			int color = gamer.getColor();
 			if(game.getBoard().checkMove(i, color)) {
 				gameView.getSlotsList().get(i).setEnabled(true);
+				/*if(gameView.getSlotsList().get(i).getBackground() == null) {
+					gameView.getSlotsList().get(i).setBackground(Color.WHITE);
+				}*/
 			} else {
 				gameView.getSlotsList().get(i).setEnabled(false);
+				/*if(gameView.getSlotsList().get(i).getBackground() == null) {
+					gameView.getSlotsList().get(i).setBackground(Color.BLACK);
+				}*/
 			}
 		}
 	}
@@ -96,7 +103,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			} else if(color == Slot.BLUE) {
 				gameView.getSlotsList().get(i).setBackground(Color.BLUE);
 			} else {
-				//gameView.getSlotsList().get(i).setBackground(Color.GRAY);
+				gameView.getSlotsList().get(i).setBackground(null);
 			}
 		}
 	}
@@ -134,7 +141,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else {
 			gameView.setVisible(true);
 		}
-
+		
+		aiIsPlaying = lobbyView.computerIsSet();
 		lobbyView.setVisible(false);
 		lobbyView.stopLoading();
 
@@ -195,6 +203,10 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			sendChat(lobbyView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
+		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
+			int bestMove = ai.calculateBestMove(gamer.getColor());
+			gameView.getSlotsList().get(bestMove).setBackground(Color.GRAY);
+			
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
 			if(lobbyView.getChallengeList().getSelectedValue() != null) {
 				String selectedGamers = "challenge " + lobbyView.getChallengeList().getSelectedValue();
@@ -222,6 +234,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 					network.sendCommand("domove "+i);
 					updateGameView();
 					gameView.disableAllButtons();
+					gameView.getHintButton().setEnabled(false);
 				}
 			}
 		}
