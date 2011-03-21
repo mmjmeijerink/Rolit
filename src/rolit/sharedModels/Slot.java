@@ -17,7 +17,7 @@ public class Slot {
 	public void setValue(int aValue) {
 		// Nul kan niet ingevoerd worden omdat als een vakje bestaat
 		// hij niet meer leeg kan worden nadat hij geset is.
-		if(aValue > 0 && aValue < 5) { 
+		if(aValue >= 0 && aValue <= 4) { 
 			value = aValue;
 		} else {
 			System.out.println("Error: could not change slot value because value is invalid.");

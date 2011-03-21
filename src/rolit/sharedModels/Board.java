@@ -22,11 +22,16 @@ public class Board {
 	}
 	
 	private Board(ArrayList<Slot> aSlots) {
-		slots = aSlots;
+		slots = new ArrayList<Slot>();
+		for(Slot aSlot: aSlots) {
+			Slot newSlot = new Slot();
+			newSlot.setValue(aSlot.getValue());
+			slots.add(newSlot);
+		}
 	}
 	
 	public Board copy() {
-		Board copy = new Board((ArrayList<Slot>)slots.clone());
+		Board copy = new Board(slots);
 		return copy;
 	}
 

@@ -66,9 +66,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			int color = gamer.getColor();
 			if(game.getBoard().checkMove(i, color)) {
 				gameView.getSlotsList().get(i).setEnabled(true);
-				/*if(gameView.getSlotsList().get(i).getBackground() == null) {
-					gameView.getSlotsList().get(i).setBackground(Color.WHITE);
-				}*/
+				gameView.getSlotsList().get(i).setBackground(Color.GRAY);
 			} else {
 				gameView.getSlotsList().get(i).setEnabled(false);
 				/*if(gameView.getSlotsList().get(i).getBackground() == null) {
@@ -103,7 +101,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			} else if(color == Slot.BLUE) {
 				gameView.getSlotsList().get(i).setBackground(Color.BLUE);
 			} else {
-				gameView.getSlotsList().get(i).setBackground(null);
+				gameView.getSlotsList().get(i).setBackground(Color.BLACK);
 			}
 		}
 	}
@@ -163,6 +161,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 
 		game = new Game(gamers);
 		ai = new AIController(game.getBoard());
+		updateGameView();
 	}
 
 	//Event handlers
@@ -205,7 +204,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			sendChat(gameView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
 			int bestMove = ai.calculateBestMove(gamer.getColor());
-			gameView.getSlotsList().get(bestMove).setBackground(Color.GRAY);
+			gameView.getSlotsList().get(bestMove).setBackground(Color.WHITE);
 			
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
 			if(lobbyView.getChallengeList().getSelectedValue() != null) {
