@@ -308,7 +308,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gameView.setVisible(false);
 			lobbyView.stopLoading();
 			lobbyView.setVisible(true);
-			lobbyView.message(message);
+			if(game != null && game.getGamers() != null && game.getGamers().size() > 1) {
+				lobbyView.message(message);
+			} else {
+				lobbyView.message("Game ended because somebody disconnected.");
+			}
 			game = null;
 		}
 	}

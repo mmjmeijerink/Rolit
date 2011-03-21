@@ -157,7 +157,12 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
     	}
     	
     	for(JButton button : places) {
-    		button.setMargin(new Insets((int)heightButton, (int)widthButton, (int)heightButton, (int)widthButton));
+    		String osName = System.getProperty("os.name");
+    		if(osName.startsWith("Mac OS X")) {
+    			button.setMargin(new Insets((int)heightButton, (int)widthButton, (int)heightButton, (int)widthButton));
+    		} else {
+    			button.setMargin(new Insets((int)heightButton, (int)heightButton, (int)heightButton, (int)heightButton));
+    		}
     		//button.setSize(buttonSize, buttonSize);
     	}
         //System.out.println("componentResized");
