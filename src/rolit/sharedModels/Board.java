@@ -20,6 +20,15 @@ public class Board {
 		slots.get(35).setValue(Slot.BLUE);
 		slots.get(36).setValue(Slot.GREEN);
 	}
+	
+	private Board(ArrayList<Slot> aSlots) {
+		slots = aSlots;
+	}
+	
+	public Board copy() {
+		Board copy = new Board((ArrayList<Slot>)slots.clone());
+		return copy;
+	}
 
 	public boolean isFull() {
 		boolean result = true;
