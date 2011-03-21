@@ -61,18 +61,26 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	public void myTurn() {
-		gameView.getHintButton().setEnabled(true);
-		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
-			int color = gamer.getColor();
-			if(game.getBoard().checkMove(i, color)) {
-				gameView.getSlotsList().get(i).setEnabled(true);
-				gameView.getSlotsList().get(i).setBackground(Color.GRAY);
-			} else {
-				gameView.getSlotsList().get(i).setEnabled(false);
-				/*if(gameView.getSlotsList().get(i).getBackground() == null) {
-					gameView.getSlotsList().get(i).setBackground(Color.BLACK);
-				}*/
+		
+		if(!aiIsPlaying) {
+			gameView.getHintButton().setEnabled(true);
+			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
+				int color = gamer.getColor();
+				if(game.getBoard().checkMove(i, color)) {
+					gameView.getSlotsList().get(i).setEnabled(true);
+					gameView.getSlotsList().get(i).setBackground(Color.GRAY);
+				} else {
+					gameView.getSlotsList().get(i).setEnabled(false);
+					/*if(gameView.getSlotsList().get(i).getBackground() == null) {
+						gameView.getSlotsList().get(i).setBackground(Color.BLACK);
+					}*/
+				}
 			}
+		} else {
+			int bestMove = ai.calculateBestMove(gamer.getColor());
+			game.doMove(bestMove, gamer);
+			network.sendCommand("domove "+bestMove);
+			updateGameView();
 		}
 	}
 
