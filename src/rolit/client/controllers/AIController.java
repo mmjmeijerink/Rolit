@@ -12,7 +12,23 @@ public class AIController {
 	public int calculateBestMove(int color) {
 		int result = -1;
 		
-		Board newBoard = board.copy();
+		// Rekent uit welke zet de meeste punten oplevert binnen 1 zet, als er meerdere de zelfde punten opleveren neemt deze funtie de eerste die hij tegenkomt
+		int mostPoints = -1;
+		int mostPointsIndex = -1;
+		for(int i = 0; i < board.DIMENSION*board.DIMENSION; i++) {
+			if(board.checkMove(i, color)) {
+				int oldPoints = board.getPointsOfColor(color);
+				Board newBoard = board.copy();
+				newBoard.doMove(i, color);
+				int newPoints = newBoard.getPointsOfColor(color);
+				if(newPoints-oldPoints > mostPoints) {
+					mostPoints = newPoints - oldPoints;
+					mostPointsIndex = i;
+				}
+			}
+		}
+		
+		result = mostPointsIndex;
 		
 		return result;
 	}
