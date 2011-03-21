@@ -7,6 +7,5 @@ public class AIController {
 	
 	public AIController(Board aBoard) {
 		board = aBoard;
-		
 	}
 }
