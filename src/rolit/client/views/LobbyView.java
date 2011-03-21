@@ -17,6 +17,8 @@ public class LobbyView extends JFrame implements AlertableView {
 	private JList challengeList;
 	private JProgressBar joinLoader;
 	private ApplicationController viewController;
+	private JRadioButton	humanChoice;
+	private JRadioButton	computerChoice;
 
 	public LobbyView(ApplicationController aController) {
 		super("Welcome to the Lobby");
@@ -54,8 +56,12 @@ public class LobbyView extends JFrame implements AlertableView {
         JRadioButton jRadioButton1 = new javax.swing.JRadioButton();
         JRadioButton jRadioButton2 = new javax.swing.JRadioButton();
         
+        jRadioButton1.isSelected();
+        
         joinSpinner = jSpinner1;
         joinButton = jButton1;
+        humanChoice = jRadioButton1;
+        computerChoice = jRadioButton2;
         joinLoader = jProgressBar1;
         challengeButton = jButton2;
         chatArea = jTextArea1;
@@ -235,6 +241,16 @@ public class LobbyView extends JFrame implements AlertableView {
 	
 	public JButton getChallengeButton() {
 		return challengeButton;
+	}
+	
+	public boolean computerIsSet() {
+		//System.out.println(joinChoice.getSelection().toString());
+		return computerChoice.isSelected();
+	}
+	
+	public boolean humanIsSet() {
+		//System.out.println(joinChoice.getSelection().toString());
+		return humanChoice.isSelected();
 	}
 	
 	public void setChallengeList(ArrayList<String> list) {

@@ -15,6 +15,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	private JButton chatButton;
 	private JTextArea chatArea;
 	private JTextField chatMessage;
+	private JButton hintButton;
 	private ApplicationController viewController;
 
 	public GameView(ApplicationController aController) {
@@ -39,12 +40,14 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         JPanel jPanel2 = new javax.swing.JPanel();
         JTextField jTextField1 = new javax.swing.JTextField();
         JButton jButton3 = new javax.swing.JButton();
+        JButton jButton4 = new javax.swing.JButton();
         JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         JTextArea jTextArea1 = new javax.swing.JTextArea();
         
         chatArea = jTextArea1;
         chatMessage = jTextField1;
         chatButton = jButton3;
+        hintButton = jButton4;
         
         JPanel boardPanel = new JPanel();
 		boardPanel.setLayout(new GridBagLayout());
@@ -79,6 +82,9 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         jButton3.setText("Chat");
         jButton3.addActionListener(viewController);
         
+        jButton4.setText("Hint?");
+        jButton4.addActionListener(viewController);
+        
         jTextField1.addKeyListener(viewController);
 
         jTextArea1.setColumns(20);
@@ -96,7 +102,9 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton3)))
+                        .add(jButton3)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton4)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -104,7 +112,8 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
             .add(jPanel2Layout.createSequentialGroup()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton3))
+                    .add(jButton3)
+                    .add(jButton4))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                 .addContainerGap())
@@ -177,6 +186,10 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	
 	public JButton getChatButton() {
 		return chatButton;
+	}
+	
+	public JButton getHintButton() {
+		return hintButton;
 	}
 
 	public void componentHidden(ComponentEvent arg0) {}

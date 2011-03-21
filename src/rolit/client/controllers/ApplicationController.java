@@ -29,9 +29,12 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private NetworkController	network;
 	private Game				game = null;
 	private Gamer				gamer;
+	private AIController		ai;
+	private boolean				aiIsPlaying;
 
 	public ApplicationController() {
 		connectView = new ConnectView(this);
+		
 	}
 
 	//Getters and setters
@@ -151,6 +154,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 
 		game = new Game(gamers);
+		ai = new AIController(game.getBoard());
 	}
 
 	//Event handlers
@@ -185,6 +189,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			if(network != null) {
 				network.sendCommand("join "+lobbyView.getSpinnerValue());
 				lobbyView.startLoading();
+				lobbyView.computerIsSet();
 			}
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
 			sendChat(lobbyView.getChatMessage().getText());
@@ -294,6 +299,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gameView.setVisible(false);
 			lobbyView.stopLoading();
 			lobbyView.setVisible(true);
+			logWithAlert("You've got kicked!");
 			game = null;
 		}
 	}
