@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import rolit.server.controllers.ApplicationController;
 import rolit.server.models.LoggingInterface;
 
-public class MainView extends JFrame implements LoggingInterface {
+public class MainView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton   				connectButton;
@@ -29,6 +29,11 @@ public class MainView extends JFrame implements LoggingInterface {
 		viewController = aController;
 		buildView();
 		setVisible(true);
+		
+		/*
+		 * Voegt een WindowListener toe die er naar luister of het venster gesloten wordt.
+		 * Als het venster sluit wordt de hele applicatie afgesloten. 
+		 */
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -42,48 +47,11 @@ public class MainView extends JFrame implements LoggingInterface {
 	}
 
 	/** Builds the GUI. */
-	public void buildView() {
-		/*setSize(645,375);
-
-		JLabel hostLable 	= new JLabel("Hostname: ");
-		hostField 			= new JTextField("", 12);
-		hostField.setToolTipText("Your IP address");
-		hostField.setEditable(false);
-
-		JLabel portLable = new JLabel("Port: ");
-		portField        = new JTextField("1337", 5);
-		portField.setToolTipText("Set port for the server to use, you can only use ports that are not in use.");
-
-		connectButton = new JButton("(Re)start the server");
-		connectButton.addActionListener(viewController);
-
-		JLabel logLable = new JLabel("Log:");
-		logArea = new JTextArea("", 13, 74);
-		logArea.setEditable(false);
-		logArea.setLineWrap(true);
-		logArea.setFont(new Font("Monaco", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(logArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		// Indelen layout
-		JPanel grid = new JPanel(new GridLayout(2,2));
-		grid.add(hostLable);
-		grid.add(hostField);
-		grid.add(portLable);
-		grid.add(portField);
-
-		JPanel flowAbove = new JPanel(new FlowLayout());
-		flowAbove.add(grid, BorderLayout.WEST);
-		flowAbove.add(connectButton, BorderLayout.EAST);
-
-		JPanel flowBelow = new JPanel();
-		flowBelow.setLayout(new BorderLayout());
-		flowBelow.add(logLable);
-		flowBelow.add(scrollPane, BorderLayout.SOUTH);
-
-		Container container = getContentPane();
-		container.setLayout(new FlowLayout());
-		container.add(flowAbove); container.add(flowBelow);
-		this.setResizable(false);*/
+	private void buildView() {
+		
+		/*
+		 * Vreemde namen staan hier zodat ze overeenkomen met de NetBeans gegenereerde code.
+		 */
 		
 		JLabel jLabel1 = new javax.swing.JLabel();
         JLabel jLabel2 = new javax.swing.JLabel();
@@ -111,6 +79,11 @@ public class MainView extends JFrame implements LoggingInterface {
         jTextArea1.setRows(5);
         jTextArea1.setFont(new Font("Monaco", Font.PLAIN, 12));
         jScrollPane1.setViewportView(jTextArea1);
+        
+        /*
+         * NetBeans generator code vanaf hier.
+         * Voor deze code is dan ook de extra library swing-layout-1.0.4.jar nodig
+         */
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,6 +123,10 @@ public class MainView extends JFrame implements LoggingInterface {
         );
 
         pack();
+        
+        /*
+         * Einde NetBeans gegenereerde code.
+         */
 	}
 
 	public void disableControls() {
@@ -182,10 +159,17 @@ public class MainView extends JFrame implements LoggingInterface {
 	public String host() {
 		return hostField.getText();
 	}
-
-	public void log(String msg) {
-		if(msg != null) {
-			logArea.append(" " + msg + "\n");
+	
+	/**
+	 *  
+	 * @param logEntry
+	 * @require logEntry != null
+	 * @ensure Geplaatste string wordt in de logArea geplaast
+	 */
+	
+	public void enterLogEntry(String logEntry) {
+		if(logEntry != null) {
+			logArea.append(" " + logEntry + "\n");
 			logArea.setCaretPosition(logArea.getText().length());
 		}
 	}

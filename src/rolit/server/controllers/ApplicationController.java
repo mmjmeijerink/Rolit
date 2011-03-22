@@ -27,11 +27,14 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 	public ApplicationController() {
 		view = new MainView(this);
 		
+		/* Geeft het IP aders van de computer door aan de View zodat de gebruiker deze goed kan zien.
+		 * Het opvragen van het IP adres is inprincipe niet nodig voor het openen van een socket maar wel handig voor de gebruiker zodat deze weet waarmee de client moet verbinden.
+		 */
 		try {
             InetAddress ip = InetAddress.getLocalHost();
             view.setHost(ip.getHostAddress());
         } catch (UnknownHostException e) {
-        	view.log("Your system does not allow the server to know it's IP, you will not be able to start the server.");
+        	log("Your system does not allow the server to know it's IP, you will not be able to start the server.");
         	view.disableControls();
         }
 	}
@@ -41,8 +44,10 @@ public class ApplicationController implements ActionListener,LoggingInterface {
      * @require logEntry != null
      */
 	public void log(String logEntry) {
-		System.out.println(" " + logEntry);
-		view.log(logEntry);
+		if(logEntry != null) {
+			System.out.println(" " + logEntry);
+			view.enterLogEntry(logEntry);
+		}
 	}
 	
 	/**
@@ -64,7 +69,7 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 		if(event.getSource() == view.connectButton()) {
 			log("Starting the server...");
 
-			/**
+			/*
 			 * Als er een verkeerde poort in de MainView staat wordt standaard 1337 gebruikt.
 			 * Dit wordt ook aan de gebruiker doorgegeven doormiddel van de log.
 			 */
@@ -81,6 +86,10 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			
 			network = new NetworkController(port, this);
 			network.start();
+			/* Als er verbinding gemaakt wordt met de server wordt er naar de view een disableControls commando gestuurd.
+			 * Zodat de gebruiker niet meer de velden met poort, ip aders kan veranderen en goed kan blijven zien op welke poort de server gestart is.
+			 * Het network object roept this.connectionFailed() aan als er iets mis gaat zodat de controls weer geenabled wordt.
+			 */
 			view.disableControls();
 		}
 	}
