@@ -1,15 +1,15 @@
 package rolit.server.controllers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import rolit.server.models.*;
+import rolit.sharedModels.*;
 
-import rolit.server.models.LoggingInterface;
-import rolit.sharedModels.Gamer;
-
+/**
+ * 
+ * @author Thijs
+ *
+ */
 public class ConnectionController extends Thread {
 
 	private NetworkController   network;
@@ -21,6 +21,13 @@ public class ConnectionController extends Thread {
 	private LoggingInterface	log;
 	private Gamer				gamer;
 
+	/**
+	 * 
+	 * @param aNetwork
+	 * @param aSocket
+	 * @param aLog
+	 * @throws IOException
+	 */
 	public ConnectionController(NetworkController aNetwork, Socket aSocket, LoggingInterface aLog) throws IOException {
 		network = aNetwork;
 		socket = aSocket;
@@ -30,7 +37,10 @@ public class ConnectionController extends Thread {
 		log = aLog;
 		gamer = new Gamer();
 	}
-
+	
+	/**
+	 * 
+	 */
 	public void run() {
 		String inlezen = null;
 		
@@ -45,7 +55,11 @@ public class ConnectionController extends Thread {
 			} else disconnect();
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param msg
+	 */
 	public void sendCommand(String msg) {
 		if(msg != null) {
 			log.log("Sending commmand (" + msg + ") to " + toString());
@@ -57,20 +71,35 @@ public class ConnectionController extends Thread {
 			}
 		}
 	}
-
+	
+	/**
+	 * 
+	 */
 	public void disconnect() {
 		network.removeConnection(this);
 		this.running = false;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public Gamer getGamer() {
 		return gamer;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Socket getSocket() {
 		return socket;
 	}
 	
+	/**
+	 * 
+	 * 
+	 */
 	public String toString() {
 		return gamer.getName() + " (" + socket.getInetAddress() + ")";
 	}

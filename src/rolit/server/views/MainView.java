@@ -1,34 +1,50 @@
 package rolit.server.views;
 
-import java.awt.Font;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import rolit.server.controllers.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+/**
+ * De MainView zorgt er voor dat er een GUI aan de gebruiker wordt getoont en dat de gebruiker deze GUI kan gebruiken.
+ * De acties, zoals het drukken op een knop wordt afgehandeld door de ViewController van een View. En dat is in dit geval een instantie van ApplicationController.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 
-import rolit.server.controllers.ApplicationController;
-import rolit.server.models.LoggingInterface;
+@SuppressWarnings("serial")
+public class MainView extends JFrame {
 
-public class MainView extends JFrame implements LoggingInterface {
-
-	private static final long serialVersionUID = 1L;
 	private JButton   				connectButton;
 	private JTextField				portField;
 	private JTextArea 				logArea;
 	private JTextField				hostField;
 	private ApplicationController	viewController;
 
+	/**
+	 * Maakt een instantie van MainView aan en zorgt ervoor dat de applicatie een GUI aan de gebruiker presenteert.
+	 * Doormiddel van interne methoden wordt er een GUI gebouwd. Zodra deze gebouwd is kunnen er strings van textFields etc. opgevraagt worden van dit object.
+	 * 
+	 * @require aController != null
+	 * @param aController
+	 */
 	public MainView(ApplicationController aController) {
+		/*
+		 * Zorgt er voor dat er een JFrame geopent wordt met de naam Rolit Server in de titel balk
+		 */
 		super("Rolit Server");
 
 		viewController = aController;
 		buildView();
+		/*
+		 * Maakt de GUI zichtbaar nadat hij gebouwd is.
+		 */
 		setVisible(true);
+		
+		/*
+		 * Voegt een WindowListener toe die er naar luister of het venster gesloten wordt.
+		 * Als het venster sluit wordt de hele applicatie afgesloten. 
+		 */
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -41,49 +57,16 @@ public class MainView extends JFrame implements LoggingInterface {
 		);
 	}
 
-	/** Builds the GUI. */
-	public void buildView() {
-		/*setSize(645,375);
-
-		JLabel hostLable 	= new JLabel("Hostname: ");
-		hostField 			= new JTextField("", 12);
-		hostField.setToolTipText("Your IP address");
-		hostField.setEditable(false);
-
-		JLabel portLable = new JLabel("Port: ");
-		portField        = new JTextField("1337", 5);
-		portField.setToolTipText("Set port for the server to use, you can only use ports that are not in use.");
-
-		connectButton = new JButton("(Re)start the server");
-		connectButton.addActionListener(viewController);
-
-		JLabel logLable = new JLabel("Log:");
-		logArea = new JTextArea("", 13, 74);
-		logArea.setEditable(false);
-		logArea.setLineWrap(true);
-		logArea.setFont(new Font("Monaco", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(logArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		// Indelen layout
-		JPanel grid = new JPanel(new GridLayout(2,2));
-		grid.add(hostLable);
-		grid.add(hostField);
-		grid.add(portLable);
-		grid.add(portField);
-
-		JPanel flowAbove = new JPanel(new FlowLayout());
-		flowAbove.add(grid, BorderLayout.WEST);
-		flowAbove.add(connectButton, BorderLayout.EAST);
-
-		JPanel flowBelow = new JPanel();
-		flowBelow.setLayout(new BorderLayout());
-		flowBelow.add(logLable);
-		flowBelow.add(scrollPane, BorderLayout.SOUTH);
-
-		Container container = getContentPane();
-		container.setLayout(new FlowLayout());
-		container.add(flowAbove); container.add(flowBelow);
-		this.setResizable(false);*/
+	/**
+	 * Interne methoden voor het bouwen van de GUI.
+	 * Dit gebeurt met behulp van de swing-layout library.
+	 * @require this.viewController != null;
+	 */
+	private void buildView() {
+		
+		/*
+		 * Vreemde namen staan hier zodat ze overeenkomen met de NetBeans gegenereerde code.
+		 */
 		
 		JLabel jLabel1 = new javax.swing.JLabel();
         JLabel jLabel2 = new javax.swing.JLabel();
@@ -111,6 +94,11 @@ public class MainView extends JFrame implements LoggingInterface {
         jTextArea1.setRows(5);
         jTextArea1.setFont(new Font("Monaco", Font.PLAIN, 12));
         jScrollPane1.setViewportView(jTextArea1);
+        
+        /*
+         * NetBeans generator code vanaf hier.
+         * Voor deze code is dan ook de extra library swing-layout-1.0.4.jar nodig
+         */
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,44 +138,77 @@ public class MainView extends JFrame implements LoggingInterface {
         );
 
         pack();
+        
+        /*
+         * Einde NetBeans gegenereerde code.
+         */
 	}
 
+	/**
+	 * Zorgt er voor dat de gebruiker niet meer wijzigingen kan aanbrengen aan de textFields van de GUI
+	 * en zorgt er voor dat de gebruiker niet meer kan drukken op de knoppen in deze GUI.
+	 * @ensure this.getConnectButton().isEnabled = false;
+	 */
 	public void disableControls() {
 		portField.setEnabled(false);
 		hostField.setEnabled(false);
 		connectButton.setEnabled(false);
 	}
-
+	
+	/**
+	 * Zorgt er voor dat de gebruiker wijzigingen kan aanbrengen aan de textFields van de GUI
+	 * en zorgt er voor dat de gebruiker kan drukken op de knoppen in deze GUI.
+	 * @ensure this.getConnectButton().isEnabled = true;
+	 */
 	public void enableControls() {
 		portField.setEnabled(true);
 		hostField.setEnabled(true);
 		connectButton.setEnabled(true);
 	}
 
-	// Getters en setters
-	public void setHost(String host) {
+	/**
+	 * Vul het textField van de host in. Deze methoden wordt gebruikt door het huidige IP aders van de computer in het host veld te zetten.
+	 * Uiteindelijk wordt het hostField helemaal nergens voor gebruikt behalve dan het informeren van de gebruiker van het huidige IP adres.
+	 * @require host != null
+	 * @param host
+	 */
+	public void setHostField(String host) {
 		if(host != null) {
 			hostField.setText(host);
 		}
 	}
-
-	public JButton connectButton() {
+	
+	/**
+	 * Vraag het JButton object van deze view op zodat je kan checken of deze is ingedrukt in de ViewController.
+	 * @return != null
+	 */
+	public JButton getConnectButton() {
 		return connectButton;
 	}
 
-	public String port() {
+	/**
+	 * Vraag de string waarde van het textField voor de poort op. Zodat je kan gebruiken wat de gebruiker heeft ingevult in de GUI.
+	 * @return != null
+	 */
+	public String getPortString() {
 		return portField.getText();
 	}
-
-	public String host() {
-		return hostField.getText();
-	}
-
-	public void log(String msg) {
-		if(msg != null) {
-			logArea.append(" " + msg + "\n");
+	
+	/**
+	 * Zorgt er voor dat de logEntry netjes in de logArea geplaatst wordt zodat de gebruiker kan zien wat er gelogt wordt.
+	 * @param logEntry
+	 * @require logEntry != null
+	 * @ensure Geplaatste string wordt in de logArea geplaast
+	 */
+	
+	public void enterLogEntry(String logEntry) {
+		if(logEntry != null) {
+			logArea.append(" " + logEntry + "\n");
+			/*
+			 * Deze regel code zorgt er voor dat op het moment dat er een nieuwe logEntry geplaast wordt
+			 * de textArea netjes naar beneden gescroolt wordt.
+			 */
 			logArea.setCaretPosition(logArea.getText().length());
-			System.out.println(" " + msg);
 		}
 	}
 }

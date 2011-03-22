@@ -3,10 +3,13 @@ package rolit.server.controllers;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import rolit.sharedModels.*;
 
-import rolit.sharedModels.Game;
-import rolit.sharedModels.Gamer;
-
+/**
+ * 
+ * @author Thijs
+ *
+ */
 public class NetworkController extends Thread implements Observer {
 
 	private ApplicationController				appController;
@@ -17,6 +20,11 @@ public class NetworkController extends Thread implements Observer {
 	private ArrayList<Gamer>					challengedList;
 	private ArrayList<Game>						games;
 
+	/**
+	 * 
+	 * @param aPort
+	 * @param controller
+	 */
 	public NetworkController(int aPort, ApplicationController controller) {
 		super();
 		connections 	= new ArrayList<ConnectionController>();
@@ -27,7 +35,10 @@ public class NetworkController extends Thread implements Observer {
 		appController = controller;
 		port = aPort;
 	}
-
+	
+	/**
+	 * 
+	 */
 	public void run() {
 		ServerSocket server = null;
 
@@ -46,8 +57,12 @@ public class NetworkController extends Thread implements Observer {
 			appController.connectionFailed();
 		}
 	}
-
-	public void broadcastCommand(String msg) {
+	
+	/**
+	 * 
+	 * @param msg
+	 */
+	private void broadcastCommand(String msg) {
 		if(msg != null) {
 			for(ConnectionController client: connections){
 				client.sendCommand(msg);
@@ -55,7 +70,12 @@ public class NetworkController extends Thread implements Observer {
 			appController.log("Broadcasted: " + msg);
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param msg
+	 * @param sender
+	 */
 	public void executeCommand(String msg, ConnectionController sender) {
 		if(msg != null && sender != null) {
 			String[] regexCommand = (msg.split("\\s+"));
@@ -213,10 +233,18 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param connection
+	 */
 	public void addConnection(ConnectionController connection) {
 		connections.add(connection);
 	}
 
+	/**
+	 * 
+	 * @param connection
+	 */
 	public void removeConnection(ConnectionController connection) {
 		if(connections.contains(connection)) {
 			kickGamer(connection.getGamer());
@@ -231,6 +259,11 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param challenged
+	 * @param challenger
+	 */
 	private void challenge(Gamer challenged, Gamer challenger) {
 		challengedList.add(challenged);
 		challengerList.add(challenger);
@@ -241,6 +274,11 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param message
+	 * @param sender
+	 */
 	private void sendChat(String message, ConnectionController sender) {
 		Game participatingGame = null;
 		for(Game aGame: games) {
@@ -268,6 +306,11 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	private boolean checkName(String name) {
 		boolean result = true;
 
@@ -282,6 +325,9 @@ public class NetworkController extends Thread implements Observer {
 		return result;
 	}
 
+	/**
+	 * 
+	 */
 	private void broadcastLobby() {
 
 		String command = "lobby";
@@ -292,6 +338,11 @@ public class NetworkController extends Thread implements Observer {
 		broadcastCommand(command);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
 	private ArrayList<Gamer> gamersInLobby() {
 		ArrayList<Gamer> gamersConnected = new ArrayList<Gamer>();
 		for(ConnectionController aConnection: connections) {
@@ -318,6 +369,11 @@ public class NetworkController extends Thread implements Observer {
 		return gamersInLobby;
 	}
 
+	/**
+	 * 
+	 * @param aGamer
+	 * @return
+	 */
 	private boolean isInGame(Gamer aGamer) {
 		boolean result = false;
 
@@ -332,6 +388,9 @@ public class NetworkController extends Thread implements Observer {
 		return result;
 	}
 
+	/**
+	 * 
+	 */
 	private void checkForGameStart() {
 		appController.log("Checks if games can be started...");
 		ArrayList<ConnectionController> startingWith = null;
@@ -374,29 +433,6 @@ public class NetworkController extends Thread implements Observer {
 			}
 		}
 
-		/*
-		for(ConnectionController masterClient: waitingForGame){
-			int minimalSize = masterClient.getGamer().getRequestedGameSize();
-			ArrayList<ConnectionController> readyToStart = new ArrayList<ConnectionController>();
-			readyToStart.add(masterClient);
-			for(ConnectionController slaveClient: waitingForGame) {
-				if(masterClient != slaveClient) {
-					if(minimalSize < slaveClient.getGamer().getRequestedGameSize()) {
-						minimalSize = slaveClient.getGamer().getRequestedGameSize();
-					}
-					if(minimalSize >= readyToStart.size()) {
-						readyToStart.add(slaveClient);
-					} else {
-						startingWith = readyToStart;
-					}
-				}
-			}
-			if (readyToStart.size() == minimalSize) {
-				startingWith = readyToStart;
-			}
-		}
-		 */
-
 		if(startingWith != null) {
 			startGame(startingWith);
 		} else {
@@ -404,6 +440,10 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param players
+	 */
 	private void startGame(ArrayList<ConnectionController> players) {
 		
 		for(ConnectionController starting: players) {
@@ -446,6 +486,10 @@ public class NetworkController extends Thread implements Observer {
 		broadcastLobby();
 	}
 
+	/**
+	 * 
+	 * @param toBeKicked
+	 */
 	private void kickGamer(Gamer toBeKicked) {
 		appController.log("Kicking " + toBeKicked.getName() + " ...");
 		Game participatingGame = null;
@@ -473,6 +517,10 @@ public class NetworkController extends Thread implements Observer {
 		broadcastLobby();
 	}
 
+	/**
+	 * 
+	 * @param aGame
+	 */
 	private void nextTurn(Game aGame) {
 		for(ConnectionController connection: connections) {
 			for(Gamer aGamer: aGame.getGamers()) {
@@ -483,6 +531,10 @@ public class NetworkController extends Thread implements Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param aGame
+	 */
 	private void endGame(Game aGame) { 
 		String command = "endgame";
 		String logEntry = "Ending a game between";
@@ -509,6 +561,12 @@ public class NetworkController extends Thread implements Observer {
 		broadcastLobby();
 	}
 
+	/**
+	 * 
+	 * @param aGame
+	 * @param mover
+	 * @param slot
+	 */
 	private void moveDone(Game aGame, Gamer mover, int slot) {
 		for(ConnectionController connection: connections) {
 			for(Gamer aGamer: aGame.getGamers()) {
@@ -520,6 +578,9 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	@Override
+	/**
+	 * 
+	 */
 	public void update(Observable arg0, Object arg1) {
 		if(arg0.getClass().equals(Game.class)) {
 			Game game = (Game) arg0;

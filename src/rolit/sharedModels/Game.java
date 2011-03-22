@@ -9,10 +9,17 @@ public class Game extends Observable {
 	private Gamer current;
 	private ArrayList<Gamer> startedWith;
 
+	@SuppressWarnings("unchecked")
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
 		gamers = aGamers;
 		
+		/*
+		 * Deze if else structuur staat hier omdat de volgorde van de kleuren soms wat vreemd is.
+		 * Bij twee spelers eerst rood dan groen
+		 * Bij drie spelers eerst rood dan geel dan groen (in tegenstelling tot rood dan groen dan geel)
+		 * Bij vier spelers eerst rood dan geel dan groen dan blauw.
+		 */
 		if(aGamers.size() == 2) {
 			gamers.get(0).setColor(Slot.RED);
 			gamers.get(1).setColor(Slot.GREEN);
@@ -27,24 +34,32 @@ public class Game extends Observable {
 			gamers.get(3).setColor(Slot.BLUE);
 		}
 		
-		/*for(int i = 0; i < gamers.size(); i++) {
-			gamers.get(i).setColor(i+1);
-		}*/
-		
 		current = gamers.get(0);
 		startedWith = (ArrayList<Gamer>) gamers.clone();
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 * @param aGamer
+	 * @return
+	 */
 	public boolean checkMove(int i, Gamer aGamer) {
 		boolean result = false;
-		
+		/*
+		 * De gamer moet wel aan de beurt zijn voor het positief terug geven van deze methoden 
+		 */
 		if(aGamer == current && board.checkMove(i, aGamer.getColor())) {
 			result = true;
 		}
-		
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 * @param aGamer
+	 */
 	public void doMove(int i, Gamer aGamer) {
 		if(checkMove(i,aGamer)) {
 			board.doMove(i, aGamer.getColor());
@@ -54,6 +69,11 @@ public class Game extends Observable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param aGamer
+	 * @return
+	 */
 	public int getPointsOf(Gamer aGamer) {
 		int result = 0;
 		
@@ -66,6 +86,10 @@ public class Game extends Observable {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isEnded() {
 		boolean result = false;
 		
@@ -76,6 +100,10 @@ public class Game extends Observable {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param toBeRemoved
+	 */
 	public void removeGamer(Gamer toBeRemoved) {
 		if(current == toBeRemoved) {
 			nextTurn();
@@ -86,6 +114,9 @@ public class Game extends Observable {
 		notifyObservers("Gamer Removed");
 	}
 	
+	/**
+	 * 
+	 */
 	private void nextTurn() {
 		int indexOfCurrent = gamers.indexOf(current);
 		int indexOfNext = indexOfCurrent + 1;
@@ -96,23 +127,42 @@ public class Game extends Observable {
 		current = gamers.get(indexOfNext);
 	}
 	
-	//Getters and Setters
+	/**
+	 * 
+	 * @return
+	 */
 	public Board getBoard() {
 		return board;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Gamer getCurrent() {
 		return current;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<Gamer> getGamers() {
 		return gamers;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<Gamer> getStartedWith() {
 		return startedWith;
 	}
 	
+	/**
+	 * Maakt een nette string van alle beschrijvingen van de gamers die in deze game zitten.
+	 * @return
+	 */
 	public String toString() {
 		String result = "Game with: ";
 		
