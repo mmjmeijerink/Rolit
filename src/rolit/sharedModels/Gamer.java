@@ -109,11 +109,9 @@ public class Gamer {
 	 */
 	public String toString() {
 		String result = name;
-		
 		if (takesPart) {
-			result = result + " takes part in game with color: " + color;
+			result = result + " takes part in game with color: " + Slot.colorIntToString(color);
 		}
-		
 		return result;
 	}
 }
