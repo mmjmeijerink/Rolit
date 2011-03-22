@@ -61,6 +61,8 @@ public class NetworkController extends Thread {
 	}
 
 	public void executeCommand(String msg) {
+		System.out.println(msg);
+		
 		String[] regexCommand = (msg.split("\\s+"));
 		ArrayList<String> splitCommand = new ArrayList<String>(Arrays.asList(regexCommand));
 
@@ -89,6 +91,7 @@ public class NetworkController extends Thread {
 		}
 		else if(splitCommand.get(0).equals("movedone")) {
 			//Handling a move
+			appController.log(msg);
 			Gamer gamer = null;
 			for(Gamer aGamer : appController.getGame().getGamers()) {
 				if(aGamer.getName().equals(splitCommand.get(1)))

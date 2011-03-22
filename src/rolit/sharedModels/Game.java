@@ -13,9 +13,23 @@ public class Game extends Observable {
 		board = new Board();
 		gamers = aGamers;
 		
-		for(int i = 0; i < gamers.size(); i++) {
-			gamers.get(i).setColor(i+1);
+		if(aGamers.size() == 2) {
+			gamers.get(0).setColor(Slot.RED);
+			gamers.get(1).setColor(Slot.GREEN);
+		} else if (aGamers.size() == 3) {
+			gamers.get(0).setColor(Slot.RED);
+			gamers.get(1).setColor(Slot.YELLOW);
+			gamers.get(2).setColor(Slot.GREEN);
+		} else if (aGamers.size() == 4) {
+			gamers.get(0).setColor(Slot.RED);
+			gamers.get(1).setColor(Slot.YELLOW);
+			gamers.get(2).setColor(Slot.GREEN);
+			gamers.get(3).setColor(Slot.BLUE);
 		}
+		
+		/*for(int i = 0; i < gamers.size(); i++) {
+			gamers.get(i).setColor(i+1);
+		}*/
 		
 		current = gamers.get(0);
 		startedWith = (ArrayList<Gamer>) gamers.clone();
