@@ -61,7 +61,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	public void myTurn() {
-		
 		if(!aiIsPlaying) {
 			gameView.getHintButton().setEnabled(true);
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
