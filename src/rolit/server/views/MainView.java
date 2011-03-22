@@ -195,7 +195,7 @@ public class MainView extends JFrame {
 	}
 	
 	/**
-	 *  
+	 * Zorgt er voor dat de logEntry netjes in de logArea geplaatst wordt zodat de gebruiker kan zien wat er gelogt wordt.
 	 * @param logEntry
 	 * @require logEntry != null
 	 * @ensure Geplaatste string wordt in de logArea geplaast
@@ -204,6 +204,10 @@ public class MainView extends JFrame {
 	public void enterLogEntry(String logEntry) {
 		if(logEntry != null) {
 			logArea.append(" " + logEntry + "\n");
+			/*
+			 * Deze regel code zorgt er voor dat op het moment dat er een nieuwe logEntry geplaast wordt
+			 * de textArea netjes naar beneden gescroolt wordt.
+			 */
 			logArea.setCaretPosition(logArea.getText().length());
 		}
 	}
