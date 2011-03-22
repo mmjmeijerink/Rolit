@@ -1,5 +1,10 @@
 package rolit.sharedModels;
 
+/**
+ * 
+ * @author Thijs
+ *
+ */
 public class Gamer {
 	
 	private String name;
@@ -7,12 +12,20 @@ public class Gamer {
 	private int requestedGameSize;
 	private int color; // Volgens de kleuren gedefineerd in Slot
 	
+	/**
+	 * 
+	 */
 	public Gamer() {
 		name = "[NOT CONNECTED]"; // Mag want op een andere manier kan name nooit geset worden met een spatie, dus deze is uniek
 		takesPart = false;
 		color = Slot.EMPTY;
 	}
 	
+	/**
+	 * 
+	 * @param size
+	 * @return
+	 */
 	public boolean setRequestedGameSize(int size) {
 		boolean result;
 		
@@ -26,10 +39,19 @@ public class Gamer {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getRequestedGameSize() {
 		return requestedGameSize;
 	}
 	
+	/**
+	 * 
+	 * @param aColor
+	 * @return
+	 */
 	public boolean setColor(int aColor) {
 		boolean result = false;
 		
@@ -49,22 +71,42 @@ public class Gamer {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getColor() {
 		return color;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * 
+	 * @param aName
+	 */
 	public void setName(String aName) {
 		name = aName;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isTakingPart() {
 		return takesPart;
 	}
 	
+	/**
+	 * Geeft een nette string beschrijving terug van de gamer inclusief de naam van de gamer en de kleur die hij heeft.
+	 * @return
+	 */
 	public String toString() {
 		String result = name;
 		

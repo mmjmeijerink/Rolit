@@ -1,12 +1,15 @@
 package rolit.sharedModels;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Board {
 
 	public static final int DIMENSION = 8;
 	private ArrayList<Slot>  	slots;
 
+	/**
+	 * 
+	 */
 	public Board() {
 		slots = new ArrayList<Slot>();
 
@@ -21,6 +24,10 @@ public class Board {
 		slots.get(36).setValue(Slot.GREEN);
 	}
 	
+	/**
+	 * 
+	 * @param aSlots
+	 */
 	private Board(ArrayList<Slot> aSlots) {
 		slots = new ArrayList<Slot>();
 		for(Slot aSlot: aSlots) {
@@ -30,11 +37,19 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Board copy() {
 		Board copy = new Board(slots);
 		return copy;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isFull() {
 		boolean result = true;
 		
@@ -47,6 +62,11 @@ public class Board {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param color
+	 * @return
+	 */
 	public int getPointsOfColor(int color) {
 		int result = 0;
 		
@@ -59,6 +79,11 @@ public class Board {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 */
 	public void doMove(int slotNo, int color) {
 		if(checkMove(slotNo,color)) {
 			slots.get(slotNo).setValue(color);
@@ -89,6 +114,12 @@ public class Board {
 		}
 	}
 
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @return
+	 */
 	public boolean checkMove(int slotNo, int color) {
 		boolean result = false;
 
@@ -110,6 +141,11 @@ public class Board {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param color
+	 * @return
+	 */
 	private boolean checkIfConquering(int color) {
 		boolean result = false;
 		
@@ -132,7 +168,11 @@ public class Board {
 		
 		return result;
 	}
-
+	/**
+	 * 
+	 * @param slotNo
+	 * @return
+	 */
 	private boolean checkIfBordering(int slotNo) {
 		boolean result = false;
 		
@@ -179,6 +219,13 @@ public class Board {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkAbove(int slotNo, int color, int steps) {
 		int slotAbove = slotNo - DIMENSION;
 		int result;
@@ -203,7 +250,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkRightAbove(int slotNo, int color, int steps) {
 		int slotRightAbove = slotNo - DIMENSION + 1;
 		int result;
@@ -227,7 +281,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkRight(int slotNo, int color, int steps) {
 		int slotRight = slotNo + 1;
 		int result;
@@ -251,7 +312,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkRightBelow(int slotNo, int color, int steps) {
 		int slotRightBelow = slotNo + DIMENSION + 1;
 		int result;
@@ -275,7 +343,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkBelow(int slotNo, int color, int steps) {
 		int slotBelow = slotNo + DIMENSION;
 		int result;
@@ -300,7 +375,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkLeftBelow(int slotNo, int color, int steps) {
 		int slotLeftBelow = slotNo + DIMENSION - 1;
 		int result;
@@ -324,7 +406,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkLeft(int slotNo, int color, int steps) {
 		int slotLeft = slotNo - 1;
 		int result;
@@ -348,7 +437,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private int checkLeftAbove(int slotNo, int color, int steps) {
 		int slotLeftAbove = slotNo - DIMENSION - 1;
 		int result;
@@ -373,7 +469,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	public String toString() {
 		String result = "\n";
 		
@@ -390,7 +493,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	public String layoutToString() {
 		String result = "\n";
 		
@@ -412,7 +522,14 @@ public class Board {
 		
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */
 	private void flipBetween(int a, int b) {
 		int color = slots.get(a).getValue();
 		if(a < b) {
@@ -455,6 +572,13 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param slotNo
+	 * @param color
+	 * @param steps
+	 * @return
+	 */	
 	public ArrayList<Slot> getSlots() {
 		return slots;
 	}
