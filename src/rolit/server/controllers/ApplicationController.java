@@ -27,12 +27,13 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 	public ApplicationController() {
 		view = new MainView(this);
 		
-		/* Geeft het IP aders van de computer door aan de View zodat de gebruiker deze goed kan zien.
+		/* 
+		 * Geeft het IP aders van de computer door aan de View zodat de gebruiker deze goed kan zien.
 		 * Het opvragen van het IP adres is inprincipe niet nodig voor het openen van een socket maar wel handig voor de gebruiker zodat deze weet waarmee de client moet verbinden.
 		 */
 		try {
             InetAddress ip = InetAddress.getLocalHost();
-            view.setHost(ip.getHostAddress());
+            view.setHostField(ip.getHostAddress());
         } catch (UnknownHostException e) {
         	log("Your system does not allow the server to know it's IP, you will not be able to start the server.");
         	view.disableControls();
@@ -55,7 +56,9 @@ public class ApplicationController implements ActionListener,LoggingInterface {
      * LETOP: Roep via ApplicationController connectionFailed aan zodat de View maar via 1 controller wordt aangestuurd zodat de toestand van de view gegarandeerd wordt.
      */
 	public void connectionFailed() {
-		// Roep via ApplicationController connectionFailed aan zodat de View maar via 1 controller wordt aangestuurd zodat de toestand van de view gegarandeerd wordt.
+		/*
+		 * Roep via ApplicationController connectionFailed aan zodat de View maar via 1 controller wordt aangestuurd zodat de toestand van de view gegarandeerd wordt.
+		 */
 		view.enableControls();
 	}
 
@@ -66,7 +69,7 @@ public class ApplicationController implements ActionListener,LoggingInterface {
      * Als het netwerk goed gestart is worden de knoppen op de view gedisabled zodat deze niet meer gebruikt kunnen worden terwijl de server aan staat.
      */
 	public void actionPerformed(ActionEvent event) {
-		if(event.getSource() == view.connectButton()) {
+		if(event.getSource() == view.getConnectButton()) {
 			log("Starting the server...");
 
 			/*
@@ -75,7 +78,7 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			 */
 			int port = 1337; // Default port
 			try {
-				port = Integer.parseInt(view.port());
+				port = Integer.parseInt(view.getPortString());
 				if (port<1 && port > 65535) {
 					log("Port has to be in the range [1-65535], using 1337 default.");
 					port = 1337; // Default port
@@ -86,7 +89,8 @@ public class ApplicationController implements ActionListener,LoggingInterface {
 			
 			network = new NetworkController(port, this);
 			network.start();
-			/* Als er verbinding gemaakt wordt met de server wordt er naar de view een disableControls commando gestuurd.
+			/* 
+			 * Als er verbinding gemaakt wordt met de server wordt er naar de view een disableControls commando gestuurd.
 			 * Zodat de gebruiker niet meer de velden met poort, ip aders kan veranderen en goed kan blijven zien op welke poort de server gestart is.
 			 * Het network object roept this.connectionFailed() aan als er iets mis gaat zodat de controls weer geenabled wordt.
 			 */

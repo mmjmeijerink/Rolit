@@ -1,33 +1,44 @@
 package rolit.server.views;
 
-import java.awt.Font;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import rolit.server.controllers.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+/**
+ * De MainView zorgt er voor dat er een GUI aan de gebruiker wordt getoont en dat de gebruiker deze GUI kan gebruiken.
+ * De acties, zoals het drukken op een knop wordt afgehandeld door de ViewController van een View. En dat is in dit geval een instantie van ApplicationController.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 
-import rolit.server.controllers.ApplicationController;
-import rolit.server.models.LoggingInterface;
-
+@SuppressWarnings("serial")
 public class MainView extends JFrame {
 
-	private static final long serialVersionUID = 1L;
 	private JButton   				connectButton;
 	private JTextField				portField;
 	private JTextArea 				logArea;
 	private JTextField				hostField;
 	private ApplicationController	viewController;
 
+	/**
+	 * Maakt een instantie van MainView aan en zorgt ervoor dat de applicatie een GUI aan de gebruiker presenteert.
+	 * Doormiddel van interne methoden wordt er een GUI gebouwd. Zodra deze gebouwd is kunnen er strings van textFields etc. opgevraagt worden van dit object.
+	 * 
+	 * @require aController != null
+	 * @param aController
+	 */
 	public MainView(ApplicationController aController) {
+		/*
+		 * Zorgt er voor dat er een JFrame geopent wordt met de naam Rolit Server in de titel balk
+		 */
 		super("Rolit Server");
 
 		viewController = aController;
 		buildView();
+		/*
+		 * Maakt de GUI zichtbaar nadat hij gebouwd is.
+		 */
 		setVisible(true);
 		
 		/*
@@ -46,7 +57,11 @@ public class MainView extends JFrame {
 		);
 	}
 
-	/** Builds the GUI. */
+	/**
+	 * Interne methoden voor het bouwen van de GUI.
+	 * Dit gebeurt met behulp van de swing-layout library.
+	 * @require this.viewController != null;
+	 */
 	private void buildView() {
 		
 		/*
@@ -129,35 +144,54 @@ public class MainView extends JFrame {
          */
 	}
 
+	/**
+	 * Zorgt er voor dat de gebruiker niet meer wijzigingen kan aanbrengen aan de textFields van de GUI
+	 * en zorgt er voor dat de gebruiker niet meer kan drukken op de knoppen in deze GUI.
+	 * @ensure this.getConnectButton().isEnabled = false;
+	 */
 	public void disableControls() {
 		portField.setEnabled(false);
 		hostField.setEnabled(false);
 		connectButton.setEnabled(false);
 	}
-
+	
+	/**
+	 * Zorgt er voor dat de gebruiker wijzigingen kan aanbrengen aan de textFields van de GUI
+	 * en zorgt er voor dat de gebruiker kan drukken op de knoppen in deze GUI.
+	 * @ensure this.getConnectButton().isEnabled = true;
+	 */
 	public void enableControls() {
 		portField.setEnabled(true);
 		hostField.setEnabled(true);
 		connectButton.setEnabled(true);
 	}
 
-	// Getters en setters
-	public void setHost(String host) {
+	/**
+	 * Vul het textField van de host in. Deze methoden wordt gebruikt door het huidige IP aders van de computer in het host veld te zetten.
+	 * Uiteindelijk wordt het hostField helemaal nergens voor gebruikt behalve dan het informeren van de gebruiker van het huidige IP adres.
+	 * @require host != null
+	 * @param host
+	 */
+	public void setHostField(String host) {
 		if(host != null) {
 			hostField.setText(host);
 		}
 	}
-
-	public JButton connectButton() {
+	
+	/**
+	 * Vraag het JButton object van deze view op zodat je kan checken of deze is ingedrukt in de ViewController.
+	 * @return != null
+	 */
+	public JButton getConnectButton() {
 		return connectButton;
 	}
 
-	public String port() {
+	/**
+	 * Vraag de string waarde van het textField voor de poort op. Zodat je kan gebruiken wat de gebruiker heeft ingevult in de GUI.
+	 * @return != null
+	 */
+	public String getPortString() {
 		return portField.getText();
-	}
-
-	public String host() {
-		return hostField.getText();
 	}
 	
 	/**
