@@ -11,7 +11,6 @@ import rolit.server.controllers.*;
  * @author  Mart Meijerink en Thijs Scheepers
  * @version 1
  */
-
 @SuppressWarnings("serial")
 public class MainView extends JFrame {
 
@@ -45,7 +44,6 @@ public class MainView extends JFrame {
 		 * Voegt een WindowListener toe die er naar luister of het venster gesloten wordt.
 		 * Als het venster sluit wordt de hele applicatie afgesloten. 
 		 */
-
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				e.getWindow().dispose();
@@ -200,7 +198,6 @@ public class MainView extends JFrame {
 	 * @require logEntry != null
 	 * @ensure Geplaatste string wordt in de logArea geplaast
 	 */
-	
 	public void enterLogEntry(String logEntry) {
 		if(logEntry != null) {
 			logArea.append(" " + logEntry + "\n");

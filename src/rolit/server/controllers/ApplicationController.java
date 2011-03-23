@@ -15,8 +15,8 @@ import rolit.server.views.MainView;
  * @author  Mart Meijerink en Thijs Scheepers
  * @version 1
  */
-
-public class ApplicationController implements ActionListener,LoggingInterface {
+public class ApplicationController implements ActionListener, LoggingInterface {
+	
 	private MainView 			view;
 	private NetworkController 	network;
 	

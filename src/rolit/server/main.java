@@ -8,7 +8,6 @@ import rolit.server.controllers.ApplicationController;
  * @author  Mart Meijerink en Thijs Scheepers
  * @version 1
  */
-
 public class Main {
 	
 	/**
