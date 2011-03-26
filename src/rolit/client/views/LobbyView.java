@@ -19,6 +19,7 @@ public class LobbyView extends JFrame implements AlertableView {
 	private ApplicationController viewController;
 	private JRadioButton	humanChoice;
 	private JRadioButton	computerChoice;
+	private JRadioButton	smartComputerChoice;
 
 	public LobbyView(ApplicationController aController) {
 		super("Welcome to the Lobby");
@@ -55,6 +56,7 @@ public class LobbyView extends JFrame implements AlertableView {
         ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         JRadioButton jRadioButton1 = new javax.swing.JRadioButton();
         JRadioButton jRadioButton2 = new javax.swing.JRadioButton();
+	JRadioButton jRadioButton3 = new javax.swing.JRadioButton();
         
         jRadioButton1.isSelected();
         
@@ -62,6 +64,7 @@ public class LobbyView extends JFrame implements AlertableView {
         joinButton = jButton1;
         humanChoice = jRadioButton1;
         computerChoice = jRadioButton2;
+	smartComputerChoice = jRadioButton3;
         joinLoader = jProgressBar1;
         challengeButton = jButton2;
         chatArea = jTextArea1;
@@ -102,6 +105,10 @@ public class LobbyView extends JFrame implements AlertableView {
         jRadioButton2.setText("Computer");
         jRadioButton2.addActionListener(viewController);
 
+	buttonGroup1.add(jRadioButton3);
+        jRadioButton3.setText("SmartComputer");
+        jRadioButton3.addActionListener(viewController);
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -109,6 +116,7 @@ public class LobbyView extends JFrame implements AlertableView {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+		    .add(jRadioButton3, 0, 0, Short.MAX_VALUE)
                     .add(jRadioButton2, 0, 0, Short.MAX_VALUE)
                     .add(jRadioButton1, 0, 0, Short.MAX_VALUE)
                     .add(jButton1, 0, 0, Short.MAX_VALUE)
@@ -139,6 +147,8 @@ public class LobbyView extends JFrame implements AlertableView {
                         .add(jRadioButton1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jRadioButton2)
+			.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jRadioButton3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .add(18, 18, 18)
@@ -242,10 +252,15 @@ public class LobbyView extends JFrame implements AlertableView {
 	public JButton getChallengeButton() {
 		return challengeButton;
 	}
-	
+
+	public boolean smartComputerIsSet() {
+		//System.out.println(joinChoice.getSelection().toString());
+		return smartComputerChoice.isSelected();
+	}
+
 	public boolean computerIsSet() {
 		//System.out.println(joinChoice.getSelection().toString());
-		return computerChoice.isSelected();
+		return computerChoice.isSelected() || smartComputerChoice.isSelected();
 	}
 	
 	public boolean humanIsSet() {

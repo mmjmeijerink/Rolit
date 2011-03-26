@@ -1,8 +1,9 @@
 package rolit.client.controllers;
 
+import rolit.client.models.AIControllerInterface;
 import rolit.sharedModels.Board;
 
-public class AIController {
+public class AIController implements AIControllerInterface {
 	
 	private Board board;
 	

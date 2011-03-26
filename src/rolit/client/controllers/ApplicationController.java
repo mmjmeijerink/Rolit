@@ -1,5 +1,6 @@
 package rolit.client.controllers;
 
+import rolit.client.models.AIControllerInterface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,8 +30,9 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private NetworkController	network;
 	private Game				game = null;
 	private Gamer				gamer;
-	private AIController		ai;
+	private AIControllerInterface		ai;
 	private boolean				aiIsPlaying;
+	private boolean				smartAIIsPlaying;
 
 	public ApplicationController() {
 		connectView = new ConnectView(this);
@@ -61,7 +63,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	public void myTurn() {
-		if(!aiIsPlaying) {
+		if(!aiIsPlaying && !smartAIIsPlaying) {
 			gameView.getHintButton().setEnabled(true);
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 				int color = gamer.getColor();
@@ -167,7 +169,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 
 		game = new Game(gamers);
-		ai = new AIController(game.getBoard());
+		if(lobbyView.smartComputerIsSet()) {
+		    ai = new SmartAIController(game.getBoard());
+		} else {
+		    ai = new AIController(game.getBoard());
+		}
 		updateGameView();
 	}
 
