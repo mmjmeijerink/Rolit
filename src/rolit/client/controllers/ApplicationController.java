@@ -76,6 +76,12 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				}
 			}
 		} else {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			int bestMove = ai.calculateBestMove(gamer.getColor());
 			game.doMove(bestMove, gamer);
 			network.sendCommand("domove "+bestMove);
@@ -167,7 +173,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 
 		game = new Game(gamers);
-		ai = new AIController(game.getBoard());
+		ai = new AIController(game.getBoard(),gamers);
 		updateGameView();
 	}
 	
