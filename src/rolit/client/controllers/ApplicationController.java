@@ -77,9 +77,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		} else {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(gameView.getTimeValue());
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			int bestMove = ai.calculateBestMove(gamer.getColor());
