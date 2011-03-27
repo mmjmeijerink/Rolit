@@ -27,7 +27,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private ConnectView			connectView;
 	private LobbyView			lobbyView;
 	private NetworkController	network;
-	private Game				game = null;
+	private Game				game;
 	private Gamer				gamer;
 	private AIController		ai;
 	private boolean				aiIsPlaying;
@@ -169,6 +169,15 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		game = new Game(gamers);
 		ai = new AIController(game.getBoard());
 		updateGameView();
+	}
+	
+	public void stopGame() {
+		network.sendCommand("domove 31");
+		lobbyView.setVisible(true);
+		gameView.setVisible(false);
+		logWithAlert("Game ended because you left.");
+		game = null;
+		gameView = null;
 	}
 
 	//Event handlers
@@ -314,6 +323,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				lobbyView.message("Game ended because somebody disconnected.");
 			}
 			game = null;
+			gameView = null;
 		}
 	}
 
@@ -324,6 +334,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			lobbyView.setVisible(true);
 			logWithAlert("You've got kicked!");
 			game = null;
+			gameView = null;
 		}
 	}
 }

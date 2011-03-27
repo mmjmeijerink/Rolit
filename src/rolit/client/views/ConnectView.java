@@ -18,10 +18,6 @@ public class ConnectView extends JFrame implements AlertableView {
 		this.setVisible(true);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				e.getWindow().dispose();
-			}
-
-			public void windowClosed(WindowEvent e) {
 				System.exit(0);
 			}
 		});

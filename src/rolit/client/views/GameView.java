@@ -9,7 +9,7 @@ import javax.swing.*;
 import rolit.client.controllers.*;
 import rolit.sharedModels.Board;
 
-public class GameView extends JFrame implements AlertableView, ComponentListener {
+public class GameView extends JFrame implements AlertableView, ComponentListener, WindowListener {
 	
 	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton chatButton;
@@ -23,15 +23,8 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 		viewController = aController;
 		buildView();
 		this.setVisible(true);
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				e.getWindow().dispose();
-			}
-
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
+		this.addWindowListener(this);
+		this.setDefaultCloseOperation ( JFrame.DO_NOTHING_ON_CLOSE );
 	}
 	
 	/** Builds the GUI. */
@@ -197,8 +190,18 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	public JButton getHintButton() {
 		return hintButton;
 	}
+	
+	public void windowClosing(WindowEvent arg0) {
+		viewController.stopGame();
+	}
 
 	public void componentHidden(ComponentEvent arg0) {}
 	public void componentMoved(ComponentEvent arg0) {}
 	public void componentShown(ComponentEvent arg0) {}
+	public void windowClosed(WindowEvent e) {}
+	public void windowActivated(WindowEvent arg0) {}
+	public void windowDeactivated(WindowEvent arg0) {}
+	public void windowDeiconified(WindowEvent arg0) {}
+	public void windowIconified(WindowEvent arg0) {}
+	public void windowOpened(WindowEvent arg0) {}
 }
