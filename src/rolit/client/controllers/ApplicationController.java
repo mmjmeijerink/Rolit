@@ -1,5 +1,6 @@
 package rolit.client.controllers;
 
+import rolit.client.models.AIControllerInterface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,18 +24,17 @@ import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
 
-	private GameView			gameView;
-	private ConnectView			connectView;
-	private LobbyView			lobbyView;
-	private NetworkController	network;
-	private Game				game;
-	private Gamer				gamer;
-	private AIController		ai;
-	private boolean				aiIsPlaying;
-
+	private GameView				gameView;
+	private ConnectView				connectView;
+	private LobbyView				lobbyView;
+	private NetworkController		network;
+	private Game					game = null;
+	private Gamer					gamer;
+	private AIControllerInterface	ai;
+	private boolean					aiIsPlaying;
+	
 	public ApplicationController() {
-		connectView = new ConnectView(this);
-		
+		connectView = new ConnectView(this);		
 	}
 
 	//Getters and setters
@@ -135,14 +135,14 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		connectView.setVisible(false);
 		if(gamer == null) {
 			gamer = new Gamer();
-		} 
+		}
 		gamer.setName(gamerName);
 
 		if(lobbyView == null) {
 			lobbyView = new LobbyView(this);
 		} else {
 			lobbyView.setVisible(true);
-		}	
+		}
 	}
 
 	public void startGame(ArrayList<String> players) {
@@ -172,7 +172,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 
 		game = new Game(gamers);
-		ai = new AIController(game.getBoard(),gamers);
+		if(lobbyView.smartComputerIsSet()) {
+		    ai = new SmartAIController(game.getBoard());
+		} else {
+		    ai = new AIController(game.getBoard(), gamers);
+		}
 		updateGameView();
 	}
 	

@@ -1,14 +1,16 @@
 package rolit.client.controllers;
 
+import rolit.client.models.AIControllerInterface;
 import java.util.*;
 import rolit.sharedModels.*;
 
-public class AIController {
+
+public class AIController implements AIControllerInterface {
 	
 	private Board board;
 	private ArrayList<Gamer> gamers;
 	
-	public AIController(Board aBoard,ArrayList<Gamer> aGamers) {
+	public AIController(Board aBoard, ArrayList<Gamer> aGamers) {
 		board = aBoard;
 		gamers = aGamers;
 	}

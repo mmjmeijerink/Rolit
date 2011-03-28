@@ -23,6 +23,7 @@ public class NetworkController extends Thread {
 		port = aPort;
 		host = aHost;
 		startupCommand = aStartupCommand;
+		this.setName(startupCommand);//Debug line! 
 	}
 
 	public void run() {
@@ -108,7 +109,7 @@ public class NetworkController extends Thread {
 			int winnerPoints = 0;
 			boolean noWinner = false;
 			
-			for(int i = 0; i <  appController.getGame().getGamers().size() && i < splitCommand.size() + 1; i ++) {
+			for(int i = 0; i <  appController.getGame().getGamers().size() && i < splitCommand.size() + 1; i++) {
 				String name = appController.getGame().getGamers().get(i).getName();
 				if(name.equals(appController.getGamer().getName())) {
 					name = "You have";
@@ -153,7 +154,6 @@ public class NetworkController extends Thread {
 		}
 		else if(splitCommand.get(0).equals("challenged")) {
 			//Handling a challenge request
-			//TODO: Add challenge mode
 			appController.challenged(splitCommand.get(1));
 			appController.log("Challenge received for a game with " + msg.substring(splitCommand.get(0).length() + 1));
 		}
