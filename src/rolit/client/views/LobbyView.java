@@ -52,7 +52,7 @@ public class LobbyView extends JFrame implements AlertableView {
         ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         JRadioButton jRadioButton1 = new javax.swing.JRadioButton();
         JRadioButton jRadioButton2 = new javax.swing.JRadioButton();
-	JRadioButton jRadioButton3 = new javax.swing.JRadioButton();
+        JRadioButton jRadioButton3 = new javax.swing.JRadioButton();
         
         jRadioButton1.isSelected();
         
@@ -60,7 +60,7 @@ public class LobbyView extends JFrame implements AlertableView {
         joinButton = jButton1;
         humanChoice = jRadioButton1;
         computerChoice = jRadioButton2;
-	smartComputerChoice = jRadioButton3;
+        smartComputerChoice = jRadioButton3;
         joinLoader = jProgressBar1;
         challengeButton = jButton2;
         chatArea = jTextArea1;
@@ -98,11 +98,11 @@ public class LobbyView extends JFrame implements AlertableView {
         jRadioButton1.addActionListener(viewController);
 
         buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Computer");
+        jRadioButton2.setText("Dull AI");
         jRadioButton2.addActionListener(viewController);
 
 	buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setText("SmartComputer");
+        jRadioButton3.setText("Smart AI");
         jRadioButton3.addActionListener(viewController);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);

@@ -174,19 +174,46 @@ public class NetworkController extends Thread implements Observer {
 			/*
 			 * Hier wordt het commando join afgehandeld.
 			 * Er wordt gekeken of de sender zich al heeft geidentificeerd dmv connect commando.
+			 * Er wordt gekeken of de sender niet al toevallig in een game zit.
+			 * En er wordt gecheckt of het commando conform is met het protocol.
+			 * Als alles klopt wordt de gebruiker in een lijstje gezet met gamers die aan het wachten zijn op een game.
+			 * Er wordt elke keer als een join commano uitgevoerd wordt gecheckt of een game gestart kan worden met de private methode checkForGameStart();
 			 */
 			} else if(splitCommand.get(0).equals("join")) {
-				/* Execute command "join" */
+				/*
+				 * Checkt of de gamer zich al heeft geidentificeerd, als dit niet zo is wordt het commando genegeerd.
+				 */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					/*
+					 * Wordt gecheckt of de gamer al in game zit, als dit zo is wordt dit commando genegeerd.
+					 * Er kan namelijk alleen een join commando worden uitgevoerd als de gamer in de lobby zit.
+					 * Als een gamer 2 games te gelijk wil spelen zal hij 2 keer een client op moeten starten.
+					 */
 					if(!isInGame(sender.getGamer())) {
+						/*
+						 * Er wordt gecheckt of het aantal argumenten van het join commando klopt.
+						 * Dit hoort 1 artument te zijn namelijk een getal tussen de 2 en de 4.
+						 */
 						if(splitCommand.size() == 2) {
 							try {
 								int requestedSize = Integer.parseInt(splitCommand.get(1));
+								/*
+								 * Er wordt hier de requestedGameSize property geset op de gamer van de sender.
+								 * Deze methode stuurt false terug als het meegegeven getal niet tussen de 2 en 4 zit en dus niet uitgevoerd kan worden.
+								 * Als dit het geval is wordt dit commando genegeerd.
+								 */
 								if(sender.getGamer().setRequestedGameSize(requestedSize)) {
+									/*
+									 * Als deze gebruiker in de lobby zit en al een keer een join commando had verstuurd kan de gebruiker dit gewoon nog een keer doen.
+									 * Hij wordt dan alleen niet opnieuw toegevoegd aan de waitingForGame lijst. Zijn requested game size wordt daarentegen wel veranderd.
+									 */
 									if(!waitingForGame.contains(sender)) {
 										waitingForGame.add(sender);
 									}
 									appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
+									/*
+									 * Er wordt met deze private metode gecheckt of er een nieuwe game gestart kan worden.
+									 */
 									checkForGameStart();
 								} else {
 									appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter between [2-4]: " + aCommand);
@@ -203,6 +230,12 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Join command from " + sender.toString() + " FAILED, not identified.");
 				}
+				
+			/*
+			 * 
+			 * 
+			 * 
+			 */	
 			} else if(splitCommand.get(0).equals("domove")) {
 				/* Execute command "domove" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
