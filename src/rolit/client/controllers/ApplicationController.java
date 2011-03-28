@@ -24,19 +24,17 @@ import rolit.sharedModels.*;
 
 public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
 
-	private GameView			gameView;
-	private ConnectView			connectView;
-	private LobbyView			lobbyView;
-	private NetworkController	network;
-	private Game				game = null;
-	private Gamer				gamer;
-	private AIControllerInterface		ai;
-	private boolean				aiIsPlaying;
-	private boolean				smartAIIsPlaying;
+	private GameView				gameView;
+	private ConnectView				connectView;
+	private LobbyView				lobbyView;
+	private NetworkController		network;
+	private Game					game = null;
+	private Gamer					gamer;
+	private AIControllerInterface	ai;
+	private boolean					aiIsPlaying;
 
 	public ApplicationController() {
-		connectView = new ConnectView(this);
-		
+		connectView = new ConnectView(this);		
 	}
 
 	//Getters and setters
@@ -63,7 +61,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	public void myTurn() {
-		if(!aiIsPlaying && !smartAIIsPlaying) {
+		if(!aiIsPlaying) {
 			gameView.getHintButton().setEnabled(true);
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
 				int color = gamer.getColor();
@@ -132,14 +130,14 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		connectView.setVisible(false);
 		if(gamer == null) {
 			gamer = new Gamer();
-		} 
+		}
 		gamer.setName(gamerName);
 
 		if(lobbyView == null) {
 			lobbyView = new LobbyView(this);
 		} else {
 			lobbyView.setVisible(true);
-		}	
+		}
 	}
 
 	public void startGame(ArrayList<String> players) {
