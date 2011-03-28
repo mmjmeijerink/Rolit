@@ -117,6 +117,10 @@ public class NetworkController extends Thread implements Observer {
 	 * @param sender de connectie die het commando binnen heeft gekregen.
 	 */
 	public void executeCommand(String aCommand, ConnectionController sender) {
+		/*
+		 * Wordt gecheckt of de precondities kloppen, anders gebeurt er niets. Omdat deze methode afhandelijk is van client input zal de applicatie niet crashen in deze methode.
+		 * Wel zullen alle fouten gelogt worden zodat er goed gedebugt kan worden met onze server.
+		 */
 		if(aCommand != null && sender != null) {
 			/*
 			 * Het commando wordt met behulp van RegEx gesplits bij de spaties en in een array gestopt zodat
@@ -232,28 +236,58 @@ public class NetworkController extends Thread implements Observer {
 				}
 				
 			/*
+			 * In dit stuk code wordt het commando domove afgehandeld.
+			 * Er wordt checkekt of de verstuurde wel geidentificeerd is, in een game zit en
+			 * aan de beurt is, de zet juist is en of het commando conform met het protocol verstuurd wordt.
 			 * 
-			 * 
+			 * Als de verstuurder een van de voorwaarde overschreid wordt hij in sommige gevallen gekickt,
+			 * zoals het protocol voorschrijft.
 			 * 
 			 */	
 			} else if(splitCommand.get(0).equals("domove")) {
-				/* Execute command "domove" */
+				/*
+				 * Er wordt gecheckt of de gamer geidentificeerd is met het commando connect [naam]
+				 * Als dit niet zo is wordt het commando genegeerd.
+				 */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					/*
+					 * Er wordt gecheckt of het commando domove het juiste aantal parametes heeft.
+					 * Dit zou 1 paramet moeten zijn met de plaatst op het bord waar de gamer zijn bal wil zetten.
+					 */
 					if(splitCommand.size() == 2) {
 						Game participatingGame = null;
 						for(Game aGame: games) {
-							//appController.log(games.toString());
+							/*
+							 * Er wordt hier in alle games gekeken of de speler wel in een game zit
+							 * en zo ja, in welke. Die game wordt opgeslagen in de variabele participatingGame
+							 */
 							for(Gamer aGamer: aGame.getGamers()) {
 								if(aGamer == sender.getGamer()) {
 									participatingGame = aGame;
 								}
 							}
 						}
+						/*
+						 * Als een gamer in een game zit volgens zich zelf en volgens de lijst met gamen die de network controller bijhoud wordt er verder gekeken.
+						 * Ander wordt het commando genegeerd.
+						 */
 						if(participatingGame != null && sender.getGamer().isTakingPart()) {
+							/*
+							 * Als een gamer aan de beurt is wordt er verder gekeken, als dit niet het geval is wordt hij onmiddelijk gekickt.
+							 * Dit wordt allemaal netjes gelogt en de server beheerder kan dit goed bijhouden.
+							 */
 							if(participatingGame.getCurrent() == sender.getGamer()) {
 								try {
 									int slotToSet = Integer.parseInt(splitCommand.get(1));
+									/*
+									 * Checkt de move met de zojuist geparste int. Als de zet onmogelijk blijkt te zijn zal de gamer gekickt worden,
+									 * conform met het protocol.
+									 */
 									if(participatingGame.checkMove(slotToSet, sender.getGamer())) {
+										/*
+										 * De zet wordt regeristreerd in de game, vervolgens wordt met behulp van de private methode moveDone de juiste commando's
+										 * gestuurd naar alle deelnemende spelers.
+										 */
 										moveDone(participatingGame,sender.getGamer(),slotToSet);
 										participatingGame.doMove(slotToSet, sender.getGamer());
 										appController.log(sender.toString() + " has set " + splitCommand.get(1) + " in his game.");
@@ -277,10 +311,23 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Domove command from " + sender.toString() + " FAILED, not identified.");
 				}
+				
+			/*
+			 * Hier wordt het commando chat afgehandeld.
+			 * 
+			 * Er wordt alleen maar gecheckt of de sender zich heeft geidentificeerd.
+			 * 
+			 */
 			} else if(splitCommand.get(0).equals("chat")) {
-				/* Execute command "chat" */
+				/*
+				 * Als de sender zich niet heeft geidentificeerd zal het commando simpel weg niet worden afgehandeld.
+				 */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 					appController.log("Chat command from " + sender.toString() + " send: " + aCommand.substring(5));
+					/*
+					 * Met behulp van de private methode sendChat(); zal het chat bericht naar de juiste personen worden gestuurd,
+					 * als de persoon in game is gaat de chat naar de deelnemers en als de persoon in de lobby zit gaat de chat naar de lobby gasten.
+					 */
 					sendChat(aCommand.substring(5),sender);
 				} else {
 					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
