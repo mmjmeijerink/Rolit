@@ -32,7 +32,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private Gamer					gamer;
 	private AIControllerInterface	ai;
 	private boolean					aiIsPlaying;
-
+	
 	public ApplicationController() {
 		connectView = new ConnectView(this);		
 	}
@@ -76,6 +76,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				}
 			}
 		} else {
+			try {
+				Thread.sleep(gameView.getTimeValue());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			int bestMove = ai.calculateBestMove(gamer.getColor());
 			game.doMove(bestMove, gamer);
 			network.sendCommand("domove "+bestMove);
@@ -170,9 +175,18 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		if(lobbyView.smartComputerIsSet()) {
 		    ai = new SmartAIController(game.getBoard());
 		} else {
-		    ai = new AIController(game.getBoard());
+		    ai = new AIController(game.getBoard(), gamers);
 		}
 		updateGameView();
+	}
+	
+	public void stopGame() {
+		network.sendCommand("domove 31");
+		lobbyView.setVisible(true);
+		gameView.setVisible(false);
+		logWithAlert("Game ended because you left.");
+		game = null;
+		gameView = null;
 	}
 
 	//Event handlers
@@ -318,6 +332,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				lobbyView.message("Game ended because somebody disconnected.");
 			}
 			game = null;
+			gameView = null;
 		}
 	}
 
@@ -328,6 +343,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			lobbyView.setVisible(true);
 			logWithAlert("You've got kicked!");
 			game = null;
+			gameView = null;
 		}
 	}
 }

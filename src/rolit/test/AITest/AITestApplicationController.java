@@ -67,7 +67,7 @@ public class AITestApplicationController extends ApplicationController {
 		if(super.getGamer().getName().contains("smart")) {
 		    ai = new SmartAIController(game.getBoard());
 		} else {
-		    ai = new AIController(game.getBoard());
+		    ai = new AIController(game.getBoard(), gamers);
 		}
 	}
 	

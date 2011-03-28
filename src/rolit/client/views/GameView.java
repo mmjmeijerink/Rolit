@@ -9,13 +9,14 @@ import javax.swing.*;
 import rolit.client.controllers.*;
 import rolit.sharedModels.Board;
 
-public class GameView extends JFrame implements AlertableView, ComponentListener {
+public class GameView extends JFrame implements AlertableView, ComponentListener, WindowListener {
 	
 	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton chatButton;
 	private JTextArea chatArea;
 	private JTextField chatMessage;
 	private JButton hintButton;
+	private JSlider timeSlider;
 	private ApplicationController viewController;
 
 	public GameView(ApplicationController aController) {
@@ -23,15 +24,8 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 		viewController = aController;
 		buildView();
 		this.setVisible(true);
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				e.getWindow().dispose();
-			}
-
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
+		this.addWindowListener(this);
+		this.setDefaultCloseOperation ( JFrame.DO_NOTHING_ON_CLOSE );
 	}
 	
 	/** Builds the GUI. */
@@ -43,11 +37,13 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         JButton jButton4 = new javax.swing.JButton();
         JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         JTextArea jTextArea1 = new javax.swing.JTextArea();
+        JSlider jSlider1 = new javax.swing.JSlider();
         
         chatArea = jTextArea1;
         chatMessage = jTextField1;
         chatButton = jButton3;
         hintButton = jButton4;
+        timeSlider = jSlider1;
         
         JPanel boardPanel = new JPanel();
 		boardPanel.setLayout(new GridBagLayout());
@@ -91,6 +87,9 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
+        
+        jSlider1.setMaximum(3000);
+        jSlider1.setValue(1000);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -102,19 +101,25 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
+                        
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton4)))
+                        .add(jButton4)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jSlider1)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
+            	.add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    
                     .add(jButton3)
                     .add(jButton4))
+                .add(jSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                 .addContainerGap())
@@ -197,8 +202,22 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	public JButton getHintButton() {
 		return hintButton;
 	}
+	
+	public int getTimeValue() {
+		return timeSlider.getValue();
+	}
+	
+	public void windowClosing(WindowEvent arg0) {
+		viewController.stopGame();
+	}
 
 	public void componentHidden(ComponentEvent arg0) {}
 	public void componentMoved(ComponentEvent arg0) {}
 	public void componentShown(ComponentEvent arg0) {}
+	public void windowClosed(WindowEvent e) {}
+	public void windowActivated(WindowEvent arg0) {}
+	public void windowDeactivated(WindowEvent arg0) {}
+	public void windowDeiconified(WindowEvent arg0) {}
+	public void windowIconified(WindowEvent arg0) {}
+	public void windowOpened(WindowEvent arg0) {}
 }
