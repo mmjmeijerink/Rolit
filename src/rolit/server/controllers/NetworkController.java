@@ -332,15 +332,36 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
 				}
+			
+				
+			/*
+			 * Hieronder staat de code voor het afhandelen van het challenge commando.
+			 * 
+			 * Er wordt gecheckt of de sender zich heeft geidentificeerd, of hij in de lobby zit en of hij niet zichzelf challengd.
+			 */
 			} else if(splitCommand.get(0).equals("challenge")) {
-				/* Execute command "challenge" */
+				/*
+				 * Als de sender zich niet heeft geidentificeerd zal het commando simpel weg niet worden afgehandeld.
+				 */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					/*
+					 * Als de sender zich in de lobby bevind gaan we verder, als dit niet zo is wordt dit commando niet afgehandeld.
+					 */
 					if(gamersInLobby().contains(sender.getGamer())) {
+						/*
+						 * Als de sender zichzelf probeerd te challengen zal er niets gebeuren.
+						 */
 						if(!sender.getGamer().getName().equals(splitCommand.get(1))) {
-
 							for(Gamer aGamer: gamersInLobby()) {
+								/*
+								 * Er wordt gecheckt of de techallenge speler in de lobby zit, zo ja wordt dit afgehandel door de private methode challenge();
+								 * zo nee? gebeurt er helemaal niets.
+								 */
 								if(aGamer.getName().equals(splitCommand.get(1))) {
 									appController.log("Gamer " + aGamer.getName() + " challenged by " + sender.getGamer().getName());
+									/*
+									 * Zie de beschrijving van de private methode challange voor verdere beschrijving.
+									 */
 									challenge(aGamer,sender.getGamer());
 								}
 							}
@@ -353,17 +374,40 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Challenge command from " + sender.toString() + " FAILED, not identified.");
 				}
+			/*
+			 * Hieronder wordt het challengeresponse commando afgehandeld.
+			 */
 			} else if(splitCommand.get(0).equals("challengeresponse")) {
-				/* Execute command "challengeresponse" */
+				/*
+				 * Als de sender zich niet heeft geidentificeerd zal het commando simpel weg niet worden afgehandeld.
+				 */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
+					/*
+					 * Er wordt gecheckt of de sender zich wel in de lobby bevind.
+					 */
 					if(gamersInLobby().contains(sender.getGamer())) {
 						for(Gamer aGamer : gamersInLobby()) {
+							/*
+							 * Er wordt door alle gamers in de lobby geloopt
+							 * als de challenger gevonden is wordt het antwoord geprossest.
+							 */
 							if(aGamer != sender.getGamer() && aGamer.getName().equals(splitCommand.get(1))) {
 								challengerList.remove(aGamer);
 								challengedList.remove(sender.getGamer());
+								/*
+								 * Als het antwoord true is zal er een game gestart worden.
+								 * de aanvrager en de antwoorder zullen samen in een game 1 tegen 1 beginnen.
+								 */
 								if(splitCommand.get(2).equals("true")) {
 									for(ConnectionController aConnection: connections) {
 										if(aConnection.getGamer() == aGamer) {
+											/*
+											 * Er wordt netjes door alle connections heen geloopt om op deze manier een array 
+											 * van deelnemende connections op te bouwen om vervolgend mee te geven aan de private methode
+											 * startGame();
+											 * 
+											 * Voor verdere beschrijving zie startGame();
+											 */
 											ArrayList<ConnectionController> toStartWith = new ArrayList<ConnectionController>();
 											toStartWith.add(sender);
 											toStartWith.add(aConnection);
@@ -380,6 +424,10 @@ public class NetworkController extends Thread implements Observer {
 				} else {
 					appController.log("Challengeresponse command from " + sender.toString() + " FAILED, not identified.");
 				}
+				
+			/*
+			 * Als een commando niet wordt begrepen wordt dit netjes gelogt, er gebeurt verder niets om crashes te voorkomen. 
+			 */
 			} else {
 				appController.log("Command from " + sender.toString() + " misunderstood: " + aCommand);
 			}
@@ -390,7 +438,7 @@ public class NetworkController extends Thread implements Observer {
 	 * 
 	 * @param connection
 	 */
-	public void addConnection(ConnectionController connection) {
+	private void addConnection(ConnectionController connection) {
 		connections.add(connection);
 	}
 
