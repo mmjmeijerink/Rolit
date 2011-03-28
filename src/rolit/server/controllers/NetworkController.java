@@ -6,9 +6,11 @@ import java.util.*;
 import rolit.sharedModels.*;
 
 /**
- * 
- * @author Thijs
- *
+ * De NetworkController beheert alle ConnectionController instanties en handelt alle binnengekomen commando's juist af volgens het protocol met behulp van insanties van Game en lijsten met Gamers.
+ * De NetworkController heeft zijn eigen thread zodat hij onafhankelijk van de interface dingen kan berekenen en kan luisteren naar nieuwe clients die zich aanmelden.
+ * Een RolitServer heeft maar 1 instantie van een NetworkController nodig.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
  */
 public class NetworkController extends Thread implements Observer {
 
@@ -21,31 +23,54 @@ public class NetworkController extends Thread implements Observer {
 	private ArrayList<Game>						games;
 
 	/**
+	 * In de constructor van de network controller worden alle instantie variable gevult.
+	 * Het is nodig dat de network controller een verwijzing heeft naar de application controller zodat hij mogelijke fouten en log berichten door kan geven.
+	 * Een logging interface is hier niet genoeg omdat de network controller ook connectionfailed aan moet roepen als er iets niet goed is gegaan met het opzetten van de socket.
 	 * 
-	 * @param aPort
-	 * @param controller
+	 * @require controller != null && aPort > 0
+	 * 
+	 * @param aPort De poort waarop de server moet gaan draaien.
+	 * @param controller de ApplicationController van de server zodat de NetworkController hier berichten aan door kan geven.
 	 */
-	public NetworkController(int aPort, ApplicationController controller) {
+	public NetworkController(int aPort, ApplicationController controller) throws NullPointerException {
 		super();
+		
 		connections 	= new ArrayList<ConnectionController>();
 		waitingForGame 	= new ArrayList<ConnectionController>();
 		games			= new ArrayList<Game>();
 		challengedList	= new ArrayList<Gamer>();
 		challengerList	= new ArrayList<Gamer>();
-		appController = controller;
-		port = aPort;
+		
+		if(controller != null && aPort > 0) {
+			appController = controller;
+			port = aPort;
+		} else {
+			/*
+			 * Als een gebruiker niet voldoet aan de preconditie wordt er een exception getrowt.
+			 */
+			throw new NullPointerException();
+		}
+		
 	}
 	
 	/**
-	 * 
+	 * Dit is de methode die gedurende het uitvoeren van de Thread gaat lopen. Deze methode dient niet direct aangeroepen te worden maar kan worden gestart via de methode this.start();
 	 */
 	public void run() {
 		ServerSocket server = null;
 
 		try {
+			/*
+			 * Start de server door het openen van een nieuwe socket.
+			 */
 			server = new ServerSocket(port);
 			appController.log("Server started on port: " + port);
 			while (true) {
+				/*
+				 * Binnen deze loop wordt er geluistert naar mogelijke niewe connecties van clients.
+				 * Als er een conenctie binnen komt wordt daarvoor een nieuwe ConnectionController thread aangemaakt.
+				 * Deze thread kan dan vervolgens gaan luisteren naar commando's die binnen komen van deze thread.
+				 */
 				Socket socket = server.accept();
 				ConnectionController client = new ConnectionController(this, socket, appController);
 				appController.log("New connection from IP: " + socket.getInetAddress());
@@ -53,21 +78,30 @@ public class NetworkController extends Thread implements Observer {
 				client.start();
 			}
 		} catch (IOException e){
-			appController.log("Server can't start because port " + port + " is already being used");
+			/*
+			 * Deze IOException wordt aangeroepen als er geen socket kan worden aangemaakt op de gedefineerde poort.
+			 * 
+			 * Daarnaast kan deze methode ook aangeroepen worden als de ConnectionController constructor een IOException throwt,
+			 * maar dat zal niet gebeuren omdat de socket nooit een verkeerde. Stel dat de socket een verkeerde was dan zou deze al
+			 * vastlopen bij het instancieren van die socket.
+			 * 
+			 */
+			appController.log("Server can't start because port " + port + " is already being used.");
 			appController.connectionFailed();
 		}
 	}
 	
 	/**
-	 * 
-	 * @param msg
+	 * Deze methode kan worden gebruikt om een commando naar alle verbonden clients te sturen.
+	 * @require aCommand != null
+	 * @param aCommand het te sturen commando, dient conform te zijn met het protocol van INF2.
 	 */
-	private void broadcastCommand(String msg) {
-		if(msg != null) {
+	private void broadcastCommand(String aCommand) {
+		if(aCommand != null) {
 			for(ConnectionController client: connections){
-				client.sendCommand(msg);
+				client.sendCommand(aCommand);
 			}
-			appController.log("Broadcasted: " + msg);
+			appController.log("Broadcasted: " + aCommand);
 		}
 	}
 	
