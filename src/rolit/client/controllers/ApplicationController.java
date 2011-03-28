@@ -214,7 +214,12 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 
 			if(host != null && port > 0) {
 				connectView.disableControlls();
-				network = new NetworkController(host, port, this, "connect " + connectView.getNick());
+				/*
+				 * Deze functie zorgt er voor dat ale spaties uit de meegegeven nick worden gehaalt zodat
+				 * de server de naam goed kan afhandelen en er fouten worden voorkomen.
+				 */
+				String realNick = connectView.getNick().replaceAll(" ", "");
+				network = new NetworkController(host, port, this, "connect " + realNick);
 				network.start();
 			}
 		} else if(lobbyView != null && event.getSource() == lobbyView.getJoinButton()) {

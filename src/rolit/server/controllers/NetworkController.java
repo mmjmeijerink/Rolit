@@ -173,6 +173,7 @@ public class NetworkController extends Thread implements Observer {
 				
 			/*
 			 * Hier wordt het commando join afgehandeld.
+			 * Er wordt gekeken of de sender zich al heeft geidentificeerd dmv connect commando.
 			 */
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
