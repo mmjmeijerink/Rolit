@@ -106,26 +106,60 @@ public class NetworkController extends Thread implements Observer {
 	}
 	
 	/**
+	 * Dit is de methode die er voor zorgt dat een binnen gekomen commando van een connectie op de juiste manier wordt afgehandeld.
+	 * Dit alles volgens het afgesproken protocol. Deze methode maakt veel gebruik van de private functies die de NetworkController bevat.
 	 * 
-	 * @param msg
-	 * @param sender
+	 * executeCommand kan commando's uitvoeren die beginnen met: "connect, join, domove, chat, challenge, challengeresponse".
+	 * 
+	 * @require aCommand != null && sender != null
+	 * 
+	 * @param aCommand het uit te voeren commando, dient conform te zijn met het protocol van INF2
+	 * @param sender de connectie die het commando binnen heeft gekregen.
 	 */
-	public void executeCommand(String msg, ConnectionController sender) {
-		if(msg != null && sender != null) {
-			String[] regexCommand = (msg.split("\\s+"));
+	public void executeCommand(String aCommand, ConnectionController sender) {
+		if(aCommand != null && sender != null) {
+			/*
+			 * Het commando wordt met behulp van RegEx gesplits bij de spaties en in een array gestopt zodat
+			 * het commando gemakkelijk op te delen is. Dit maakt het verwerken van het commando gemakkelijk voor de programmeur.
+			 */
+			String[] regexCommand = (aCommand.split("\\s+"));
 			ArrayList<String> splitCommand = new ArrayList<String>(Arrays.asList(regexCommand));
 
+			/*
+			 * Hier wort het commando connect afgehandeld.
+			 * Dit gebeurt door een gamer van een connectie een unieke naam te geven.
+			 * Als de naam die is mee gestuurd met connect niet uniek is wordt hier een cijfer achter geplakt.
+			 * 
+			 * Er wordt aan het eind van de afhandeling een commando ackconnect naar de sender gestuurd.
+			 */
 			if(splitCommand.get(0).equals("connect")) {
-				/* Execute command "connect" */
-
+				/*
+				 * Als er teveel parameters mee worden gegeven wordt het commando niet verder afgehandeld omdat er niet is gehandeld volgens het protocol.
+				 */
 				if(splitCommand.size() == 2) {
+					/*
+					 * Als er een nieuwe gamer aangemaakt wordt krijgt deze standaar de naam NOT CONNECTED en er wordt hier op gecheckt.
+					 * Als de gamer al een naam toegewezen heeft gekregen wordt het verzoek tot connect niet afgehandeld.
+					 * 
+					 * Als een gamer de naam NOT CONNECTED mee geeft zou het niet afgehandeld worden omdat er een spatie in die naam zit en dit is niet conform met het protocol.
+					 * Zo wordt deze mogelijke bug onmogelijk gemaakt.
+					 */
 					if(sender.getGamer().getName().equals("[NOT CONNECTED]")) {
 						String possibleName = splitCommand.get(1);
 						int i = 1;
 						while(!checkName(possibleName)) {
+							/*
+							 * Als de naam die is mee gegeven met connect al bestaat bij een specifieke gamer dan wordt er een nieuwe naam gecreerd
+							 * met een extra cijfer er achter en vervolgens wordt deze opnieuw gecheckt.
+							 */
 							possibleName = splitCommand.get(1)+Integer.toString(i);
 							i++;
 						}
+						/*
+						 * Als de naam uniek blijkt te zijn wordt er het commando ackconnect plus die naam naar de connectie gestuurt.
+						 * Vervolgens wordt de naam ook toegewezen aan de instantie van de gamer aan der server kant
+						 * En er wordt een broadcastLobby() command gestuurt omdat er iets in de lobby is veranderd. Er is namelijk een nieuwe gamer in de lobby gekomen.
+						 */
 						sender.getGamer().setName(possibleName);
 						appController.log("Connection from " + sender.getSocket().getInetAddress() + " has identified itself as: " + possibleName);
 						sender.sendCommand("ackconnect "+possibleName);
@@ -134,8 +168,12 @@ public class NetworkController extends Thread implements Observer {
 						appController.log(sender.toString() + " tries to but is already identified.");
 					}
 				} else {
-					appController.log("Connect command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
+					appController.log("Connect command from " + sender.toString() + " FAILED, has more than 1 parameter: " + aCommand);
 				}
+				
+			/*
+			 * Hier wordt het commando join afgehandeld.
+			 */
 			} else if(splitCommand.get(0).equals("join")) {
 				/* Execute command "join" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
@@ -150,16 +188,16 @@ public class NetworkController extends Thread implements Observer {
 									appController.log(sender.toString() + " wants to join with " + splitCommand.get(1) + " players");
 									checkForGameStart();
 								} else {
-									appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter between [2-4]: " + msg);
+									appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter between [2-4]: " + aCommand);
 								}
 							} catch(NumberFormatException e) {
-								appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
+								appController.log("Join command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + aCommand);
 							}
 						} else {
-							appController.log("Join command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
+							appController.log("Join command from " + sender.toString() + " FAILED, has more than 1 parameter: " + aCommand);
 						}
 					} else {
-						appController.log("Join command from " + sender.toString() + " gamers is already ingame. " + msg);
+						appController.log("Join command from " + sender.toString() + " gamers is already ingame. " + aCommand);
 					}
 				} else {
 					appController.log("Join command from " + sender.toString() + " FAILED, not identified.");
@@ -186,11 +224,11 @@ public class NetworkController extends Thread implements Observer {
 										participatingGame.doMove(slotToSet, sender.getGamer());
 										appController.log(sender.toString() + " has set " + splitCommand.get(1) + " in his game.");
 									} else {
-										appController.log("Domove command from " + sender.toString() + " FAILED, move is impossible " + msg);
+										appController.log("Domove command from " + sender.toString() + " FAILED, move is impossible " + aCommand);
 										kickGamer(sender.getGamer());
 									}
 								} catch(NumberFormatException e) {
-									appController.log("Domove command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + msg);
+									appController.log("Domove command from " + sender.toString() + " FAILED, 1st parameter needs to be a int: " + aCommand);
 								}
 							} else {
 								appController.log("Domove command from " + sender.toString() + " FAILED, does not have the turn.");
@@ -200,7 +238,7 @@ public class NetworkController extends Thread implements Observer {
 							appController.log("Domove command from " + sender.toString() + " FAILED, player is not in game.");
 						}
 					} else {
-						appController.log("Domove command from " + sender.toString() + " FAILED, has more than 1 parameter: " + msg);
+						appController.log("Domove command from " + sender.toString() + " FAILED, has more than 1 parameter: " + aCommand);
 					}
 				} else {
 					appController.log("Domove command from " + sender.toString() + " FAILED, not identified.");
@@ -208,8 +246,8 @@ public class NetworkController extends Thread implements Observer {
 			} else if(splitCommand.get(0).equals("chat")) {
 				/* Execute command "chat" */
 				if(!sender.getGamer().getName().equals("[NOT CONNECTED]")) {
-					appController.log("Chat command from " + sender.toString() + " send: " + msg.substring(5));
-					sendChat(msg.substring(5),sender);
+					appController.log("Chat command from " + sender.toString() + " send: " + aCommand.substring(5));
+					sendChat(aCommand.substring(5),sender);
 				} else {
 					appController.log("Chat command from " + sender.toString() + " FAILED, not identified.");
 				}
@@ -262,7 +300,7 @@ public class NetworkController extends Thread implements Observer {
 					appController.log("Challengeresponse command from " + sender.toString() + " FAILED, not identified.");
 				}
 			} else {
-				appController.log("Command from " + sender.toString() + " misunderstood: " + msg);
+				appController.log("Command from " + sender.toString() + " misunderstood: " + aCommand);
 			}
 		}
 	}
