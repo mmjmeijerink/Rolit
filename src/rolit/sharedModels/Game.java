@@ -2,6 +2,12 @@ package rolit.sharedModels;
 
 import java.util.*;
 
+/**
+ * Het Game model houdt alle facetten van een game bij, er wordt bijgehouden wie er aan de beurt is,
+ * met wie de game gestart is, wie er in de game zit en de situatie op het bord van de game.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 public class Game extends Observable {
 
 	private Board board;
@@ -10,6 +16,11 @@ public class Game extends Observable {
 	private ArrayList<Gamer> startedWith;
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * Maakt een nieuw Game object aan en zorgt er voor dat elke gamer zijn goede kleur toegewezen krijgt.
+	 * @require aGamers != null && aGamer.size() > 1 && aGamers.size() < 5
+	 * @ensure this.startedWith().equals(aGamers)
+	 */
 	public Game(ArrayList<Gamer> aGamers) {
 		board = new Board();
 		gamers = aGamers;
@@ -35,6 +46,10 @@ public class Game extends Observable {
 		}
 		
 		current = gamers.get(0);
+		/*
+		 * Deze cast zorgt voor een unchecked warning, maar gamers is een instantie van ArrayList<Gamer> dus 
+		 * we hoeven ons geen zorgen te maken om deze warning.
+		 */
 		startedWith = (ArrayList<Gamer>) gamers.clone();
 	}
 	
