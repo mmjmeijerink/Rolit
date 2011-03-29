@@ -176,7 +176,8 @@ public class Game extends Observable {
 	
 	/**
 	 * Maakt een nette string van alle beschrijvingen van de gamers die in deze game zitten.
-	 * @return
+	 * Voorbeeld: "Game with: Sjaak Klaas Henk"
+	 * @return een nette string van welke gamers er in de game zitten.
 	 */
 	public String toString() {
 		String result = "Game with: ";
