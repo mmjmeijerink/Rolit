@@ -101,7 +101,7 @@ public class LobbyView extends JFrame implements AlertableView {
         jRadioButton2.setText("Dull AI");
         jRadioButton2.addActionListener(viewController);
 
-	buttonGroup1.add(jRadioButton3);
+        buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText("Smart AI");
         jRadioButton3.addActionListener(viewController);
 
@@ -161,6 +161,7 @@ public class LobbyView extends JFrame implements AlertableView {
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
+        jTextArea1.setEditable(false);
         jScrollPane2.setViewportView(jTextArea1);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);

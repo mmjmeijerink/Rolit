@@ -32,7 +32,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private Gamer					gamer;
 	private AIControllerInterface	ai;
 	private boolean					aiIsPlaying;
-	
+
 	public ApplicationController() {
 		connectView = new ConnectView(this);		
 	}
@@ -42,8 +42,10 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		System.out.println(" " + logEntry);
 		if(lobbyView != null && lobbyView.isVisible()) {
 			lobbyView.getChatArea().append("[" + logEntry + "]\n");
+			lobbyView.getChatArea().setCaretPosition(lobbyView.getChatArea().getText().length());
 		} else if(gameView != null && gameView.isVisible()) {
 			gameView.getChatArea().append("[" + logEntry + "]\n");
+			gameView.getChatArea().setCaretPosition(gameView.getChatArea().getText().length());
 		}
 	}
 
@@ -151,7 +153,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else {
 			gameView.setVisible(true);
 		}
-		
+
 		aiIsPlaying = lobbyView.computerIsSet();
 		lobbyView.setVisible(false);
 		lobbyView.stopLoading();
@@ -173,13 +175,13 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 
 		game = new Game(gamers);
 		if(lobbyView.smartComputerIsSet()) {
-		    ai = new SmartAIController(game.getBoard());
+			ai = new SmartAIController(game.getBoard());
 		} else {
-		    ai = new AIController(game.getBoard(), gamers);
+			ai = new AIController(game.getBoard(), gamers);
 		}
 		updateGameView();
 	}
-	
+
 	public void stopGame() {
 		network.sendCommand("domove 31");
 		lobbyView.setVisible(true);
@@ -235,7 +237,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
 			int bestMove = ai.calculateBestMove(gamer.getColor());
 			gameView.getSlotsList().get(bestMove).setBackground(Color.WHITE);
-			
+
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
 			if(lobbyView.getChallengeList().getSelectedValue() != null) {
 				String selectedGamers = "challenge " + lobbyView.getChallengeList().getSelectedValue();
@@ -281,17 +283,36 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 		}
 	}
-
+	/**
+	 * Met deze functie kan een ontvangen chat bericht verwerkt worden.
+	 * Als de lobby view open staat zal hij aan de lobbyview toegevoegd worden als de game view openstaat zal het gebeuren bij de game view.
+	 * @require msg != null && sender != null
+	 * @param msg De te vewererken chat message
+	 * @param sender De verstuurder van het chatbericht
+	 */
 	public void handleChat(String msg, String sender) {
 		if(lobbyView != null && lobbyView.isVisible()) {
+			/*
+			 * Als de lobbyView zichtbaar is zal het bericht aan de textArea daar toegevoegd worden
+			 * de setCaretPosition zort er voor dat het chat venster netjes naar beneden gesrolt wordt.
+			 */
 			lobbyView.getChatArea().append(sender + " says: " + msg + "\n");
 			lobbyView.getChatArea().setCaretPosition(lobbyView.getChatArea().getText().length());
 		} else if(gameView != null && gameView.isVisible()) {
+			/*
+			 * Als de gameView zichtbaar is zal het bericht aan de textArea daar toegevoegd worden
+			 * de setCaretPosition zort er voor dat het chat venster netjes naar beneden gesrolt wordt.
+			 */
 			gameView.getChatArea().append(sender + " says: " + msg + "\n");
 			gameView.getChatArea().setCaretPosition(gameView.getChatArea().getText().length());
 		}
 	}
-
+	
+	/**
+	 * Deze functie wordt gebruikt om chat berichten te versturen naar de server als er door de gebruiker
+	 * in het chat textfield op enter wordt gedrukt.
+	 * @require event.getSource.equals(lobbyView.getChatMessage()) || event.getSource.equals(gameView.getChatMessage())
+	 */
 	public void keyReleased(KeyEvent event) {
 		if(lobbyView != null && event.getSource().equals(lobbyView.getChatMessage()) && event.getKeyCode() == KeyEvent.VK_ENTER ) {
 			sendChat(lobbyView.getChatMessage().getText());
@@ -300,6 +321,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Met deze methode kan een chat bericht verstuurd worden naar de server.
+	 * @param msg het te versturen chat bericht
+	 * @require msg != null
+	 */
 	public void sendChat(String msg) {
 		if(lobbyView != null && lobbyView.isVisible() && network != null) {
 			lobbyView.getChatMessage().setText("");
