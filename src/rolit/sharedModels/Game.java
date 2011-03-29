@@ -115,9 +115,16 @@ public class Game extends Observable {
 	}
 	
 	/**
-	 * 
+	 * Zorgt er voor dat de volgend gamer aan de beurt is.
+	 * Dit alles volgens de volgende volgorde:
+	 * Bij twee spelers eerst rood dan groen
+	 * Bij drie spelers eerst rood dan geel dan groen (in tegenstelling tot rood dan groen dan geel)
+	 * Bij vier spelers eerst rood dan geel dan groen dan blauw.
 	 */
 	private void nextTurn() {
+		/*
+		 * Gebruikt de index van de gamers array, zoals toegwezen in de constructor van deze classe
+		 */
 		int indexOfCurrent = gamers.indexOf(current);
 		int indexOfNext = indexOfCurrent + 1;
 		
@@ -128,32 +135,40 @@ public class Game extends Observable {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Geeft de board instantie terug die bij deze game hoort.
+	 * Een bord wordt toegewezen aan het begin van de game en verandert niet meer.
+	 * Wel kan de situatie op het bord veranderen.
+	 * @return board insantie die bij deze game hoort.
 	 */
 	public Board getBoard() {
 		return board;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Geeft de gamer terug die nu aan de beurt is.
+	 * @return gamer die aan de beurt is
 	 */
 	public Gamer getCurrent() {
 		return current;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Geeft een lijst terug van de Gamer's die nu nog in de game zitten.
+	 * Alle gamers die dus gekickt zijn zullen niet voorkomen in deze lijst.
+	 * Elke gamer in deze lijst moet ook in de lijst this.getStartedWith() zitten.
+	 * @ensure this.getStartedWith().size() >= this.getGamers().size()
+	 * @return lijst met gamers die in de game zitten
 	 */
 	public ArrayList<Gamer> getGamers() {
 		return gamers;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Geeft een lijst terug van de Gamer's waarmee de game gestart is. Dus als zij gekickt zijn komen die gamers nog steeds
+	 * voor in deze lijst. Dit is nodig voor het bepalen van de eind punten in een game.
+	 * Deze lijst is geschikt om de kleuren van de gamers te bepalen omdat gamers op volgorde toegevoegd worden.
+	 * @ensure this.getStartedWith().size() >= this.getGamers().size()
+	 * @return lijst met gamers die aan deze game zijn begonnen
 	 */
 	public ArrayList<Gamer> getStartedWith() {
 		return startedWith;
