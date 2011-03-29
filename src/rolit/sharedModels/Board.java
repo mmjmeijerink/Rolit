@@ -2,13 +2,22 @@ package rolit.sharedModels;
 
 import java.util.*;
 
+/**
+ * Het Board model is een representatie van een board.
+ * Het checkt of zetten kloppen en houdt een lijst bij met slots op een board.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
+
 public class Board {
 
 	public static final int DIMENSION = 8;
 	private ArrayList<Slot>  	slots;
 
 	/**
-	 * 
+	 * Maakt een nieuwe board instatie aan en vult this.getSlots() met de juiste waarde,
+	 * set de middelste 4 vakjes met de juiste kleur.
+	 * @ensure this.getSlots().size() == Board.DIMENSION*Board.DIMENSION
 	 */
 	public Board() {
 		slots = new ArrayList<Slot>();
@@ -17,6 +26,12 @@ public class Board {
 			Slot aSlot = new Slot();
 			slots.add(aSlot);
 		}
+		
+		/*
+		 * Hier woden de middelste 4 vakjes
+		 * volgens de juiste kleur geset aan het begin
+		 * van een spel.
+		 */
 
 		slots.get(27).setValue(Slot.RED);
 		slots.get(28).setValue(Slot.YELLOW);
@@ -25,12 +40,16 @@ public class Board {
 	}
 	
 	/**
-	 * 
+	 * Hulp methode voor de copy() methode zodat een board gecreert wordt met dezelfde waarde in de slots array als
+	 * dit board heeft.
 	 * @param aSlots
 	 */
 	private Board(ArrayList<Slot> aSlots) {
 		slots = new ArrayList<Slot>();
 		for(Slot aSlot: aSlots) {
+			/*
+			 * Kopieert de waarde van alle slots van de array in het nieuwe board.
+			 */
 			Slot newSlot = new Slot();
 			newSlot.setValue(aSlot.getValue());
 			slots.add(newSlot);
@@ -38,8 +57,9 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Met deze methode kan het board gekopieerd worden, de kopie is niet hetzelfde maar een los staand object
+	 * @return copy van dit board.
+	 * @ensure this.equals(this.copy());
 	 */
 	public Board copy() {
 		Board copy = new Board(slots);
@@ -47,13 +67,17 @@ public class Board {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Checkt of het board vol is. 
+	 * @ensure er bestaat geen slot in this.getSlots().get(i).equals(Slot.EMPTY)
+	 * @return true als vol is en false als hij nog niet vol is.
 	 */
 	public boolean isFull() {
 		boolean result = true;
-		
+
 		for(Slot aSlot: slots) {
+			/*
+			 * Loop door alle slots heen om ze te checken op empty.
+			 */
 			if(aSlot.getValue() == Slot.EMPTY) {
 				result = false;
 			}
@@ -63,14 +87,19 @@ public class Board {
 	}
 
 	/**
-	 * 
-	 * @param color
-	 * @return
+	 * Telt het aantal vakjes dat gevult is met een bepaalde kleur. Kan ook worden gebruikt om te checken op lege vakjes.
+	 * @param color de kleur volgens Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 * @require color == Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 * @ensure result >= 0 && result <= this.DIMENSION*this.DIMENSION
+	 * @return aantal vakjes van opgegeven kleur.
 	 */
 	public int getPointsOfColor(int color) {
 		int result = 0;
 		
 		for(Slot aSlot: slots) {
+			/*
+			 * Loopt door alle slots heen om de values te tellen.
+			 */
 			if(aSlot.getValue() == color) {
 				result++;
 			}

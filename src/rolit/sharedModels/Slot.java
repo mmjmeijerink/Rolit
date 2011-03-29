@@ -57,7 +57,7 @@ public class Slot {
 	/**
 	 * Deze methode geeft een string terug die overeenkomt met de ingegeven kleur representatie.
 	 * Bijvoorbeeld: Slot.colorIntToString(Slot.Blue).equals("Blue")
-	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLO || Slot.GREEN
+	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
 	 * @param color de om te zetten kleur representatie.
 	 * @return Geeft een string terug die overeenkomt met de ingegeven kleur representatie
 	 */

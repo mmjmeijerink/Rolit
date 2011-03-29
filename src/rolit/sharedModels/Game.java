@@ -56,6 +56,7 @@ public class Game extends Observable {
 	}
 	
 	/**
+	 * Voert een bepaalde move van een bepaalde gamer uit.
 	 * 
 	 * @param i
 	 * @param aGamer
@@ -70,15 +71,21 @@ public class Game extends Observable {
 	}
 	
 	/**
+	 * Vraagt de punten op van een bepaalde gamer door de kleur te bepalen den vervolgens het aantal
+	 * slots met die kleur te tellen.
 	 * 
-	 * @param aGamer
-	 * @return
+	 * @param aGamer de speler waarvan de punten opgevraagt worden.
+	 * @return aantal punten van die speler.
 	 */
 	public int getPointsOf(Gamer aGamer) {
 		int result = 0;
 		
 		for(Gamer check: gamers) {
 			if (check == aGamer) {
+				/*
+				 * Als de gamer aanwezig is pakt hij de kleur van die gamer en gaat hij tellen.
+				 * Dit met behulp van de board methode getPointsOfColor();
+				 */
 				result = board.getPointsOfColor(aGamer.getColor());
 			}
 		}
@@ -87,8 +94,10 @@ public class Game extends Observable {
 	}
 	
 	/**
+	 * Checkt of het board vol is of dat er minder dan 2 spelers in de game zitten, zo ja
+	 * dan is de game dus afgelopen.
 	 * 
-	 * @return
+	 * @return true als board.isFull() of this.getGamers().size() < 2 anders false
 	 */
 	public boolean isEnded() {
 		boolean result = false;
@@ -101,14 +110,23 @@ public class Game extends Observable {
 	}
 	
 	/**
+	 * Met deze methode verwijder je een gamer uit de game.
+	 * Als een gamer verwijdert is zal deze nooit meer aan de beurt zijn.
 	 * 
-	 * @param toBeRemoved
+	 * @require this.getGamers().contains(toBeRemoved);
+	 * @ensure !this.getGamers().contains(toBeRemoved); && this.getStartedWith().contains(toBeRemoved); 
+	 * @param toBeRemoved de te verwijderen gamer
 	 */
 	public void removeGamer(Gamer toBeRemoved) {
 		if(current == toBeRemoved) {
+			/*
+			 * Als de gamer die geremoved wordt aan de beurt is zal de volgende aan de beurt zijn.
+			 */
 			nextTurn();
 		}
-		
+		/*
+		 * Notified opservers want als er nog maar 1 gamer in de game zit kan de game worden afgsloten.
+		 */
 		gamers.remove(toBeRemoved);
 		setChanged();
 		notifyObservers("Gamer Removed");
