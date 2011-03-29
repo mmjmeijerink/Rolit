@@ -21,7 +21,9 @@ public class AITest {
 		try {
 			host = InetAddress.getByName("localhost");
 			smartVSGreedy(100);
+			System.err.println("smartVSGreedy has started");
 			greedyVSSmart(100);
+			System.err.println("greedyVSSmart has started");
 		} catch (UnknownHostException e) {
 			e.printStackTrace(); //Test class
 		} catch (InterruptedException e) {
@@ -33,48 +35,51 @@ public class AITest {
 		//Start [games] games of a SmartAIController versus a AIController
 		smartClient = new AITestApplicationController(host, port, "smart");
 		greedyClient = new AITestApplicationController(host, port, "greedy");
-		greedyClient.setOpponent(smartClient);
-		Thread.sleep(1000);
-		greedyClient.challenge();
-		System.err.println(smartClient.getGamer().getName());
-		System.err.println(greedyClient.getGamer().getName());
+		smartClient.setOpponent(greedyClient);
+		smartClient.setGamesToPlay(50);
+		Thread.sleep(100);
+		smartClient.challenge();
 		
-		int i = 0;
-		while(!smartClient.isEnded || i <= 100) {
+		while(!smartClient.isEnded) {
 			System.out.println("Games being played! \n Smart VS Greedy");
-			Thread.sleep(100);
-			i++;
+			logWinnings("smartVSGreedy");
+			Thread.sleep(1000);
 		}
 		
-		logWinnings();
+		logWinnings("smartVSGreedy");
 	}
 	
 	public void greedyVSSmart(int games) throws InterruptedException {
 		//Start [games]games of a AIController versus a SmartAIController
 		greedyClient = new AITestApplicationController(host, port, "greedy");
 		smartClient = new AITestApplicationController(host, port, "smart");
-		smartClient.setOpponent(greedyClient);
-		Thread.sleep(1000);
-		smartClient.challenge();
+		greedyClient.setOpponent(smartClient);
+		greedyClient.setGamesToPlay(50);
+		Thread.sleep(100);
+		greedyClient.challenge();
 		
 		while(!greedyClient.isEnded) {
 			System.out.println("Games being played! \n Greedy VS Smart");
-			logWinnings();
+			logWinnings("greedyVSSmart");
 			Thread.sleep(1000);
 		}
 		
-		logWinnings();
+		logWinnings("greedyVSSmart");
 	}
 	
-	public void logWinnings() {
+	public void logWinnings(String method) {
 		try {
 			BufferedWriter file;
 			
-			file = new BufferedWriter(new FileWriter("Smart.txt"));
-			file.write(String.format("SmartAIController: %10s \nAIController: %14s", smartClient.getSmartWinnings(), smartClient.getGreedyWinnings()));
+			file = new BufferedWriter(new FileWriter("Smart-"+method+".txt"));
+			file.write(String.format("SmartAIController: %10s \nAIController: %15s", smartClient.getSmartWinnings(), smartClient.getGreedyWinnings()));
+			file.flush();
+			file.close();
 			
-			file = new BufferedWriter(new FileWriter("Greedy.txt"));
-			file.write(String.format("SmartAIController: %10s \nAIController: %14s", greedyClient.getSmartWinnings(), greedyClient.getGreedyWinnings()));
+			file = new BufferedWriter(new FileWriter("Greedy-"+method+".txt"));
+			file.write(String.format("SmartAIController: %10s \nAIController: %15s", greedyClient.getSmartWinnings(), greedyClient.getGreedyWinnings()));
+			file.flush();
+			file.close();
 		} catch (IOException e) {
 			e.printStackTrace(); //Test class
 		}
