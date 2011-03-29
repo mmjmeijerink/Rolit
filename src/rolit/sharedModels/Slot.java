@@ -1,9 +1,12 @@
 package rolit.sharedModels;
 
 /**
+ * Dit is een van de DIM*DIM slots op een bord. Een bord van 8*8 heeft dus 64 slot instanties nodig.
+ * Een slot houdt bij welke kleur hij heeft. En je kan de kleur van een Slot veranderen. Tevens heeft
+ * de Slot klasse een aantal statische methoden en waarde voor kleur representatie in int.
  * 
- * @author Thijs
- *
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
  */
 public class Slot {
 	
@@ -16,15 +19,17 @@ public class Slot {
 	private int value;
 	
 	/**
-	 * 
+	 * Maakt een een Slot object aan en vult hem met een leeg vakje.
+	 * @ensure this.getValue() == Slot.EMPTY
 	 */
 	public Slot() {
 		value = EMPTY;
 	}
 	
 	/**
-	 * 
-	 * @param aValue
+	 * Zet de kleur van het vakje.
+	 * @require aValue == Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLO || Slot.GREEN
+	 * @param aValue de int value van de kleur die geset moet worden
 	 */
 	public void setValue(int aValue) {
 		/*
@@ -42,17 +47,19 @@ public class Slot {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Geeft de kleur terug van het huidige vakje.
+	 * @return Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLO || Slot.GREEN
 	 */
 	public int getValue() {
 		return value;
 	}
 	
 	/**
-	 * 
-	 * @param color
-	 * @return
+	 * Deze methode geeft een string terug die overeenkomt met de ingegeven kleur representatie.
+	 * Bijvoorbeeld: Slot.colorIntToString(Slot.Blue).equals("Blue")
+	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLO || Slot.GREEN
+	 * @param color de om te zetten kleur representatie.
+	 * @return Geeft een string terug die overeenkomt met de ingegeven kleur representatie
 	 */
 	public static String colorIntToString(int color) {
 		String result = "Not valid";
