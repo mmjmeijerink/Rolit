@@ -33,12 +33,17 @@ public class AITest {
 		//Start [games] games of a SmartAIController versus a AIController
 		smartClient = new AITestApplicationController(host, port, "smart");
 		greedyClient = new AITestApplicationController(host, port, "greedy");
-		Thread.sleep(100);
-		greedyClient.challenge(smartClient);
+		greedyClient.setOpponent(smartClient);
+		Thread.sleep(1000);
+		greedyClient.challenge();
+		System.err.println(smartClient.getGamer().getName());
+		System.err.println(greedyClient.getGamer().getName());
 		
-		while(!smartClient.isEnded) {
+		int i = 0;
+		while(!smartClient.isEnded || i <= 100) {
 			System.out.println("Games being played! \n Smart VS Greedy");
 			Thread.sleep(100);
+			i++;
 		}
 		
 		logWinnings();
@@ -48,12 +53,14 @@ public class AITest {
 		//Start [games]games of a AIController versus a SmartAIController
 		greedyClient = new AITestApplicationController(host, port, "greedy");
 		smartClient = new AITestApplicationController(host, port, "smart");
-		Thread.sleep(100);
-		smartClient.challenge(greedyClient);
+		smartClient.setOpponent(greedyClient);
+		Thread.sleep(1000);
+		smartClient.challenge();
 		
 		while(!greedyClient.isEnded) {
 			System.out.println("Games being played! \n Greedy VS Smart");
-			Thread.sleep(100);
+			logWinnings();
+			Thread.sleep(1000);
 		}
 		
 		logWinnings();

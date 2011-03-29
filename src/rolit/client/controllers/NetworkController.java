@@ -23,7 +23,6 @@ public class NetworkController extends Thread {
 		port = aPort;
 		host = aHost;
 		startupCommand = aStartupCommand;
-		this.setName(startupCommand);//Debug line! 
 	}
 
 	public void run() {

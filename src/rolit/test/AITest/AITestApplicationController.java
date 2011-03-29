@@ -1,8 +1,5 @@
 package rolit.test.AITest;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -27,6 +24,10 @@ public class AITestApplicationController extends ApplicationController {
 		network.start();
 	}
 	
+	public void setOpponent(AITestApplicationController opponent) {
+		this.opponent = opponent;
+	}
+	
 	public int getSmartWinnings() {
 		return smartWinnings;
 	}
@@ -35,9 +36,8 @@ public class AITestApplicationController extends ApplicationController {
 		return greedyWinnings;
 	}
 	
-	public void challenge(AITestApplicationController client) {
-		opponent = client;		
-		network.sendCommand("challenge " + client.getGamer().getName());
+	public void challenge() {
+		network.sendCommand("challenge " + opponent.getGamer().getName());
 	}
 	
 	//Overided methodes
@@ -74,13 +74,15 @@ public class AITestApplicationController extends ApplicationController {
 	public void endGame(String message) {
 		numberOfGamesPlayed++;
 		
-		if(message.contains("smart")) smartWinnings++;
-		else greedyWinnings++;
+		if(message.contains(this.getGamer().getName() + " has won") && ai instanceof SmartAIController) smartWinnings++;
+		else if(message.contains(this.getGamer().getName() + " has won") && ai instanceof AIController) greedyWinnings++;
+		else if(!message.contains(this.getGamer().getName() + " has won") && ai instanceof SmartAIController) greedyWinnings++;
+		else if(!message.contains(this.getGamer().getName() + " has won") && ai instanceof AIController) smartWinnings++;
 		
 		System.out.println(smartWinnings + " smartWinnings. \n" + greedyWinnings + " greedyWinnings.");
 		
-		if(numberOfGamesPlayed < numberOfGamesToPlay) challenge(opponent);
-		else isEnded = true;
+		if(numberOfGamesPlayed < numberOfGamesToPlay && opponent != null) challenge();
+		else if(numberOfGamesPlayed < numberOfGamesToPlay) isEnded = true;
 	}
 	
 	public void handleMove(Gamer aGamer, int index) {
