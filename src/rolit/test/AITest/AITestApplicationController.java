@@ -17,11 +17,15 @@ public class AITestApplicationController extends ApplicationController {
 	private AITestApplicationController	opponent;
 	
 	private int smartWinnings = 0, greedyWinnings = 0;
-	private int numberOfGamesToPlay = 100, numberOfGamesPlayed = 0;
+	private int numberOfGamesToPlay = 50, numberOfGamesPlayed = 0;
 	
 	public AITestApplicationController(InetAddress host, int port, String nick) {
 		network = new NetworkController(host, port, this, "connect " + nick);
 		network.start();
+	}
+	
+	public void setGamesToPlay(int gtt) {
+		numberOfGamesToPlay = gtt;
 	}
 	
 	public void setOpponent(AITestApplicationController opponent) {

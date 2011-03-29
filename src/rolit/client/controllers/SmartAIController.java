@@ -18,7 +18,7 @@ public class SmartAIController implements AIControllerInterface {
 		//als er meerdere de zelfde punten opleveren neemt deze funtie de eerste die hij tegenkomt
 		int lessPoints = 100;
 		int mostPointsIndex = -1;
-		for(int i = 0; i < Board.DIMENSION * Board.DIMENSION && lessPoints != -1; i++) {
+		for(int i = 0; i < Board.DIMENSION * Board.DIMENSION && lessPoints != -2; i++) {
 			if(board.checkMove(i, color)) {
 				Board newBoard = board.copy();
 				newBoard.doMove(i, color);

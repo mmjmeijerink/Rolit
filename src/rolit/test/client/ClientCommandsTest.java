@@ -28,26 +28,22 @@ public class ClientCommandsTest extends ApplicationController {
 	
 	public ClientCommandsTest(InetAddress host, int port) {
 		super();
-		network = new NetworkController(host, port, this);
+		network = new NetworkController(host, port, this, connect());
 		network.start();
 		
 		startTests();
 	}
 	
 	private void startTests() {
-		connect(); //Send connect command to server. This class has 'Mart' as hard coded nick
-		join(2); //Send join command to server. Amount of players hard coded change per test. Amount has to be from 2 to 4
-		chat(); //Send chat command to server. Just a random message will be sent.
-		//challenge(); //Send challenge command. Has to be implemented yet!
-		//challengeresponse(); //Send a response to a challenge. Has to be implemented yet!
+		
 	}
 	
 	private void error(String arg) {
 		log("Error detected! \n Command: " + arg);
 	}
 	
-	private void connect() {
-		network.sendCommand("connect Mart");
+	private String connect() {
+		return "connect Test";
 	}
 	
 	private void join(int amount) {
