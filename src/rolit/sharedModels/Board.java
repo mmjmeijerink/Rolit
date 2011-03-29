@@ -564,11 +564,23 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Een mooie string representatie van het bord wordt hier terug gegeven.
+	 * Voorbeeld: 
+	 *  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+	 *  ---------------------------------
+	 *  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+	 *  ---------------------------------
+	 *  | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 |
+	 *  ---------------------------------
+	 *  | 0 | 0 | 0 | 2 | 1 | 1 | 0 | 0 |
+	 *  ---------------------------------
+	 *  | 0 | 0 | 2 | 2 | 1 | 0 | 0 | 0 |
+	 *  ---------------------------------
+	 *  | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+	 *  ---------------------------------
+	 *  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+	 *  ---------------------------------
+	 * @return een nette string representatie van het bord
 	 */
 	public String toString() {
 		String result = "\n";
@@ -588,11 +600,8 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Een mooie string representatie van het de numemrs van de vakjes op het bord wordt hier terug gegeven.
+	 * @return een nette string representatie van de nummers van de vakjes op het bord
 	 */
 	public String layoutToString() {
 		String result = "\n";
@@ -617,14 +626,21 @@ public class Board {
 	}
 	
 	/**
+	 * Deze functie flipt de balletjes om tussen a en b.
+	 * De vakjes a en b moeten wel op een directe diagonale lijn of rechte lijn liggen anders werkt deze functie niet.
+	 * Er gebeurt dan helemaal niets of er gebeurt iets fouts.
 	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
+	 * @require slots.get(a).getValue() == slots.get(b).getValue()
+	 * @param a het eerste vakje
+	 * @param b het tweede vakje
 	 * @return
 	 */
 	private void flipBetween(int a, int b) {
 		int color = slots.get(a).getValue();
+		/*
+		 * Er wordt eerst gezorgt dat a de grootste is en b de kleinste
+		 * als dat andersom is worden ze gewoon gewisselt.
+		 */
 		if(a < b) {
 			int aTmp = a;
 			a = b;
@@ -634,11 +650,21 @@ public class Board {
 		int bModulo = b % DIMENSION;
 		int difference = a - b;
 
-		if(difference <= aModulo) { // Staan op de zelfde rij horizontaal
+		if(difference <= aModulo) {
+			/*
+			 * Er wordt gekeken naar de zelfde horizontale rij. Als het verschil tussen a en b kleiner is dan de dimensie modulo van a betekend dat
+			 * de vakjes op de zelfde rij staan en dus kunnen die vakjes daartussen omgedraait worden. Dit is eigenlijk de meest simpele
+			 * flip methode
+			 */
 			for(int i = 1; i < difference; i++) {
 				slots.get(a-i).setValue(color);
 			}
-		} else if(aModulo == bModulo) { // Staan op de zelfde rij verticaal
+		} else if(aModulo == bModulo) {
+			/*
+			 * Als de bijde modulos gelijk zijn aan elkaar betekend het dat de vakjes op
+			 * dezelfde verticale rij staan. Loop door een loop heen en trek
+			 * de hele tijd de dimensie van het hoogste cijfer af en flip dan het vakje.
+			 */
 			int aTmp = a;
 			while(aTmp > b) {
 				if(aTmp != a) {
@@ -646,7 +672,12 @@ public class Board {
 				}
 				aTmp = aTmp - DIMENSION;
 			}	
-		} else if(bModulo < aModulo) { // Staan op de dezelfde diagonaal, a rechts van b
+		} else if(bModulo < aModulo) {
+			/*
+			 *  Staan op de dezelfde diagonaal, a rechts van b
+			 *  trek dan de hele tijd de dimensie er van af - 1 zodat je het volgende vakje
+			 *  krijg en flip dan dit vakje
+			 */
 			int aTmp = a;
 			while(aTmp > b) {
 				if(aTmp != a) {
@@ -654,7 +685,12 @@ public class Board {
 				}
 				aTmp = aTmp - DIMENSION - 1;
 			}
-		} else if(bModulo > aModulo) { // Staan op de dezelfde diagonaal, a links van b
+		} else if(bModulo > aModulo) {
+			/*
+			 *  Staan op de dezelfde diagonaal, a links van b
+			 *  trek dan de hele tijd de dimensie er van af + 1 zodat je het volgende vakje
+			 *  krijg en flip dan dit vakje
+			 */
 			int aTmp = a;
 			while(aTmp > b) {
 				if(aTmp != a) {
@@ -666,11 +702,9 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Geeft een lijst met alle slots terug. Als deze slots aangepast worden buiten de bord methode
+	 * kan niet worden gegarandeerd dat de spelregels juist werken. Gebruik daarom dan ook de check methoden van deze klasse.
+	 * @return een lijst met alle slots terug.
 	 */	
 	public ArrayList<Slot> getSlots() {
 		return slots;
