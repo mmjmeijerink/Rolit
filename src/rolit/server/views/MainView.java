@@ -91,6 +91,7 @@ public class MainView extends JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setFont(new Font("Monaco", Font.PLAIN, 12));
+        jTextArea1.setEditable(false);
         jScrollPane1.setViewportView(jTextArea1);
         
         /*
