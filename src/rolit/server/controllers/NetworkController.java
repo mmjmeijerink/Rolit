@@ -909,18 +909,29 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
+	 * Deze private metode zorgt er voor dat een betreffende game beeindigt wordt en
+	 * dit juist afgehandeldt wordt in de model aan de server kant en stuurt het juiste commando naar
+	 * iedereen in die game.
 	 * @param aGame
 	 */
 	private void endGame(Game aGame) { 
 		String command = "endgame";
 		String logEntry = "Ending a game between";
 		for(Gamer aGamer: aGame.getStartedWith()) {
+			/*
+			 * Stelt netjes een commando samen.
+			 */
 			if(aGame.getGamers().contains(aGamer)) {
 				command = command + " " + aGame.getPointsOf(aGamer);
 			} else {
+				/*
+				 * Als een gamer gekickt is tijdens de game krijgt hij 0 punten.
+				 */
 				command = command + " 0";
 			}
+			/*
+			 * Stelt een gebrijpelijke log entry samen.
+			 */
 			logEntry = logEntry + ", " + aGamer.getName() + " (" + aGame.getPointsOf(aGamer) + ")";
 
 		}
@@ -929,26 +940,46 @@ public class NetworkController extends Thread implements Observer {
 		for(ConnectionController connection: connections) {
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == connection.getGamer()) {
+					/*
+					 * Stuurt het commando naar de aangaande gamers.
+					 */
 					connection.sendCommand(command);
+					/*
+					 * Zet de kleur van de gamers op Slot.EMPTY zodat
+					 * aGamer.isTakingPart() = false wordt.
+					 */
 					aGamer.setColor(Slot.EMPTY);
 				}
 			}
 		}
 
+		/*
+		 * Haalt de game uit de lijst en zorgt er voor dat de lobby
+		 * gebroadcast wordt zodat iedereen weer op de hoogte is van de gamers in de lobby
+		 * die zojuist uit de game zijn gekomen.
+		 */
 		games.remove(aGame);
 		broadcastLobby();
 	}
 
 	/**
-	 * 
+	 * Deze methode handelt een move binnen gekregen van een gamer af.
+	 * Als de move goed is gekeurt wordt deze methode aangeroepen om vervolgens de move
+	 * te broadcasten naar alle gamers in de game.
 	 * @param aGame
 	 * @param mover
 	 * @param slot
 	 */
 	private void moveDone(Game aGame, Gamer mover, int slot) {
 		for(ConnectionController connection: connections) {
+			/*
+			 * Loopt door alle connections heen om de connecties te zoeken voor de aGame.
+			 */
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == connection.getGamer()) {
+					/*
+					 * Stuurt movedone commando naar alle gamers in de game toe.
+					 */
 					connection.sendCommand("movedone " + mover.getName() + " " + slot);
 				}
 			}
@@ -957,15 +988,28 @@ public class NetworkController extends Thread implements Observer {
 
 	@Override
 	/**
+	 * Deze methode wordt aangeroepen door Observable objecten.
+	 * In dit geval is dat alleen alle game objecten in de games lijst
 	 * 
+	 * Als het bord van een game vol is wordt het endgame commando aangeroepen
+	 * en anders wordt de volgende zet afgegeven.
 	 */
 	public void update(Observable arg0, Object arg1) {
 		if(arg0.getClass().equals(Game.class)) {
 			Game game = (Game) arg0;
+			/*
+			 * Print netjes de situatie op het bord voor de log.
+			 */
 			appController.log(game.getBoard().toString());
 			if(game.isEnded()) {
+				/*
+				 * Als de game af is stuurt hij het endgame commando naar alle deelnemende gamers
+				 */
 				endGame(game);
 			} else {
+				/*
+				 * Als de game niet af is wordt de volgende beurt toegewezen.
+				 */
 				nextTurn(game);
 			}
 		}
