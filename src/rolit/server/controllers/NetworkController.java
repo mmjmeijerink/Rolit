@@ -435,25 +435,44 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
-	 * @param connection
+	 * Met deze private methode wordt een connectie toegevoegd aan het lijstje dat de NetworkController bijhoudt.
+	 * @param connection Toe te voegen ConnectionController
 	 */
 	private void addConnection(ConnectionController connection) {
 		connections.add(connection);
 	}
 
 	/**
+	 * Met deze public methode wordt een connectie verbroken en verwijdert en op de juiste manier afgehandeld.
+	 * Als een connectie nog in een game zit wordt de gamer bijvoorbeeld gekickt zodat de rest in de game weet
+	 * dat de gamer niet meer deelneemt aan de game.
+	 * Aan het eind van deze functie wordt ook de lobby gebroadcast.
 	 * 
-	 * @param connection
+	 * Deze metode kan goed aangeroepen worden vanaf de ConnectionController zelf.
+	 * 
+	 * @require connection != null && this.connections.contains(connection);
+	 * @ensure !this.connections.contains(connection);
+	 * @param connection Te verwijderen connectie.
 	 */
 	public void removeConnection(ConnectionController connection) {
 		if(connections.contains(connection)) {
+			/*
+			 * Kick de gamer als hij nog in een game zit.
+			 */
 			kickGamer(connection.getGamer());
 			appController.log(connection.toString() + " disconnects");
+			/*
+			 * Als een gamer het join commando heeft gebruikt moet hij uit de lijst
+			 * met wachtende gamers gehaalt worden.
+			 */
 			if(waitingForGame.contains(connection)){
 				waitingForGame.remove(connection);
 			}
 			connections.remove(connection);
+			/*
+			 * Nadat een gamer weg is veranderd mogelijk de inhoud van de lobby en moet deze
+			 * geupdate worden voor alle clients.
+			 */
 			broadcastLobby();
 		} else {
 			appController.log("Tries to remove connection that does not exist");
@@ -461,28 +480,51 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
+	 * Met deze methode kan een specifieke gamer gechallenged worden.
 	 * 
-	 * @param challenged
-	 * @param challenger
+	 * @require challenged != null && challenger != null
+	 * 
+	 * @param challenged De te challange gamer
+	 * @param challenger De gamer die gechallenged heeft
 	 */
 	private void challenge(Gamer challenged, Gamer challenger) {
+		/*
+		 * Deze lijsten houden bij welke gamers er challenge en gechallenged worden,
+		 */
 		challengedList.add(challenged);
 		challengerList.add(challenger);
 		for(ConnectionController aConnection: connections) {
-			if(aConnection.getGamer() == challenged) {
+			/*
+			 * Zoek in alle connections naar voor de challenged gamer.
+			 */
+			if(aConnection.getGamer() == challenged && gamersInLobby().contains(challenged) && gamersInLobby().contains(challenger)) {
 				aConnection.sendCommand("challenged " + challenger.getName());
+				/*
+				 * Commando wordt netjes verstuur naar de te challenge speler
+				 */
 			}
 		}
+		/*
+		 * Als de challenged gamer niet bestaat of niet in de lobby zit
+		 * wordt de aanroep genegeerd en gebeurt er niets.
+		 */
 	}
 
 	/**
+	 * Met deze method wordt een chat bericht verstuud naar de juiste gamers.
+	 * Als de verstuurder in game zit wordt het chat bericht verstuurd naar alle gamers in die game,
+	 * Als de verstuurder in de lobby zit wordt het chat bericht verstuurd naar iedereen in de lobby.
 	 * 
-	 * @param message
-	 * @param sender
+	 * @param message Het te versturen bericht
+	 * @param sender De verzender van het bericht
 	 */
 	private void sendChat(String message, ConnectionController sender) {
 		Game participatingGame = null;
 		for(Game aGame: games) {
+			/*
+			 * Checkt of de gamer onderdeel is van een game
+			 * En zoja welke game.
+			 */
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == sender.getGamer()) {
 					participatingGame = aGame;
@@ -491,12 +533,23 @@ public class NetworkController extends Thread implements Observer {
 		}
 
 		if(participatingGame == null) {
+			/*
+			 * Als en gamer niet in een game zit wordt het bericht
+			 * naar alle connections gestuurd die niet in een game zitten.
+			 * Dit wordt gecheckt mbv de hulp ivar isTakingPart van Gamer.
+			 */
 			for(ConnectionController aConnection: connections) {
 				if(!aConnection.getGamer().isTakingPart()) {
 					aConnection.sendCommand("message "+sender.getGamer().getName()+" "+message);
 				}
 			}
 		} else {
+			/*
+			 * Als een gamer wel in een game zit
+			 * wordt het bericht versrtuurd naar iedereen die ook in de game zitten.
+			 * 
+			 * De dubbele loops zijn constant nodig om de connectie bij een specifieke gamer te zoeken.
+			 */
 			for(ConnectionController aConnection: connections) {
 				for(Gamer aGamer: participatingGame.getGamers()) {
 					if(aConnection.getGamer() == aGamer) {
@@ -508,15 +561,20 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Een private methode voor het checken of een bepaalde naam uniek is of niet.
+	 * @param name De te checken naam
+	 * @return true als naam uniek is en false als de naam al bestaat
 	 */
 	private boolean checkName(String name) {
 		boolean result = true;
 
 		if(name != null) {
 			for(ConnectionController client: connections){
+				/*
+				 * Loopt door alle connections om te checken of de namen niet van de
+				 * gekoppelde gamers toevallig gelijk zijn of niet.
+				 * 
+				 */
 				if(client.getGamer().getName().equals(name)) {
 					result = false;
 				}
@@ -527,15 +585,23 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
+	 * Een methode die er voor zorgt dat het juiste lobby commando naar iedereen gestuurd wordt.
+	 * Deze methode dient aangeroepen te worden als er iets in de lobby veranderdt.
 	 */
 	private void broadcastLobby() {
 
 		String command = "lobby";
 		for(Gamer aGamer: gamersInLobby()) {
+			/*
+			 * Elke gamer in de Lobby opvragen dmv de hulp lijst
+			 * met alle gamers in de lobby.
+			 */
 			command = command + " " + aGamer.getName();
 		}
-
+		/*
+		 * Roept het commando broadcastCommand aan omdat
+		 * alle gamers die in game zitten ook moeten weten wie er allemaal in de lobby zitten.
+		 */
 		broadcastCommand(command);
 	}
 
@@ -712,7 +778,7 @@ public class NetworkController extends Thread implements Observer {
 				}
 			}
 			participatingGame.removeGamer(toBeKicked);
-			toBeKicked.setColor(0);
+			toBeKicked.setColor(Slot.EMPTY);
 		}
 
 		broadcastLobby();
@@ -754,6 +820,7 @@ public class NetworkController extends Thread implements Observer {
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == connection.getGamer()) {
 					connection.sendCommand(command);
+					aGamer.setColor(Slot.EMPTY);
 				}
 			}
 		}

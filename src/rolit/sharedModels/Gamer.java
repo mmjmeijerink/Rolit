@@ -55,14 +55,14 @@ public class Gamer {
 	public boolean setColor(int aColor) {
 		boolean result = false;
 		
-		if(aColor > -1 && aColor < 5) { 
+		if(aColor >= Slot.EMPTY && aColor <= Slot.BLUE) { 
 			color = aColor;
 			result = true;
-			if(aColor != 0) { 
-				takesPart = true;
-			} else {
+			if(aColor == Slot.EMPTY) { 
 				takesPart = false;
 				System.out.println("Player is not taking part.");
+			} else {
+				takesPart = true;
 			}
 		} else {
 			System.out.println("Error: could not change gamer color value because value is invalid.");
