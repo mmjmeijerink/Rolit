@@ -606,13 +606,16 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Deze methode geeft een lijst terug met alle gamers die in de Lobby zitten.
+	 * @return ArrayList met alle Gamers die in de Lobby zitten en geidentificeerd zijn.
 	 */
 	@SuppressWarnings("unchecked")
 	private ArrayList<Gamer> gamersInLobby() {
 		ArrayList<Gamer> gamersConnected = new ArrayList<Gamer>();
 		for(ConnectionController aConnection: connections) {
+			/*
+			 * Maak eerst een lijstje met geidentificeerde connecties.
+			 */
 			if(!aConnection.getGamer().getName().equals("[NOT CONNECTED]")) {
 				gamersConnected.add(aConnection.getGamer());
 			}
@@ -620,15 +623,26 @@ public class NetworkController extends Thread implements Observer {
 
 		ArrayList<Gamer> gamersInGame = new ArrayList<Gamer>();
 		for(Game aGame: games) {
+			/*
+			 * Vervolgens is het gemakkleijk om te checken welke gamers er eigenlijk in game zitten.
+			 */
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(!aGamer.getName().equals("[NOT CONNECTED]")) {
+					/*
+					 * Beetje overbodig maat toch veilig, checken of gamers in de game
+					 * niet toevallig niet ge identificieer zijn.
+					 */
 					gamersInGame.add(aGamer);
 				}
 			}
 		}
 
-		ArrayList<Gamer> gamersInLobby = (ArrayList<Gamer>) gamersConnected.clone();
+		ArrayList<Gamer> gamersInLobby = (ArrayList<Gamer>) gamersConnected.clone(); // Schijnbaar doe java hier moeilijk over, surpress warning toegevoegd.
 		for(Gamer aGamer: gamersInGame) {
+			/*
+			 * Nu pakken we de eerste lijst en gaan alle persoonen die ook in de tweede lijst staan
+			 * er uit halen. Op deze manier houden we een lijst met gamers in de Lobby over.
+			 */
 			if(gamersInLobby.contains(aGamer)) {
 				gamersInLobby.remove(aGamer);
 			}
@@ -637,17 +651,23 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
-	 * @param aGamer
-	 * @return
+	 * Deze methode checkt of een gamer toevallig in een game zit of niet.
+	 * @param aGamer de gamer te checken.
+	 * @return geeft true als een gamer in game zit en geeft false als een gamer neit in game zit.
 	 */
 	private boolean isInGame(Gamer aGamer) {
 		boolean result = false;
 
 		for(Game aGame: games) {
+			/*
+			 * Loopt door alle games heen en checkt of de gamer er in zit.
+			 */
 			for(Gamer inGameGamer: aGame.getGamers()) {
 				if(aGamer == inGameGamer) {
-					result = false;
+					/*
+					 * Als de gamer gevonden is zet hij het result op true.
+					 */
+					result = true;
 				}
 			}
 		}
@@ -656,44 +676,75 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
-	 * 
+	 * Deze methode checkt of een game gestart kan worden,
+	 * hij kijkt naar alle mensen die join hebben gestuurd en zorgt er voor
+	 * dat den juiste combinatie gemaakt wordt. De parameter van het join commando
+	 * is een minimum aantal.
+	 * Dus als Sjaak Join 2 stuurt
+	 * en Truus Join 3 stuurt
+	 * en Miep Join 3 stuurt
+	 * wordt een game gestart met deze 3 spelers ondanks dat Sjaak met 2 spelers wilde starten.
 	 */
 	private void checkForGameStart() {
 		appController.log("Checks if games can be started...");
+		/*
+		 * Maakt 3 lijsten aan voor mogelijke 2 spelers games, 3 spelergames en 4 spelergames.
+		 */
 		ArrayList<ConnectionController> startingWith = null;
 		ArrayList<ConnectionController> with2min = new ArrayList<ConnectionController>();
 		ArrayList<ConnectionController> with3min = new ArrayList<ConnectionController>();
 		ArrayList<ConnectionController> with4min = new ArrayList<ConnectionController>();
 
 		for(ConnectionController aConnection: waitingForGame) {
+			/*
+			 * Stelt een lijst samen met mogelijke 2 speler games.
+			 */
 			if(aConnection.getGamer().getRequestedGameSize() <= 2) {
 				with2min.add(aConnection);
 			}
 		}
 
 		for(ConnectionController aConnection: waitingForGame) {
+			/*
+			 * Stelt een lijst samen met mogelijke 3 speler games.
+			 */
 			if(aConnection.getGamer().getRequestedGameSize() <= 3) {
 				with3min.add(aConnection);
 			}
 		}
 
 		for(ConnectionController aConnection: waitingForGame) {
+			/*
+			 * Stelt een lijst samen met mogelijke 4 speler games.
+			 */
 			if(aConnection.getGamer().getRequestedGameSize() <= 4) {
 				with4min.add(aConnection);
 			}
 		}
 
 		if(with4min.size() >= 4) {
+			/*
+			 * Kijkt eerst of er een 4 speler game gestart kan worden.
+			 * En stelt een startingWith lijst samen voor de startGame methode.
+			 */
 			startingWith = new ArrayList<ConnectionController>();
 			for(int i = 0; i < 4; i++) {
 				startingWith.add(with4min.get(i));
 			}
 		} else if(with3min.size() >= 3) {
+			/*
+			 * Kijkt of er een 3 speler game gestart kan worden.
+			 * En stelt een startingWith lijst samen voor de startGame methode.
+			 */
 			startingWith = new ArrayList<ConnectionController>();
 			for(int i = 0; i < 3; i++) {
 				startingWith.add(with3min.get(i));
 			}
 		}  else if(with2min.size() >= 2) {
+			/*
+			 * Kijkt of er een 2 speler game gestart kan worden.
+			 * En stelt een startingWith lijst samen voor de startGame methode.
+			 */
 			startingWith = new ArrayList<ConnectionController>();
 			for(int i = 0; i < 2; i++) {
 				startingWith.add(with2min.get(i));
@@ -701,6 +752,9 @@ public class NetworkController extends Thread implements Observer {
 		}
 
 		if(startingWith != null) {
+			/*
+			 * Als er een mogelijke game gestart kan worden doet hij dat met startGame();
+			 */
 			startGame(startingWith);
 		} else {
 			appController.log("Not enough players to start a game");
@@ -708,68 +762,104 @@ public class NetworkController extends Thread implements Observer {
 	}
 
 	/**
+	 * Deze methode start een game tussen de ingevoerde connecties.
 	 * 
-	 * @param players
+	 * De methode zorgt er voor dat de connecties en gamers netjes uit de wachtende lijstjes verwijdert worden.
+	 * Zodat er geen conflicten ontstaan.
+	 * 
+	 * @param players de connecties waarmee een game moet starten.
 	 */
 	private void startGame(ArrayList<ConnectionController> players) {
 		
-		for(ConnectionController starting: players) {
-			if(waitingForGame.contains(starting)) {
-				waitingForGame.remove(starting);
-			} else {
-				appController.log("Server tries to start game with someone who does not want to start with join");
-			}
-		}
 		
+		/*
+		 * Checkt of er niet meer dan 4 players me gegeven worden.
+		 * Zo ja wordt er geen game gestart.
+		 */
 		if(players.size() > 1 && players.size() < 5) {
+			/*
+			 * Stelt een startgame commando
+			 * en een mooie log entry samen.
+			 */
 			String command = "startgame";
 			String logEntry = "Starting a game between";
-			int i = 0;
 
 			for(ConnectionController player: players) {
-
-				if(i < 4) {
-					command = command + " " + player.getGamer().getName();
-					logEntry = logEntry + ", " + player.toString();
-				} else {
-					players.remove(player);
-				}
-				i++;
+				command = command + " " + player.getGamer().getName();
+				logEntry = logEntry + ", " + player.toString();
 			}
+			
+			for(ConnectionController starting: players) {
+				/*
+				 * Gooit de gamers allemaal uit de waitingForGame list als ze het join commando gebruikt hebben.
+				 */
+				if(waitingForGame.contains(starting)) {
+					waitingForGame.remove(starting);
+				} else {
+					/*
+					 * Dit is natuurlijk mogelijk als een gamer de challenge functie heeft gebruikt.
+					 */
+					appController.log("Server tries to start game with someone who does not want to start with join");
+				}
+			}
+			
 			appController.log(logEntry);
 			ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 
 			for(ConnectionController player: players) {
+				/*
+				 * Stel een mooie lijst samen voor het Game object dat bij de Game moet horen.
+				 */
 				player.sendCommand(command);
 				gamers.add(player.getGamer());
 			}
 
 			Game aGame = new Game(gamers);
+			/*
+			 * Maakt gebruik van het Observer patroon binnen Game zodat NetworkController het weet als er iets in Game vetandert.
+			 */
 			aGame.addObserver(this);
 			games.add(aGame);
+			/*
+			 * Zorgt er voor dat iemand de beurt krijgt.
+			 */
 			nextTurn(aGame);
 		}
-
+		/*
+		 * Aangezien er iets is veranderd in de samenstelling van de lobby moet er een nieuwe lobby gebroadcast worden.
+		 */
 		broadcastLobby();
 	}
 
 	/**
-	 * 
-	 * @param toBeKicked
+	 * Met dit commando kan er gemakkelijk een gamer uit zijn spel gekickt worden.
+	 * De methode viegeliert zelf uit in welke game de gamer zich bevindt.
+	 * @param toBeKicked de te kicken gamer.
 	 */
 	private void kickGamer(Gamer toBeKicked) {
 		appController.log("Kicking " + toBeKicked.getName() + " ...");
+		/*
+		 * Kijkt in welke game de gamer zit.
+		 */
 		Game participatingGame = null;
 		for(Game aGame: games) {
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == toBeKicked) {
+					/*
+					 * Als de gamer gevonden is wordt de betreffende game opgeslagen
+					 * voor later gebruik.
+					 */
 					participatingGame = aGame;
 				}
 			}
 		}	
 
 		if(participatingGame != null) {
-
+			/*
+			 * Als er een game gevonden is wordt een commando samengestelt en naar
+			 * alle gamers in die game gestuurd zodat zij hun game model aan kunnen passen.
+			 * 
+			 */
 			for(ConnectionController connection: connections) {
 				for(Gamer aGamer: participatingGame.getGamers()) {
 					if(aGamer == connection.getGamer()) {
@@ -777,21 +867,41 @@ public class NetworkController extends Thread implements Observer {
 					}
 				}
 			}
+			/*
+			 * Zorgt er voor dat het Game model van de server geen verwijzing meer heeft naar de gekickte speler.
+			 * Het game model houdt ook een lijst met beginspelers bij zodat het endgame commando nog wel goed
+			 * doorgegeven kan worden.
+			 */
 			participatingGame.removeGamer(toBeKicked);
+			/*
+			 * Geeft de gamer een kleur van Slot.EMPTY,
+			 * dit zorgt er voor dat de gamer.isTakingPart() == false
+			 */
 			toBeKicked.setColor(Slot.EMPTY);
 		}
-
+		/*
+		 * Omdat er mogelijk iets is verandert in de samenstelling van de lobby,
+		 * namelijk de gekickte gamer zit waarscheinlijk weer in de lobby, wordt er een lobby
+		 * commando gebroadcast.
+		 */
 		broadcastLobby();
 	}
 
 	/**
-	 * 
-	 * @param aGame
+	 * Dit commando zort dat de volgende gamer de beurt krijgt in een bepaalde game.
+	 * @param aGame de game die het betreft.
 	 */
 	private void nextTurn(Game aGame) {
 		for(ConnectionController connection: connections) {
+			/*
+			 * Zoekt de connections bij de gamers uit een bepaalde game.
+			 */
 			for(Gamer aGamer: aGame.getGamers()) {
 				if(aGamer == connection.getGamer()) {
+					/*
+					 * Als de conenctions gevonden bij de gamer zijn wordt er vervolgens een commando naar
+					 * iedereen in die betreffende game gestuurd.
+					 */
 					connection.sendCommand("turn " + aGame.getCurrent().getName());
 				}
 			}
