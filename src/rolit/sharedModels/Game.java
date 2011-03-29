@@ -54,15 +54,18 @@ public class Game extends Observable {
 	}
 	
 	/**
+	 * Deze methode checkt een move van een gamer mogelijk is op dit moment in de game.
 	 * 
-	 * @param i
-	 * @param aGamer
-	 * @return
+	 * @require i >= 0 && i < Board.DIMENSION*Board.DIMENSION && this.getGamers().contains(aGamer)
+	 * @param i het te zetten vakje op het bord
+	 * @param aGamer de gamer waarvoor de move gecheckt moet worden.
+	 * @return true als de zet mogelijk is volgens de spel regels en de gamer aan de beurt is anders false
 	 */
 	public boolean checkMove(int i, Gamer aGamer) {
 		boolean result = false;
 		/*
-		 * De gamer moet wel aan de beurt zijn voor het positief terug geven van deze methoden 
+		 * De gamer moet wel aan de beurt zijn voor het positief terug geven van deze methoden,
+		 * daarnaast wordt er op het bord gecheckt of de zet mogelijk is volgens de spelregels.
 		 */
 		if(aGamer == current && board.checkMove(i, aGamer.getColor())) {
 			result = true;
@@ -71,14 +74,25 @@ public class Game extends Observable {
 	}
 	
 	/**
-	 * Voert een bepaalde move van een bepaalde gamer uit.
-	 * 
-	 * @param i
-	 * @param aGamer
+	 * Voert een bepaalde move van een bepaalde gamer uit. Er wordt op het bord gecheckt of de move mogelijk is door middel van de checkMove methode.
+	 * Als de move gedaan kan worden wordt de move uitgevoerdt op het bord en worden de observers geinformeerd van de veranderde status van de game.
+	 * @require i >= 0 && i < Board.DIMENSION*Board.DIMENSION && this.getGamers().contains(aGamer)
+	 * @param i het te zetten vakje.
+	 * @param aGamer de gamer die dit vakje wilt zetten.
 	 */
 	public void doMove(int i, Gamer aGamer) {
+		/*
+		 * Checkt eerst intern of de move mogelijk is.
+		 */
 		if(checkMove(i,aGamer)) {
+			/*
+			 * De move wordt daadwerkelijk op het bord uitgevoerd.
+			 */
 			board.doMove(i, aGamer.getColor());
+			/*
+			 * Er wordt naar de volgende persoon gegaan voor de beurt, dit moet eerst gebeuren voordat de observers ge notified worden omdat de observers
+			 * de this.getCurrent() methode kunnen gebruiken.
+			 */
 			nextTurn();
 			setChanged();
 			notifyObservers("Move");

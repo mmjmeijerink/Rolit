@@ -23,6 +23,9 @@ public class Board {
 		slots = new ArrayList<Slot>();
 
 		for(int i = 0; i < DIMENSION * DIMENSION; i++) {
+			/*
+			 * Maakt de slots array aan met de hoeveelheid slots DIMENSION^2
+			 */
 			Slot aSlot = new Slot();
 			slots.add(aSlot);
 		}
@@ -109,45 +112,86 @@ public class Board {
 	}
 
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
+	 * Deze methode doet een zet als dat mogelijk is. Als de zet onmogelijk blijkt te zijn doet deze hem gewoon simpel weg niet.
+	 * Het is de verantwoordelijkheid van de uitvoerder om zelf eerst te checken of het kan dmv de methode checkMove();
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 * @param slotNo het slot nummer dat gezet moet worden
+	 * @param color de kleur die een zet wilt doen
 	 */
 	public void doMove(int slotNo, int color) {
 		if(checkMove(slotNo,color)) {
+			/*
+			 * Het vakje dat gezet moet worden moet altijd eerst zelf de juiste kleur toegewezen krijgen.
+			 */
 			slots.get(slotNo).setValue(color);
+			/*
+			 * Er wordt nu gecheckt om te flippen in alle mogelijke 8 richtingen.
+			 */
 			if(checkAbove(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er boven een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkAbove(slotNo,color,0));
 			}
 			if(checkRightAbove(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er rechtsboven een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkRightAbove(slotNo,color,0));
 			}
 			if(checkRight(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er rechts van een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkRight(slotNo,color,0));
 			}
 			if(checkRightBelow(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er rechtsonder een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkRightBelow(slotNo,color,0));
 			}
 			if(checkBelow(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er onder een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkBelow(slotNo,color,0));
 			}
 			if(checkLeftBelow(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er linksonder een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkLeftBelow(slotNo,color,0));
 			}
 			if(checkLeft(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er links van een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkLeft(slotNo,color,0));
 			}
 			if(checkLeftAbove(slotNo,color,0) > -1) {
+				/*
+				 * Als er tussen het tezetten slot en een slot er linksboven een lijn te trekken valt in de zelfde kleur
+				 * moeten alle vakjes daartussen omgeflipt worden.
+				 */
 				flipBetween(slotNo,checkLeftAbove(slotNo,color,0));
 			}
 		}
 	}
 
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @return
+	 * Checkt of een move van een bepaalde kleur mogelijk is. Als er niet aan de precondities gehouden wordt
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 * @param slotNo het te zetten slot
+	 * @param color de kleur waarmee dat moet gebeuren
+	 * @return true als de zet mogelijk is volgens de spel regels van Rolit en false als dat niet zo is.
 	 */
 	public boolean checkMove(int slotNo, int color) {
 		boolean result = false;
@@ -171,16 +215,21 @@ public class Board {
 	}
 
 	/**
-	 * 
-	 * @param color
+	 * Private methode die gebruikt wordt voor de methode checkMove. Deze methode checkt of er een verovende check mogelijk is.
+	 * Met een veroverende check wordt bedoelt dat er een zet mogelijk is die balletjes omflipt. Als dit niet zo is dan moet er een
+	 * aangrenzende zet gedaan worden.
+	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 * @param color De kleur waarvoor gecheckt moet worden.
 	 * @return
 	 */
 	private boolean checkIfConquering(int color) {
 		boolean result = false;
 		
 		for(Slot aSlot: slots) {
+			/*
+			 * Checkt voor vakje op het bord of het mogelijk is.
+			 */
 			int slotNo = slots.indexOf(aSlot);
-			//System.out.println(slotNo);
 			
 			if(aSlot.getValue() == Slot.EMPTY && (
 					checkAbove(slotNo,color,0) > -1 ||
@@ -191,6 +240,13 @@ public class Board {
 					checkLeftBelow(slotNo,color,0) > -1 ||
 					checkLeft(slotNo,color,0) > -1 ||
 					checkLeftAbove(slotNo,color,0) > -1)) {
+				/*
+				 * Omdawt de checks van alle richtingen ook checken of er niet direct een leeg vakje aangrenst
+				 * hoeft er niet meer gecheckt te worden of een zet wel aangrenzend is.
+				 * 
+				 * Als een vakje dus leeg is en een potenciele veroverende zet is wordt er als
+				 * result true terug gegeven.
+				 */
 				result = true;
 			}
 		}
@@ -198,9 +254,11 @@ public class Board {
 		return result;
 	}
 	/**
-	 * 
-	 * @param slotNo
-	 * @return
+	 * Dit is een private methode die ter ondersteuning is vah de checkMove methode. Deze methode checkt of een bepaalde zet grenzend is aan het speelvlak.
+	 * Er moet dus in een van de 8 richtingen een bal liggen die niet Slot.EMPTY is. Er wordt dus in alle richtingen voor alle kleuren gecheckt voor deze zet.
+	 * @param slotNo het slot nummer dat gecheckt moet worden.
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION
+	 * @return true als er een grenzend vakje is.
 	 */
 	private boolean checkIfBordering(int slotNo) {
 		boolean result = false;
@@ -242,6 +300,12 @@ public class Board {
 			checkLeft(slotNo,Slot.YELLOW,1) > -1 ||
 			checkLeftAbove(slotNo,Slot.YELLOW,1) > -1
 		) {
+			/*
+			 * Er wordt dus voor alle richtingen gecheckt voor alle kleuren.
+			 * De pre condities van de check{richting} is namelijk dat Slot.EMPTY niet mogelijk is
+			 * en dus moet er op alle andere kleuren gecheckt worden.
+			 * Als er dus een aangrenzend vakje is gevonden wordt er true terug gegeven.
+			 */
 			result = true;
 		}
 		

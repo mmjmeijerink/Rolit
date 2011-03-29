@@ -28,7 +28,7 @@ public class Slot {
 	
 	/**
 	 * Zet de kleur van het vakje.
-	 * @require aValue == Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLO || Slot.GREEN
+	 * @require aValue == Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
 	 * @param aValue de int value van de kleur die geset moet worden
 	 */
 	public void setValue(int aValue) {
@@ -48,7 +48,7 @@ public class Slot {
 	
 	/**
 	 * Geeft de kleur terug van het huidige vakje.
-	 * @return Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLO || Slot.GREEN
+	 * @return Slot.EMPTY || Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
 	 */
 	public int getValue() {
 		return value;
