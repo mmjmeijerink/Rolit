@@ -18,7 +18,7 @@ public class SmartAIController implements AIControllerInterface {
 		//als er meerdere de zelfde punten opleveren neemt deze funtie de eerste die hij tegenkomt
 		int lessPoints = 100;
 		int mostPointsIndex = -1;
-		for(int i = 0; i < Board.DIMENSION * Board.DIMENSION && lessPoints != -2; i++) {
+		for(int i = 0; i < Board.DIMENSION * Board.DIMENSION && lessPoints != -1; i++) {
 			if(board.checkMove(i, color)) {
 				Board newBoard = board.copy();
 				newBoard.doMove(i, color);
@@ -26,7 +26,7 @@ public class SmartAIController implements AIControllerInterface {
 
 				//Als dit vakje een hoek is (en dus mogelijk is om te pakken), altijd in de hoek gaan zitten
 				if (i == 0 || i == 7 || i == 56 || i == 63) {
-					lessPoints = -2;
+					lessPoints = -1;
 					mostPointsIndex = i;
 				//Als dit vakje direct aan één van de hoeken grenst, pak het dan niet (bij voorkeur)
 				} else if(lessPoints > 95
@@ -61,7 +61,7 @@ public class SmartAIController implements AIControllerInterface {
 					|| (i > 0 && i < 7) /* Bovenste rand */
 					|| (i > 56 && i < 63) /* Onderste rand */
 					)) {
-					lessPoints = -1;
+					lessPoints = 0;
 					mostPointsIndex = i;
 				//Anders random vakje kiezen, waarbij eerst zo min mogelijk punten gepakt worden
 				} else if(newPoints < lessPoints) {

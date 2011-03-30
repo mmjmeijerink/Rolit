@@ -9,6 +9,7 @@ import javax.swing.*;
 
 public class ClientGUI extends JFrame implements KeyListener, ActionListener, MessageUI {
 
+	private static final long serialVersionUID = 1L;
 	private JButton bConnect;
 	private JTextField tfAddress, tfPort, tfMyMessage;
 	private JTextArea taMessages;

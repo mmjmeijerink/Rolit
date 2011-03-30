@@ -8,6 +8,7 @@ import rolit.client.controllers.*;
 
 public class LobbyView extends JFrame implements AlertableView {
 	
+	private static final long serialVersionUID = 1L;
 	private JSpinner joinSpinner;
 	private JButton joinButton;
 	private JButton challengeButton;

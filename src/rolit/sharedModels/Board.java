@@ -600,7 +600,7 @@ public class Board {
 	}
 	
 	/**
-	 * Een mooie string representatie van het de numemrs van de vakjes op het bord wordt hier terug gegeven.
+	 * Een mooie string representatie van het de nummers van de vakjes op het bord wordt hier terug gegeven.
 	 * @return een nette string representatie van de nummers van de vakjes op het bord
 	 */
 	public String layoutToString() {
