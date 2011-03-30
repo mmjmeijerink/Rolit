@@ -262,62 +262,124 @@ public class LobbyView extends JFrame implements AlertableView {
         
 	}
 	
+	/**
+	 * Met deze methode kan een error bericht aan de gebruiker getoont worden.
+	 * @require message != null
+	 * @param message Het te tonen bericht
+	 */
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message, "Lobby Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	/**
+	 * Met deze methode kan een informatie bericht aan de gebruiker getoont worden.
+	 * @require message != null
+	 * @param message Het te tonen bericht
+	 */
 	public void message(String message) {
 		JOptionPane.showMessageDialog(this, message, "Message", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
+	/**
+	 * Als er een challenge ontvangen wordt moet de gebruiker hier op antwoorden.
+	 * Dit gebeurt met hulp van deze methode die er voor zorgt dat er een dialoog getoondt met daarin een YES en NO optie,
+	 * dit voor het accepten van de challenge
+	 * @param challenger De naam van de challenger
+	 * @return 1 als er op ja gedrukt wordt en 2 als dat niet zo is.
+	 */
 	public int challengeReceived(String challenger) {
 		String message = "You received a challenge from " + challenger;
-		
 		return JOptionPane.showConfirmDialog(this, message, "Challenge received", JOptionPane.YES_NO_OPTION);
 	}
 	
+	/**
+	 * Geeft de waarde van de minimaal aantal speler join terug.
+	 * @ensure 1 < result < 5
+	 * @return waarde tussen de 2 en 4
+	 */
 	public int getSpinnerValue() {
 		javax.swing.SpinnerNumberModel myModel = (javax.swing.SpinnerNumberModel)(joinSpinner.getModel());
-		
 		return myModel.getNumber().intValue();
 	}
 	
+	/**
+	 * Geeft de joinButton terug zodat deze vergeleken kan worden in de actionListener.
+	 * @return De joinButton
+	 */
 	public JButton getJoinButton() {
 		return joinButton;
 	}
 	
+	/**
+	 * Geeft het JTextField terug met daarin de chatberichten zodat deze kan worden vergeleken in de KeyListener
+	 * @return het textField met het te versturen chat bericht
+	 */
 	public JTextField getChatMessage() {
 		return chatMessage;
 	}
 	
+	/**
+	 * Geeft de chatArea terug zodat daar berichten aan toegevoegd kunnen worden als dat nodig is.
+	 * @return geeft de chatArea.
+	 */
 	public JTextArea getChatArea() {
 		return chatArea;
 	}
 	
+	/**
+	 * Geeft de chatButton terug zodat deze vergeleken kan worden in de actionListener.
+	 * @return De chatButton
+	 */
 	public JButton getChatButton() {
 		return chatButton;
 	}
 	
+	/**
+	 * Geeft de challengeList terug zodat de geselecteerde rij opgevraagt kan worden
+	 * @return De challengeList
+	 */
 	public JList getChallengeList() {
 		return challengeList;
 	}
 	
+	/**
+	 * Geeft de challengeButton terug zodat deze vergeleken kan worden in de actionListener.
+	 * @return De challengeButton
+	 */
 	public JButton getChallengeButton() {
 		return challengeButton;
 	}
 
+	/**
+	 * Geeft true terug als de in de groep met radio buttons "Smart AI" geselecteerd is
+	 * @return true bij "Smart AI" anders false
+	 */
 	public boolean smartComputerIsSet() {
 		return smartComputerChoice.isSelected();
 	}
 
+	/**
+	 * Geeft true terug als de in de groep met radio buttons "Dull AI" geselecteerd is
+	 * @return true bij "Dull AI" anders false
+	 */
 	public boolean computerIsSet() {
 		return computerChoice.isSelected() || smartComputerChoice.isSelected();
 	}
 	
+	/**
+	 * Geeft true terug als de in de groep met radio buttons "Human" geselecteerd is
+	 * @return true bij "Human" anders false
+	 */
 	public boolean humanIsSet() {
 		return humanChoice.isSelected();
 	}
 	
+	/**
+	 * Met deze methode kan de lijst in de interface gevult worden met een array van strings.
+	 * Het is de bedoeling dat hier de namen van de gamers doorgegeven worden zodra er een lobby commando
+	 * verwerkt wordt door de Application Controller
+	 * @param list de in te voeren lijst met strings
+	 */
 	public void setChallengeList(ArrayList<String> list) {
 		DefaultListModel listModel = new DefaultListModel();
 		for(String aString: list) {
@@ -326,11 +388,17 @@ public class LobbyView extends JFrame implements AlertableView {
 		challengeList.setModel(listModel);
 	}
 	
+	/**
+	 * Start de loader en geeft deze weer
+	 */
 	public void startLoading() {
 		joinLoader.setVisible(true);
 		joinLoader.setIndeterminate(true);
 	}
 	
+	/**
+	 * Verbergt de loader
+	 */
 	public void stopLoading() {
 		joinLoader.setVisible(false);
 	}	
