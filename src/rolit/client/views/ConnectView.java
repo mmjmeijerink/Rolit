@@ -5,13 +5,25 @@ import javax.swing.*;
 
 import rolit.client.controllers.*;
 
+/**
+ * De ConnectView zorgt voor de GUI waarmee de gebruiker kan instellen met welke server hij wil verbinden.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 public class ConnectView extends JFrame implements AlertableView {
 
 	private static final long serialVersionUID = 1L;
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField;
 	private ApplicationController viewController;
-
+	
+	/**
+	 * Maakt een instantie van ConnectView aan en zorgt ervoor dat de applicatie een GUI aan de gebruiker presenteert.
+	 * Doormiddel van interne methoden wordt er een GUI gebouwd. Zodra deze gebouwd is kunnen er strings van textFields etc. opgevraagt worden van dit object.
+	 * 
+	 * @require aController != null
+	 * @param aController
+	 */
 	public ConnectView(ApplicationController aController) {
 		super("Connect to a Rolit server");
 		viewController = aController;
@@ -24,8 +36,17 @@ public class ConnectView extends JFrame implements AlertableView {
 		});
 	}
 	
-	/** Builds the GUI. */
+	/**
+	 * Interne methoden voor het bouwen van de GUI.
+	 * Dit gebeurt met behulp van de swing-layout library.
+	 * @require this.viewController != null;
+	 */
 	public void buildView() {
+		
+		/*
+		 * Vreemde namen staan hier zodat ze overeenkomen met de NetBeans gegenereerde code.
+		 */
+		
 		JLabel jLabel5 = new javax.swing.JLabel();
         JButton jButton2 = new javax.swing.JButton();
         JLabel jLabel6 = new javax.swing.JLabel();
@@ -49,7 +70,12 @@ public class ConnectView extends JFrame implements AlertableView {
         jTextField6.setText("127.0.0.1");
         jTextField5.setText("1337");
         jLabel7.setText("Nickname:");
-        jTextField4.setText("Sjaakbonenstaak");
+        jTextField4.setText("");
+        
+        /*
+         * NetBeans generator code vanaf hier.
+         * Voor deze code is dan ook de extra library swing-layout-1.0.4.jar nodig
+         */
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -90,12 +116,22 @@ public class ConnectView extends JFrame implements AlertableView {
         );
 
         pack();
+        
+        /*
+         * Einde NetBeans gegenereerde code.
+         */
+        
 	}
 	
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message, "Connection Alert", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	/**
+	 * Zorgt er voor dat de gebruiker wijzigingen kan aanbrengen aan de textFields van de GUI
+	 * en zorgt er voor dat de gebruiker kan drukken op de knoppen in deze GUI.
+	 * @ensure this.getConnectButton().isEnabled = true;
+	 */
 	public void enableControlls() {
 		hostField.setEnabled(true);
 		portField.setEnabled(true);
@@ -103,6 +139,11 @@ public class ConnectView extends JFrame implements AlertableView {
 		connectButton.setEnabled(true);
 	}
 	
+	/**
+	 * Zorgt er voor dat de gebruiker niet meer wijzigingen kan aanbrengen aan de textFields van de GUI
+	 * en zorgt er voor dat de gebruiker niet meer kan drukken op de knoppen in deze GUI.
+	 * @ensure this.getConnectButton().isEnabled = false;
+	 */
 	public void disableControlls() {
 		hostField.setEnabled(false);
 		portField.setEnabled(false);
