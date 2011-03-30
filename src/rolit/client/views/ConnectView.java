@@ -10,9 +10,9 @@ import rolit.client.controllers.*;
  * @author  Mart Meijerink en Thijs Scheepers
  * @version 1
  */
+@SuppressWarnings("serial")
 public class ConnectView extends JFrame implements AlertableView {
 
-	private static final long serialVersionUID = 1L;
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField;
 	private ApplicationController viewController;
@@ -25,11 +25,22 @@ public class ConnectView extends JFrame implements AlertableView {
 	 * @param aController
 	 */
 	public ConnectView(ApplicationController aController) {
+		/*
+		 * Zorgt er voor dat er een JFrame geopent wordt met de juiste naam in de titel balk
+		 */
 		super("Connect to a Rolit server");
+		
 		viewController = aController;
 		buildView();
+		/*
+		 * Maakt de GUI zichtbaar nadat hij gebouwd is.
+		 */
 		this.setVisible(true);
+		
 		this.addWindowListener(new WindowAdapter() {
+			/*
+			 * Als het venster gesloten wordt mag de applicatie afgsloten worden.
+			 */
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
@@ -123,6 +134,11 @@ public class ConnectView extends JFrame implements AlertableView {
         
 	}
 	
+	/**
+	 * Met deze methode kan een error bericht aan de gebruiker getoont worden.
+	 * @require message != null
+	 * @param message Het te tonen bericht
+	 */
 	public void alert(String message) {
 		JOptionPane.showMessageDialog(this, message, "Connection Alert", JOptionPane.ERROR_MESSAGE);
 	}
@@ -151,18 +167,34 @@ public class ConnectView extends JFrame implements AlertableView {
 		connectButton.setEnabled(false);
 	}
 	
+	/**
+	 * Geeft de teskt van het hostField terug.
+	 * @return De tekst die het hostField bevat
+	 */
 	public String getHost() {
 		return hostField.getText();
 	}
 	
+	/**
+	 * Geeft de teskt van het portField terug.
+	 * @return De tekst die het portField bevat
+	 */
 	public String getPort() {
 		return portField.getText();
 	}
 	
+	/**
+	 * Geeft de teskt van het nickField terug.
+	 * @return De tekst die het nickField bevat
+	 */
 	public String getNick() {
 		return nickField.getText();
 	}
 	
+	/**
+	 * Geeft de connectButton terug zodat deze vergeleken kan worden in de actionListener.
+	 * @return De connectButton
+	 */
 	public JButton getConnectButton() {
 		return connectButton;
 	}	
