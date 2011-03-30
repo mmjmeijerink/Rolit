@@ -277,7 +277,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	}
 	
 	/**
-	 Geeft de chatButton terug zodat deze vergeleken kan worden in de actionListener.
+	 * Geeft de chatButton terug zodat deze vergeleken kan worden in de actionListener.
 	 * @return De chatButton
 	 */
 	public JButton getChatButton() {
@@ -285,7 +285,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	}
 	
 	/**
-	 Geeft de hintButton terug zodat deze vergeleken kan worden in de actionListener.
+	 * Geeft de hintButton terug zodat deze vergeleken kan worden in de actionListener.
 	 * @return De hintButton
 	 */
 	public JButton getHintButton() {

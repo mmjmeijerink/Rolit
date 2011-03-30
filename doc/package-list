@@ -1,3 +1,5 @@
+rolit.client.models
+rolit.client.views
 rolit.server
 rolit.server.controllers
 rolit.server.models
