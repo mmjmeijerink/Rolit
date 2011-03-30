@@ -215,17 +215,6 @@ public class LobbyView extends JFrame implements AlertableView {
                 .add(17, 17, 17))
         );
 
-        jButton3.setText("Chat");
-        jButton3.addActionListener(viewController);
-        
-        jTextField1.addKeyListener(viewController);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setEditable(false);
-        jTextArea1.setLineWrap(true);
-        jScrollPane2.setViewportView(jTextArea1);
-
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
