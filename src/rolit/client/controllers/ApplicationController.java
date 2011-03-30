@@ -233,20 +233,18 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 			
 			/*
-			 * Een spatie als nick wordt niet geaccepteerd en zonder nick kan je niet connecten
+			 * Deze functie zorgt er voor dat alle spaties uit de meegegeven nick worden gehaald, zodat
+			 * de server de naam goed kan afhandelen en er fouten worden voorkomen.
 			 */
-			if(connectView.getNick() == null || connectView.getNick().equals("") || connectView.getNick().equals("\\s") || !fieldsCorrect) {
+			String realNick = connectView.getNick().replaceAll(" ", "");
+			
+			if(realNick == null || realNick.isEmpty() || realNick.equals("")) {
 				logWithAlert("Please enter your name.");
 				fieldsCorrect = false;
 			}
 
 			if(host != null && port > 0 && fieldsCorrect) {
 				connectView.disableControlls();
-				/*
-				 * Deze functie zorgt er voor dat alle spaties uit de meegegeven nick worden gehaald, zodat
-				 * de server de naam goed kan afhandelen en er fouten worden voorkomen.
-				 */
-				String realNick = connectView.getNick().replaceAll(" ", "");
 				network = new NetworkController(host, port, this, "connect " + realNick);
 				network.start();
 			}
@@ -257,9 +255,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				lobbyView.computerIsSet();
 			}
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
-			sendChat(lobbyView.getChatMessage().getText());
+			if(lobbyView.getChatMessage().getText() != null || !lobbyView.getChatMessage().getText().equals("\\s"))
+				sendChat(lobbyView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
-			sendChat(gameView.getChatMessage().getText());
+			if(gameView.getChatMessage().getText() != null || !gameView.getChatMessage().getText().equals("\\s"))
+				sendChat(gameView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
 			int bestMove = ai.calculateBestMove(gamer.getColor());
 			gameView.getSlotsList().get(bestMove).setBackground(Color.WHITE);
