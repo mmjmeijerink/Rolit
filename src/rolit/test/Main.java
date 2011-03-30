@@ -1,4 +1,4 @@
-package rolit;
+package rolit.test;
 
 public class Main {
 

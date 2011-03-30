@@ -125,6 +125,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setEditable(false);
+        jTextArea1.setLineWrap(true);
         jScrollPane2.setViewportView(jTextArea1);
         
         jSlider1.setMaximum(3000);
@@ -206,6 +207,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	 * @require e == this
 	 */
 	public void componentResized(ComponentEvent e) {
+        // This is only called when the user releases the mouse button.
         if(e.getSource() == this) {
 	    	double widthButton = (((JFrame)e.getSource()).getWidth() - 40 - 8*50)/16;
 	    	double heightButton = widthButton*1.5;

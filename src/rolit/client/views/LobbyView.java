@@ -105,14 +105,15 @@ public class LobbyView extends JFrame implements AlertableView {
 
         jLabel1.setText("Minimal players:");
 
-        jButton2.setText("Challange");
+        jButton2.setText("Challenge");
         jButton2.addActionListener(viewController);
 
         /*
          * Voor de lijst moet eerst een standaard model ingevoerd worden.
          */
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "No lobby command recieved" };
+			private static final long serialVersionUID = 2912992567185913876L;
+			String[] strings = { "No lobby command recieved" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -123,7 +124,7 @@ public class LobbyView extends JFrame implements AlertableView {
 
         jLabel2.setText("In the lobby:");
 
-        jButton1.setText("Quick Join");
+        jButton1.setText("Join");
         jButton1.addActionListener(viewController);
         
         joinLoader.setVisible(false);
@@ -213,6 +214,17 @@ public class LobbyView extends JFrame implements AlertableView {
                     .add(jButton1))
                 .add(17, 17, 17))
         );
+
+        jButton3.setText("Chat");
+        jButton3.addActionListener(viewController);
+        
+        jTextField1.addKeyListener(viewController);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setEditable(false);
+        jTextArea1.setLineWrap(true);
+        jScrollPane2.setViewportView(jTextArea1);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

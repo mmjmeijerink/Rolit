@@ -165,7 +165,7 @@ public class ClientGUI extends JFrame implements KeyListener, ActionListener, Me
 	/** Start een ClientGUI applicatie op. */
 	public static void main(String args[]) {
 		System.out.println("Een nieuwe client");
-		ClientGUI gui = new ClientGUI();
+		new ClientGUI();
 	}
 
 	@Override
