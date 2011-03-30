@@ -88,6 +88,9 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 			places.add(i, new JButton());
 			places.get(i).setActionCommand(i + "");
 			places.get(i).setText("");
+			/*
+			 * opaque is nodig voor het juist weergeven van de knoppen op een Mac 
+			 */
 			places.get(i).setOpaque(true);
 			places.get(i).setEnabled(false);
 			places.get(i).addActionListener(viewController);
@@ -207,8 +210,11 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	 * @require e == this
 	 */
 	public void componentResized(ComponentEvent e) {
-        // This is only called when the user releases the mouse button.
         if(e.getSource() == this) {
+        	/*
+        	 * Er wordt een breete en hoogte bepaalt die netjes de buttons weergeeft.
+        	 * Deze waarde zijn bepaalt door het uit proberen
+        	 */
 	    	double widthButton = (((JFrame)e.getSource()).getWidth() - 40 - 8*50)/16;
 	    	double heightButton = widthButton*1.5;
 	    	if(heightButton < 15) {
@@ -221,6 +227,9 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	    	}
 	    	
 	    	for(JButton button : places) {
+	    		/*
+	    		 * Op Mac en Windows worden knoppen anders weergegeven, daar wordt hier voor gecompenseert.
+	    		 */
 	    		String osName = System.getProperty("os.name");
 	    		if(osName.startsWith("Mac OS X")) {
 	    			button.setMargin(new Insets((int)heightButton, (int)widthButton, (int)heightButton, (int)widthButton));

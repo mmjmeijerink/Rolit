@@ -28,6 +28,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private Gamer					gamer;
 	private AIControllerInterface	ai;
 	private boolean					aiIsPlaying;
+	private boolean					wantsToStop;
 
 	/**
 	 * Met de constructor wordt automatisch een connectView aangemaakt en vervolgens weergegeven.
@@ -80,10 +81,24 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Deze methode kan worden aangeroepen als deze client aan de beurt is in de game.
+	 */
 	public void myTurn() {
+		/*
+		 * Er moet eerst gecheckt worden of de AI speelt.
+		 */
 		if(!aiIsPlaying) {
+			/*
+			 * Als de AI niet speelt mag de Hint button aangezet worden zodat deze gebruikt kan worden. 
+			 */
 			gameView.getHintButton().setEnabled(true);
 			for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
+				/*
+				 * De knoppen uit de GameView die ingedruk kunnen worden worden hier aangezet
+				 * zodat deze ingedruk kunnen worden. De knoppen die ingedruk kunnen worden
+				 * krijgen ook een mooie grijze achtergrond.
+				 */
 				int color = gamer.getColor();
 				if(game.getBoard().checkMove(i, color)) {
 					gameView.getSlotsList().get(i).setEnabled(true);
@@ -93,33 +108,70 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				}
 			}
 		} else {
+			/*
+			 * Als de AI speelt wordt de huidige Thread inslaap gesust voor een bepaalde tijd
+			 * zodat goed te zien is wat de AI nou eigenlijk doet tijdens een bepaalde zet.
+			 * Met de slider kan de tijd van dit dutje ingestelt worden.
+			 */
 			try {
 				Thread.sleep(gameView.getTimeValue());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			/*
+			 * Door de AI wordt de zet berekend en vervolgens naar de server gestuurd.
+			 */
 			int bestMove = ai.calculateBestMove(gamer.getColor());
 			game.doMove(bestMove, gamer);
 			network.sendCommand("domove "+bestMove);
+			/*
+			 * De game view mag vernieuwd worden omdat de situatie op het speel veld is verandert.
+			 */
 			updateGameView();
 		}
 	}
 
+	/**
+	 * Met deze methode kan de gamer opgevraagt worden die deze client moet representeren. Als de speler nog niet verbonden is
+	 * en dus nog geen gamer heeft wordt er null teruggegeven.
+	 * @return de gamer van deze client
+	 */
 	public Gamer getGamer() {
 		return gamer;
 	}
 
+	/**
+	 * Geeft de game terug waar deze client aan deelneemt, als deze client niet deelneemt wordt er null terug gegeven.
+	 * @return de game waar deze client aan deelneemt
+	 */
 	public Game getGame() {
 		return game;
 	}
 
+	/**
+	 * Deze methode handelt een move af op het bord en kan worden gebruikt om server commando's te verwerken
+	 * in het moddel. Daarnaast wordt de situatie op de GUI ook vernieuwt.
+	 * @param aGamer de gamer die de zet doet
+	 * @param index de index van het vakje dat door die gamer gezet wordt.
+	 */
 	public void handleMove(Gamer aGamer, int index) {
 		game.doMove(index, aGamer);
 		updateGameView();
 	}
 
+	/**
+	 * Deze methode kan worden aangeroepen om de gameView up te daten.
+	 * Dit zodat de game view op een juiste manier de knoppen weergeven zoals
+	 * in het game en bord model op het moment staan ingestelt.
+	 * 
+	 * @require this.gameView != null
+	 */
 	private void updateGameView() {
 		for(int i = 0; i < Board.DIMENSION*Board.DIMENSION; i++) {
+			/*
+			 * Loopt door alle vakjes op het bord heen en geeft vervolgens de
+			 * corresponderen knoppen de juiste achtergrond.
+			 */
 			int color = game.getBoard().getSlots().get(i).getValue();
 			if(color == Slot.RED) {
 				gameView.getSlotsList().get(i).setBackground(Color.RED);
@@ -135,7 +187,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
-	//Views
+	/**
+	 * Deze methode kan aangeroepen worden als de verbinding met de server verbroken wordt
+	 * of nooit tot stand kon komen. De methode zorgt er dan voor dat de juiste views weer
+	 * weergegeven worden zodat de gebruiker opnieuw een verbinding kan proberen te maken.
+	 */
 	public void connectionFailed() {
 		logWithAlert("Connection failure, the server may be down.");
 		connectView.enableControlls();
@@ -148,6 +204,14 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Deze connectie kan worden aangeroepen als een connectie tot stand gebracht kon worden.
+	 * De gamer name moet megegeven worden zodat de client bij kan houden welke naam hij heeft.
+	 * Tijdens deze methode wordt een gamer aangemaakt.
+	 * @require gamerName != null
+	 * @ensure this.getGamer() != null
+	 * @param gamerName terug gegeven naam van deze client voor verwerking.
+	 */
 	public void connectionAstablished(String gamerName) {
 		connectView.setVisible(false);
 		if(gamer == null) {
@@ -162,20 +226,32 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Met deze methode kan een game gestart worden. De gameView wordt zichtbaar als deze methode wordt
+	 * aangeroepen. Ook wordt netjes de status van de lobby afgehandeld.
+	 * @require players != null && 1 < players.size() < 5
+	 * @param players Lijst met spelers waarmee de game moet starten
+	 */
 	public void startGame(ArrayList<String> players) {
 		if(gameView == null) {
 			gameView = new GameView(this);
 		} else {
 			gameView.setVisible(true);
 		}
-
-		aiIsPlaying = lobbyView.computerIsSet();
 		lobbyView.setVisible(false);
 		lobbyView.stopLoading();
+		
+		/*
+		 * Voorkomt de dubbele alert bij het zelf afsluiten van een game.
+		 */
+		wantsToStop = false;
 
 		int i = 1;
 		ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 		for(String name: players) {
+			/*
+			 * Maakt voor elke value van players een gamer object aan.
+			 */
 			Gamer participant;
 			if(name.equals(gamer.getName())) {
 				participant = gamer;
@@ -189,15 +265,26 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 
 		game = new Game(gamers);
+		/*
+		 * Als de AI aanstaat moet dit netjes verwerkt worden
+		 */
 		if(lobbyView.smartComputerIsSet()) {
 			ai = new SmartAIController(game.getBoard());
-		} else {
+			aiIsPlaying = true;
+		} else if (lobbyView.computerIsSet()){
 			ai = new AIController(game.getBoard(), gamers);
+			aiIsPlaying = true;
 		}
 		updateGameView();
 	}
 
+	/**
+	 * Met deze methode wordt het stoppen van een game door deze client verwerkt.
+	 * Er wordt in deze methode een verkeerde zet naar de server verstuurt zodat de server
+	 * deze client zal moeten kicken, de client keert terug naar de lobby en kan een nieuwe game joinen.
+	 */
 	public void stopGame() {
+		wantsToStop = true;
 		network.sendCommand("domove 31");
 		lobbyView.setVisible(true);
 		gameView.setVisible(false);
@@ -206,11 +293,28 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		gameView = null;
 	}
 
-	//Event handlers
+	/**
+	 * Deze methode van de Interface ActionListener handelt alle GUI events af. Zoals het drukken op knoppen etc.
+	 * Er wordt geluistert naar de:
+	 * connectButton van de connectView,
+	 * chatButton van de gameView,
+	 * chatButton van de lobbyView,
+	 * hintButton van de GameView,
+	 * joinButton van de lobbyView,
+	 * challengeButton van de lobbyView en
+	 * alle speel knoppen van de GameView
+	 */
 	public void actionPerformed(ActionEvent event) {
+		/*
+		 * Het verwerken van de connect opdracht van de client.
+		 */
 		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
+			
 			log("Connection to the server...");
 
+			/*
+			 * Checkt of het host adres klopt
+			 */
 			InetAddress host;
 			try {    
 				host = InetAddress.getByName(connectView.getHost());
@@ -219,6 +323,9 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				logWithAlert("Hostname invalid.");
 			}
 
+			/*
+			 * Checkt of het poort nummer geldig is.
+			 */
 			int port = -1;
 			try {
 				port = Integer.parseInt(connectView.getPort());
@@ -230,15 +337,28 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			}
 
 			if(host != null && port > 0) {
+				/*
+				 * Maakt verbinding met de server als de poort en de host klopt.
+				 */
 				connectView.disableControlls();
 				/*
 				 * Deze functie zorgt er voor dat ale spaties uit de meegegeven nick worden gehaalt zodat
 				 * de server de naam goed kan afhandelen en er fouten worden voorkomen.
 				 */
 				String realNick = connectView.getNick().replaceAll(" ", "");
+				if(realNick.equals("")) {
+					realNick = "TeLuiOmEenNaamInTeVoeren";
+				}
+				/*
+				 * Maakt een netwerk controller aan en start de thread daarvoor.
+				 */
 				network = new NetworkController(host, port, this, "connect " + realNick);
 				network.start();
 			}
+			
+		/*
+		 * Het verwerken van de join opdracht van de client. Dus als er gedrukt wordt op de "Quick Join" knop wordt gedrukt.
+		 */	
 		} else if(lobbyView != null && event.getSource() == lobbyView.getJoinButton()) {
 			if(network != null) {
 				network.sendCommand("join "+lobbyView.getSpinnerValue());
@@ -256,12 +376,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
 			if(lobbyView.getChallengeList().getSelectedValue() != null) {
 				String selectedGamers = "challenge " + lobbyView.getChallengeList().getSelectedValue();
-
-				/*//Object[] selected = lobbyView.getChallengeList().getSelectedValues();
-
-				for(int i = 0; i < selected.length; i++) {
-					selectedGamers.concat(" " + (String) selected[i]); 
-				}*/
 
 				if(!gamer.getName().equals((String) lobbyView.getChallengeList().getSelectedValue())) {
 					network.sendCommand(selectedGamers);
@@ -286,6 +400,10 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * 
+	 * @param challenger
+	 */
 	public void challenged(String challenger) {
 		if(lobbyView != null && lobbyView.isVisible()) {
 			int choice = lobbyView.challengeReceived(challenger);
@@ -387,7 +505,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			gameView.setVisible(false);
 			lobbyView.stopLoading();
 			lobbyView.setVisible(true);
-			logWithAlert("You've got kicked!");
+			if(!wantsToStop) {
+				logWithAlert("You've got kicked!");
+			} else {
+				wantsToStop = false;
+			}
 			game = null;
 			gameView = null;
 		}
