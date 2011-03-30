@@ -237,7 +237,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			 * de server de naam goed kan afhandelen en er fouten worden voorkomen.
 			 */
 			String realNick = connectView.getNick().replaceAll(" ", "");
-			
 			if(realNick == null || realNick.isEmpty() || realNick.equals("")) {
 				logWithAlert("Please enter your name.");
 				fieldsCorrect = false;
@@ -255,11 +254,9 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				lobbyView.computerIsSet();
 			}
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
-			if(lobbyView.getChatMessage().getText() != null || !lobbyView.getChatMessage().getText().equals("\\s"))
-				sendChat(lobbyView.getChatMessage().getText());
+			sendChat(lobbyView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
-			if(gameView.getChatMessage().getText() != null || !gameView.getChatMessage().getText().equals("\\s"))
-				sendChat(gameView.getChatMessage().getText());
+			sendChat(gameView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
 			int bestMove = ai.calculateBestMove(gamer.getColor());
 			gameView.getSlotsList().get(bestMove).setBackground(Color.WHITE);
