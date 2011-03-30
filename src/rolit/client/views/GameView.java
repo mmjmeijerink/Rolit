@@ -11,6 +11,7 @@ import rolit.sharedModels.Board;
 
 public class GameView extends JFrame implements AlertableView, ComponentListener, WindowListener {
 	
+	private static final long serialVersionUID = 1L;
 	private ArrayList<JButton> places = new ArrayList<JButton>();
 	private JButton chatButton;
 	private JTextArea chatArea;

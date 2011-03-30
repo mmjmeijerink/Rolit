@@ -41,7 +41,7 @@ public class ServerTester extends NetworkController {
 			System.out.println("Waiting for startgame");
 			Thread.sleep(1000);
 		}
-		for(int i = 1; i < 4; i++) {
+		for(int i = 1; i <= 3; i++) {
 			testMove(i);
 			while(!movedoneReceived && !kickReceived && !endgameReceived) {
 				System.out.println("Waiting for movedone");

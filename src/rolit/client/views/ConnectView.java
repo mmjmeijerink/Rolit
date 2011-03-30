@@ -6,7 +6,8 @@ import javax.swing.*;
 import rolit.client.controllers.*;
 
 public class ConnectView extends JFrame implements AlertableView {
-	
+
+	private static final long serialVersionUID = 1L;
 	private JButton connectButton;
 	private JTextField hostField, portField, nickField;
 	private ApplicationController viewController;

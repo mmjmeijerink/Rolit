@@ -1,8 +1,9 @@
-package rolit.test.board;
+package rolit.test.model;
 
 import rolit.sharedModels.Board;
 
 public class BoardTest {
+	
 	private Board board;
 	
 	public BoardTest() {
@@ -20,6 +21,6 @@ public class BoardTest {
 	}
 	
 	public static void main(String[] args) {
-		BoardTest boardTest = new BoardTest();
+		new BoardTest();
 	}
 }

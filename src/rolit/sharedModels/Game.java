@@ -230,7 +230,7 @@ public class Game extends Observable {
 		String result = "Game with: ";
 		
 		for(Gamer aGamer: gamers) {
-			result = result + aGamer.toString() + " ";
+			result = result + aGamer.getName() + " ";
 		}
 		
 		return result;
