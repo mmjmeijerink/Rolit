@@ -307,17 +307,14 @@ public class LobbyView extends JFrame implements AlertableView {
 	}
 
 	public boolean smartComputerIsSet() {
-		//System.out.println(joinChoice.getSelection().toString());
 		return smartComputerChoice.isSelected();
 	}
 
 	public boolean computerIsSet() {
-		//System.out.println(joinChoice.getSelection().toString());
 		return computerChoice.isSelected() || smartComputerChoice.isSelected();
 	}
 	
 	public boolean humanIsSet() {
-		//System.out.println(joinChoice.getSelection().toString());
 		return humanChoice.isSelected();
 	}
 	

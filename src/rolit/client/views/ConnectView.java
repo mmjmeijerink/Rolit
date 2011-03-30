@@ -10,6 +10,7 @@ import rolit.client.controllers.*;
  * @author  Mart Meijerink en Thijs Scheepers
  * @version 1
  */
+@SuppressWarnings("serial")
 public class ConnectView extends JFrame implements AlertableView {
 
 	private JButton connectButton;
@@ -132,6 +133,7 @@ public class ConnectView extends JFrame implements AlertableView {
          */
         
 	}
+	
 	/**
 	 * Met deze methode kan een error bericht aan de gebruiker getoont worden.
 	 * @require message != null
