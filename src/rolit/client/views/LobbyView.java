@@ -3,12 +3,17 @@ package rolit.client.views;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-
 import rolit.client.controllers.*;
 
+/**
+ * De LobbyView zorgt voor het weergeven van een Lobby GUI aan de gebruiker en dat de gebruiker op de juiste knoppen kan drukken voor
+ * het mogelijk starten van een game en het chatten met anderen mensen in de lobby.
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
+@SuppressWarnings("serial")
 public class LobbyView extends JFrame implements AlertableView {
 	
-	private static final long serialVersionUID = 1L;
 	private JSpinner joinSpinner;
 	private JButton joinButton;
 	private JButton challengeButton;
@@ -22,20 +27,47 @@ public class LobbyView extends JFrame implements AlertableView {
 	private JRadioButton	computerChoice;
 	private JRadioButton	smartComputerChoice;
 
+	/**
+	 * Maakt een instantie van LobbyView aan en zorgt ervoor dat de applicatie een GUI aan de gebruiker presenteert.
+	 * Doormiddel van interne methoden wordt er een GUI gebouwd. Zodra deze gebouwd is kunnen er strings van textFields etc. opgevraagt worden van dit object.
+	 * 
+	 * @require aController != null
+	 * @param aController
+	 */
 	public LobbyView(ApplicationController aController) {
+		/*
+		 * Zorgt er voor dat er een JFrame geopent wordt met de juiste naam in de titel balk
+		 */
 		super("Welcome to the Lobby");
+		
 		viewController = aController;
 		buildView();
+		/*
+		 * Maakt de GUI zichtbaar nadat hij gebouwd is.
+		 */
 		this.setVisible(true);
+		
 		this.addWindowListener(new WindowAdapter() {
+			/*
+			 * Als het venster gesloten wordt mag de applicatie afgsloten worden.
+			 */
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 		});
 	}
 	
-	/** Builds the GUI */
+	/**
+	 * Interne methoden voor het bouwen van de GUI.
+	 * Dit gebeurt met behulp van de swing-layout library.
+	 * @require this.viewController != null;
+	 */
 	public void buildView() {
+
+		/*
+		 * Vreemde namen staan hier zodat ze overeenkomen met de NetBeans gegenereerde code.
+		 */
+		
 		JPanel jPanel1 = new javax.swing.JPanel();
         JLabel jLabel1 = new javax.swing.JLabel();
         JButton jButton2 = new javax.swing.JButton();
@@ -76,6 +108,9 @@ public class LobbyView extends JFrame implements AlertableView {
         jButton2.setText("Challange");
         jButton2.addActionListener(viewController);
 
+        /*
+         * Voor de lijst moet eerst een standaard model ingevoerd worden.
+         */
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "No lobby command recieved" };
             public int getSize() { return strings.length; }
@@ -93,6 +128,11 @@ public class LobbyView extends JFrame implements AlertableView {
         
         joinLoader.setVisible(false);
 
+        /*
+         * Standaard moet een menselijke speler ingesteld worden
+         * omdat wordt verwacht dat dit het vaakst gaat gebeuren,
+         * en zo wordt ook voorkomen dat er niets is ingesteld.
+         */
         buttonGroup1.add(jRadioButton1);
         jRadioButton1.setSelected(true);
         jRadioButton1.setText("Human");
@@ -105,6 +145,25 @@ public class LobbyView extends JFrame implements AlertableView {
         buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText("Smart AI");
         jRadioButton3.addActionListener(viewController);
+        
+        jButton3.setText("Chat");
+        jButton3.addActionListener(viewController);
+        
+        /*
+         * Het textfield moet luisteren naar de enter voor het versturen
+         * van chat berichten.
+         */
+        jTextField1.addKeyListener(viewController);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setEditable(false);
+        jScrollPane2.setViewportView(jTextArea1);
+        
+        /*
+         * NetBeans generator code vanaf hier.
+         * Voor deze code is dan ook de extra library swing-layout-1.0.4.jar nodig
+         */
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -155,16 +214,6 @@ public class LobbyView extends JFrame implements AlertableView {
                 .add(17, 17, 17))
         );
 
-        jButton3.setText("Chat");
-        jButton3.addActionListener(viewController);
-        
-        jTextField1.addKeyListener(viewController);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setEditable(false);
-        jScrollPane2.setViewportView(jTextArea1);
-
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -204,7 +253,13 @@ public class LobbyView extends JFrame implements AlertableView {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+        
         pack();
+        
+        /*
+         * Einde NetBeans gegenereerde code.
+         */
+        
 	}
 	
 	public void alert(String message) {

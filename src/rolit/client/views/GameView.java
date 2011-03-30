@@ -32,10 +32,22 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 	 * @param aController de viewController die kan dienen als ActionListener
 	 */
 	public GameView(ApplicationController aController) {
+		/*
+		 * Zorgt er voor dat er een JFrame geopent wordt met de juiste naam in de titel balk
+		 */
 		super("Game on!");
+		
 		viewController = aController;
 		buildView();
+		/*
+		 * Maakt de GUI zichtbaar nadat hij gebouwd is.
+		 */
 		this.setVisible(true);
+		
+		/*
+		 * Er moet worden geluistert naar het sluiten van het venster,
+		 * als dit gebeurt moet er namelijk worden terug gegaan naar de lobby.
+		 */
 		this.addWindowListener(this);
 		this.setDefaultCloseOperation ( JFrame.DO_NOTHING_ON_CLOSE );
 	}
