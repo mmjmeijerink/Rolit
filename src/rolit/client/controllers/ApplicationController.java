@@ -329,7 +329,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			int port = -1;
 			try {
 				port = Integer.parseInt(connectView.getPort());
-				if (port < 1 || port > 65535) {
+				if (port < 1 && port > 65535) {
 					logWithAlert("Port has to be in the range [1-65535].");
 				}
 			} catch (NumberFormatException e) {
