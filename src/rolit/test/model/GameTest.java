@@ -31,16 +31,18 @@ public class GameTest {
 		String result = "";
 		
 		while(!game.isEnded()) {
-			int i = (new SmartAIController(game.getBoard())).calculateBestMove(game.getCurrent().getColor());
-			game.doMove(i, game.getCurrent());
+			Gamer current = game.getCurrent();
+			int i = (new SmartAIController(game.getBoard())).calculateBestMove(current.getColor());
+			game.doMove(i, current);
 			
 			//Visualize
-			result += "Move "+i+" done by "+game.getCurrent().getName()+":\n";
+			result += "Move "+i+" done by "+current.getName()+":\n";
 			result += game.getBoard().toString()+"\n";
-			System.out.println("Move "+i+" done by "+game.getCurrent().getName()+":");
+			System.out.println("Move "+i+" done by "+current.getName()+":");
 			System.out.println(game.getBoard().toString());
 		}
-		System.out.println(game.toString() + " has ended!");
+		result += game.toString() + "has ended!";
+		System.out.println(game.toString() + "has ended!");
 		
 		try {
 			//Log game
@@ -57,11 +59,9 @@ public class GameTest {
 		ArrayList<Gamer> twoPlayers = new ArrayList<Gamer>();
 		
 		Gamer first = new Gamer();
-		first.setColor(Slot.RED);
 		first.setName("Red");
 		
 		Gamer second = new Gamer();
-		second.setColor(Slot.GREEN);
 		second.setName("Green");
 		
 		twoPlayers.add(first);
@@ -74,15 +74,12 @@ public class GameTest {
 		ArrayList<Gamer> threePlayers = new ArrayList<Gamer>();
 		
 		Gamer first = new Gamer();
-		first.setColor(Slot.RED);
 		first.setName("Red");
 		
 		Gamer second = new Gamer();
-		second.setColor(Slot.YELLOW);
 		second.setName("Yellow");
 		
 		Gamer third = new Gamer();
-		third.setColor(Slot.GREEN);
 		third.setName("Green");
 		
 		threePlayers.add(first);
@@ -96,19 +93,15 @@ public class GameTest {
 		ArrayList<Gamer> fourPlayers = new ArrayList<Gamer>();
 		
 		Gamer first = new Gamer();
-		first.setColor(Slot.RED);
 		first.setName("Red");
 		
 		Gamer second = new Gamer();
-		second.setColor(Slot.YELLOW);
 		second.setName("Yellow");
 		
 		Gamer third = new Gamer();
-		third.setColor(Slot.GREEN);
 		third.setName("Green");
 		
 		Gamer fourth = new Gamer();
-		fourth.setColor(Slot.BLUE);
 		fourth.setName("Blue");
 		
 		fourPlayers.add(first);
