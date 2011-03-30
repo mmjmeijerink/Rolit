@@ -73,11 +73,12 @@ public class LobbyView extends JFrame implements AlertableView {
 
         jLabel1.setText("Minimal players:");
 
-        jButton2.setText("Challange");
+        jButton2.setText("Challenge");
         jButton2.addActionListener(viewController);
 
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "No lobby command recieved" };
+			private static final long serialVersionUID = 2912992567185913876L;
+			String[] strings = { "No lobby command recieved" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -88,7 +89,7 @@ public class LobbyView extends JFrame implements AlertableView {
 
         jLabel2.setText("In the lobby:");
 
-        jButton1.setText("Quick Join");
+        jButton1.setText("Join");
         jButton1.addActionListener(viewController);
         
         joinLoader.setVisible(false);

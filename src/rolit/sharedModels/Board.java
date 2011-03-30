@@ -313,11 +313,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er boven een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkAbove(int slotNo, int color, int steps) {
 		int slotAbove = slotNo - DIMENSION;
@@ -345,11 +349,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er rechtsboven een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkRightAbove(int slotNo, int color, int steps) {
 		int slotRightAbove = slotNo - DIMENSION + 1;
@@ -376,11 +384,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er rechts een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkRight(int slotNo, int color, int steps) {
 		int slotRight = slotNo + 1;
@@ -407,11 +419,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er rechtsbeneden een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkRightBelow(int slotNo, int color, int steps) {
 		int slotRightBelow = slotNo + DIMENSION + 1;
@@ -438,11 +454,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er beneden een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkBelow(int slotNo, int color, int steps) {
 		int slotBelow = slotNo + DIMENSION;
@@ -470,11 +490,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er linksbeneden een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkLeftBelow(int slotNo, int color, int steps) {
 		int slotLeftBelow = slotNo + DIMENSION - 1;
@@ -501,11 +525,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er links een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkLeft(int slotNo, int color, int steps) {
 		int slotLeft = slotNo - 1;
@@ -532,11 +560,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param slotNo
-	 * @param color
-	 * @param steps
-	 * @return
+	 * Deze methode checkt of er linksboven een bepaalt vakje een vakje van dezelfde kleur te vinden is.
+	 * Als het result -1 zal de rand van het bord berijkt zijn
+	 * Als het result -2 is er een leeg vakje tegegekomen
+	 * Als het result -3 is is er een directe buur met dezelfde kleur
+	 * @require slotNo >= 0 && slotNO < DIMENSION*DIMENSION && color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN && steps == 0
+	 * @param slotNo er moet vanuit dit vakje gekeken worden
+	 * @param color de kleur waarop gecheckt moet worden.
+	 * @param steps aantal stappen, gebruikt voor recursie er kan 0 ingevoerd worden.
+	 * @return het vakje dat gevonden is of de fout code -1 -2 of -3
 	 */
 	private int checkLeftAbove(int slotNo, int color, int steps) {
 		int slotLeftAbove = slotNo - DIMENSION - 1;

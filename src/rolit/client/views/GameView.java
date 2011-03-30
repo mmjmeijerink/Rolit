@@ -154,7 +154,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         // This is only called when the user releases the mouse button.
     	double widthButton = (((JFrame)e.getSource()).getWidth() - 40 - 8*50)/16;
     	double heightButton = widthButton*1.5;
-    	int buttonSize = (int)widthButton*2 + 10;
+    	//int buttonSize = (int)widthButton*2 + 10;
     	if(heightButton < 15) {
     		heightButton = 15;
     		widthButton = 0;
