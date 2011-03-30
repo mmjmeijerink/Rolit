@@ -1,27 +1,23 @@
 package rolit.client.controllers;
 
-import rolit.client.models.AIControllerInterface;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.JOptionPane;
-
-import rolit.client.models.LoggingInterface;
-import rolit.client.views.ConnectView;
-import rolit.client.views.GameView;
-import rolit.client.views.LobbyView;
+import rolit.client.models.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.net.*;
+import java.util.*;
+import javax.swing.*;
+import rolit.client.models.*;
+import rolit.client.views.*;
 import rolit.sharedModels.*;
 
+/**
+ * De ApplicationController beheert alle gebruiker interactie met het programma. De ApplicationController beheert dus de View's.
+ * Daarnaast verwerkt de ApplicationController de acties op de GUI's en zorgt er vervolgens voor dat die op de juiste manier doorgegeven worden naar de NetworkController.
+ * De ApplicationController luistert ook goed wat de NetworkController te vertellen heeft en verwerkt de commando's die van de server af komen en laat het resultaat zien op de
+ * GUI's
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 public class ApplicationController implements Observer, ActionListener, KeyListener, LoggingInterface {
 
 	private GameView				gameView;
@@ -33,13 +29,26 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	private AIControllerInterface	ai;
 	private boolean					aiIsPlaying;
 
+	/**
+	 * Met de constructor wordt automatisch een connectView aangemaakt en vervolgens weergegeven.
+	 */
 	public ApplicationController() {
 		connectView = new ConnectView(this);		
 	}
 
-	//Getters and setters
+	/**
+	 * Implementatie van de LoggingInterface
+	 * Log zorgt er voor dat de log naar de jusite view gestuurdt wordt als deze zichtbaar is.
+	 * Er wordt sowieso in de console gelogt maar het chat field van de zichtbare view kan ook.
+	 * @require logEntry != null
+	 * @param logEntry de te loggen tekst
+	 */
 	public void log(String logEntry) {
 		System.out.println(" " + logEntry);
+		/*
+		 * Checkt welke views openstaan en als dat een view
+		 * is met een textArea logt hij ook daarin.
+		 */
 		if(lobbyView != null && lobbyView.isVisible()) {
 			lobbyView.getChatArea().append("[" + logEntry + "]\n");
 			lobbyView.getChatArea().setCaretPosition(lobbyView.getChatArea().getText().length());
@@ -49,8 +58,17 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Logt het bericht net als de log(); methode maar zorgt er daarnaast ook
+	 * dat het bericht in een alert box aan de gebruiker getoont wordt.
+	 * @require logEntry != null
+	 * @param logEntry de te loggen tekst en te tonen
+	 */
 	public void logWithAlert(String logEntry) {
 		log(logEntry);
+		/*
+		 * Stuurt de alert door naar de openstaande view's 
+		 */
 		if (connectView != null && connectView.isVisible()) {
 			connectView.alert(logEntry);
 		}
@@ -72,9 +90,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 					gameView.getSlotsList().get(i).setBackground(Color.GRAY);
 				} else {
 					gameView.getSlotsList().get(i).setEnabled(false);
-					/*if(gameView.getSlotsList().get(i).getBackground() == null) {
-						gameView.getSlotsList().get(i).setBackground(Color.BLACK);
-					}*/
 				}
 			}
 		} else {
