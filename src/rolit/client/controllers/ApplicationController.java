@@ -194,6 +194,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	//Event handlers
 	public void actionPerformed(ActionEvent event) {
 		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
+			boolean fieldsCorrect = true;
+			
 			log("Connection to the server...");
 
 			InetAddress host;
@@ -207,17 +209,26 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			int port = -1;
 			try {
 				port = Integer.parseInt(connectView.getPort());
-				if (port < 1 && port > 65535) {
+				if (port < 1 || port > 65535) {
 					logWithAlert("Port has to be in the range [1-65535].");
+					fieldsCorrect = false;
 				}
 			} catch (NumberFormatException e) {
 				logWithAlert("Port is not a valid number.");
 			}
+			
+			/*
+			 * Een spatie als nick wordt niet geaccepteerd en zonder nick kan je niet connecten
+			 */
+			if(connectView.getNick() == null || connectView.getNick().equals("") || connectView.getNick().equals("\\s") || !fieldsCorrect) {
+				logWithAlert("Please enter your name.");
+				fieldsCorrect = false;
+			}
 
-			if(host != null && port > 0) {
+			if(host != null && port > 0 && fieldsCorrect) {
 				connectView.disableControlls();
 				/*
-				 * Deze functie zorgt er voor dat ale spaties uit de meegegeven nick worden gehaalt zodat
+				 * Deze functie zorgt er voor dat alle spaties uit de meegegeven nick worden gehaald, zodat
 				 * de server de naam goed kan afhandelen en er fouten worden voorkomen.
 				 */
 				String realNick = connectView.getNick().replaceAll(" ", "");
