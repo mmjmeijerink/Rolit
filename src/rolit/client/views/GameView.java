@@ -86,6 +86,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
+        jTextArea1.setEditable(false);
         jScrollPane2.setViewportView(jTextArea1);
         
         jSlider1.setMaximum(3000);
