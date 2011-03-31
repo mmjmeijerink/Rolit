@@ -11,10 +11,12 @@ public class SmartAIController implements AIControllerInterface {
 
 	private Board 				board;
 	private ArrayList<Gamer>	gamers;
+	private int					aanroep = 0;
 
 	public SmartAIController(Board aBoard, ArrayList<Gamer> aGamers) {
 		board = aBoard;
 		gamers = aGamers;
+		aanroep = 0;
 	}
 	
 	public int calculateBestMove(int color) {
@@ -23,10 +25,12 @@ public class SmartAIController implements AIControllerInterface {
 
 	public int calculateBestMove(int color, Board boardToCalculate, int moves) {
 		int result = -1;
+		aanroep++;
 
 		//Rekent uit welke zet de meeste punten oplevert binnen 1 zet,
 		//als er meerdere de zelfde punten opleveren neemt deze funtie de eerste die hij tegenkomt
 		int lessPoints = 100;
+		int mostPoints = -1;
 		int mostPointsIndex = -1;
 		int leastOpponentPoints = 65; //Hoogste aantal punten is 64
 		
@@ -84,8 +88,13 @@ public class SmartAIController implements AIControllerInterface {
 					lessPoints = 0;
 					mostPointsIndex = i;
 				//Anders random vakje kiezen, waarbij eerst zo min mogelijk punten gepakt worden
-				} else if(newPoints < lessPoints && opponentPoints < leastOpponentPoints) {
+				} else if(aanroep < 40 && newPoints < lessPoints && (opponentPoints < leastOpponentPoints || newPoints < opponentPoints)) {
+					leastOpponentPoints = opponentPoints;
 					lessPoints = newPoints;
+					mostPointsIndex = i;
+				} else if( aanroep >= 40 && newPoints > mostPoints && (opponentPoints < leastOpponentPoints || newPoints < opponentPoints)) {
+					leastOpponentPoints = opponentPoints;
+					mostPoints = newPoints;
 					mostPointsIndex = i;
 				}
 			}
