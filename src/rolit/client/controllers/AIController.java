@@ -43,7 +43,7 @@ public class AIController implements AIControllerInterface {
 					opponentPoints = nextBoard.getPointsOfColor(nextColor(color));
 				}
 				
-				if(newPoints - oldPoints > mostPoints && opponentPoints < leastOpponentPoints) {
+				if(newPoints - oldPoints > mostPoints && (opponentPoints < leastOpponentPoints || newPoints < opponentPoints)) {
 					leastOpponentPoints = opponentPoints;
 					mostPoints = newPoints - oldPoints;
 					mostPointsIndex = i;
