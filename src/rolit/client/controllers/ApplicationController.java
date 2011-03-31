@@ -212,6 +212,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	 * @ensure this.getGamer() != null
 	 * @param gamerName terug gegeven naam van deze client voor verwerking.
 	 */
+	@SuppressWarnings("serial")
 	public void connectionAstablished(String gamerName) {
 		connectView.setVisible(false);
 		if(gamer == null) {
@@ -224,6 +225,17 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else {
 			lobbyView.setVisible(true);
 		}
+		
+		/*
+		 * Voor als je de verbinding verbreekt met een server en dan verbind met een andere server
+		 * die niet de challenge functie ondersteunt.
+		 */
+		//lobbyView.getChatArea().setText("");
+		lobbyView.getChallengeList().setModel(new javax.swing.AbstractListModel() {
+			String[] strings = { "No lobby command recieved" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
 	}
 
 	/**
