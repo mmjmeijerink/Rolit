@@ -32,7 +32,7 @@ public class GameTest {
 		
 		while(!game.isEnded()) {
 			Gamer current = game.getCurrent();
-			int i = (new SmartAIController(game.getBoard())).calculateBestMove(current.getColor());
+			int i = (new SmartAIController(game.getBoard(), game.getGamers())).calculateBestMove(current.getColor());;
 			game.doMove(i, current);
 			
 			//Visualize

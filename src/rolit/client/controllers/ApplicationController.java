@@ -1,13 +1,22 @@
 package rolit.client.controllers;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JOptionPane;
+
 import rolit.client.models.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-import rolit.client.models.*;
-import rolit.client.views.*;
+import rolit.client.views.ConnectView;
+import rolit.client.views.GameView;
+import rolit.client.views.LobbyView;
 import rolit.sharedModels.*;
 
 /**
@@ -34,7 +43,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	 * Met de constructor wordt automatisch een connectView aangemaakt en vervolgens weergegeven.
 	 */
 	public ApplicationController() {
-		connectView = new ConnectView(this);		
+		connectView = new ConnectView(this);
 	}
 
 	/**
@@ -112,16 +121,18 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			 * Als de AI speelt wordt de huidige Thread inslaap gesust voor een bepaalde tijd
 			 * zodat goed te zien is wat de AI nou eigenlijk doet tijdens een bepaalde zet.
 			 * Met de slider kan de tijd van dit dutje ingestelt worden.
-			 */
+			 
 			try {
 				Thread.sleep(gameView.getTimeValue());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			*/
+			int moves = gameView.getTimeValue()/500;
 			/*
 			 * Door de AI wordt de zet berekend en vervolgens naar de server gestuurd.
 			 */
-			int bestMove = ai.calculateBestMove(gamer.getColor());
+			int bestMove = ai.calculateBestMove(gamer.getColor(), game.getBoard(), moves);
 			game.doMove(bestMove, gamer);
 			network.sendCommand("domove "+bestMove);
 			/*
@@ -267,13 +278,18 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		game = new Game(gamers);
 		/*
 		 * Als de AI aanstaat moet dit netjes verwerkt worden
+		 * Er moet sowieso een AI geïnitaliseerd worden, 
+		 * omdat de speler een hint op kan vragen
 		 */
 		if(lobbyView.smartComputerIsSet()) {
-			ai = new SmartAIController(game.getBoard());
+			ai = new SmartAIController(game.getBoard(), gamers);
 			aiIsPlaying = true;
 		} else if (lobbyView.computerIsSet()){
 			ai = new AIController(game.getBoard(), gamers);
 			aiIsPlaying = true;
+		}
+		else {
+			ai = new SmartAIController(game.getBoard(), gamers);
 		}
 		updateGameView();
 	}
@@ -309,7 +325,6 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		 * Het verwerken van de connect opdracht van de client.
 		 */
 		if(connectView != null && event.getSource() == connectView.getConnectButton()) {
-			
 			log("Connection to the server...");
 
 			/*
@@ -329,14 +344,14 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 			int port = -1;
 			try {
 				port = Integer.parseInt(connectView.getPort());
-				if (port < 1 && port > 65535) {
+				if (port < 1 || port > 65535) {
 					logWithAlert("Port has to be in the range [1-65535].");
 				}
 			} catch (NumberFormatException e) {
 				logWithAlert("Port is not a valid number.");
 			}
 
-			if(host != null && port > 0) {
+			if(host != null && port > 0 && port < 65536) {
 				/*
 				 * Maakt verbinding met de server als de poort en de host klopt.
 				 */
@@ -370,7 +385,8 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
-			int bestMove = ai.calculateBestMove(gamer.getColor());
+			int moves = gameView.getTimeValue()/500;
+			int bestMove = ai.calculateBestMove(gamer.getColor(), game.getBoard(), moves);
 			gameView.getSlotsList().get(bestMove).setBackground(Color.WHITE);
 
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {

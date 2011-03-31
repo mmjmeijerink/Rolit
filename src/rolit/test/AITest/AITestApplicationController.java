@@ -46,7 +46,7 @@ public class AITestApplicationController extends ApplicationController {
 	
 	//Overided methodes
 	public void myTurn() {
-		int bestMove = ai.calculateBestMove(super.getGamer().getColor());
+		int bestMove = ai.calculateBestMove(super.getGamer().getColor(), game.getBoard(), 2);
 		game.doMove(bestMove, super.getGamer());
 		network.sendCommand("domove "+bestMove);
 	}
@@ -69,7 +69,7 @@ public class AITestApplicationController extends ApplicationController {
 
 		game = new Game(gamers);
 		if(super.getGamer().getName().contains("smart")) {
-		    ai = new SmartAIController(game.getBoard());
+		    ai = new SmartAIController(game.getBoard(), game.getGamers());
 		} else {
 		    ai = new AIController(game.getBoard(), gamers);
 		}
