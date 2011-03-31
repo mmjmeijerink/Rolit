@@ -112,7 +112,6 @@ public class LobbyView extends JFrame implements AlertableView {
          * Voor de lijst moet eerst een standaard model ingevoerd worden.
          */
         jList1.setModel(new javax.swing.AbstractListModel() {
-			private static final long serialVersionUID = 2912992567185913876L;
 			String[] strings = { "No lobby command recieved" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
