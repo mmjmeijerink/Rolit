@@ -28,10 +28,10 @@ public class NetworkController extends Thread {
 	 * Het IP adres waar de server op draait en de poort waar hij op luistert worden mee gegeven.
 	 * Verder wordt zijn ApplicationController toegewezen en wordt er een String meegegeven die er als volgt uitziet: "connect <name>"
 	 * 
-	 * @param aHost
-	 * @param aPort
-	 * @param controller
-	 * @param aStartupCommand
+	 * @param aHost het IP adres waar de server draait
+	 * @param aPort de poort waar de server op luistert
+	 * @param controller de ApplicationController waarmee deze NetworkController samenwerkt
+	 * @param aStartupCommand het eerste command dat wordt verstuurt bij het starten van de NetworkController
 	 */
 	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller, String aStartupCommand) {
 		super();
@@ -40,7 +40,11 @@ public class NetworkController extends Thread {
 		host = aHost;
 		startupCommand = aStartupCommand;
 	}
-
+	
+	/**
+	 * Start methode van de thread
+	 * In deze methode wordt ervoor gezorgd dat er een medium is om de commando's tussen de server en de client te versturen en ontvangen
+	 */
 	public void run() {
 		try {
 			socket = new Socket(host, port);
@@ -63,7 +67,12 @@ public class NetworkController extends Thread {
 			disconnect();
 		}
 	}
-
+	
+	/**
+	 * Deze methode stuurt de commando's naar de server
+	 * 
+	 * @param msg het commando dat naar de server gestuurd moet worden
+	 */
 	public void sendCommand(String msg) {
 		if(msg != null) {
 			//appController.log("Sending commmand (" + msg + ") to server");
@@ -75,21 +84,38 @@ public class NetworkController extends Thread {
 			}
 		}
 	}
-
+	
+	/**
+	 * Deze methode krijgt de commando's van de server en zorgt dat de actie wordt ondernomen
+	 * @param msg het ontvangen command van de server
+	 */
+	@SuppressWarnings("unchecked")
 	public void executeCommand(String msg) {
 		System.out.println(msg);
 		
+		/*
+		 * Het commando wordt eerst opgedeeld op basis van zijn spaties.
+		 * Dit stoppen we vervolgens in een ArrayList zodat we er makkelijk mee overweg kunnen. 
+		 */
 		String[] regexCommand = (msg.split("\\s+"));
 		ArrayList<String> splitCommand = new ArrayList<String>(Arrays.asList(regexCommand));
 
 		if(splitCommand.get(0).equals("ackconnect")) {
-			//Handling the handshake of the server
+			/*
+			 * Afhandeling 'ackconnect' commando
+			 * Als de client een 'ackconnect' ontvangt is hij verbonden met de server,
+			 * de naam die de client heeft vind hij op de 2e plaats in de lijst.
+			 */
 			appController.connectionAstablished(splitCommand.get(1));
 			appController.log("Connected to server with name " + splitCommand.get(1) + ".");
 
 		}
 		else if(splitCommand.get(0).equals("startgame")) {
-			//Handling the start of a game
+			/*
+			 * Afhandeling 'startgame' commando
+			 * Als de client een 'startgame' ontvangt, wordt dit doorgegeven aan de ApplicationController.
+			 * Die start vervolgens een game op met de desbetreffende spelers.
+			 */
 			ArrayList<String> playerList = (ArrayList<String>)splitCommand.clone();
 			playerList.remove(0);
 			appController.startGame(playerList);
@@ -97,6 +123,11 @@ public class NetworkController extends Thread {
 			appController.log("Game has started with " + msg.substring(splitCommand.get(0).length() + 1));
 		}
 		else if(splitCommand.get(0).equals("turn")) {
+			/*
+			 * Afhandeling 'turn' commando
+			 * Als de client aan de beurt is wordt dit aan de ApplicationController doorgegeven.
+			 * Anders wordt er alleen gelogd welke gebruiker er op dat moment aan de beurt is.
+			 */
 			if(splitCommand.get(1).equals(appController.getGamer().getName())) {
 				appController.log("Your turn!");
 				appController.myTurn();
@@ -106,7 +137,10 @@ public class NetworkController extends Thread {
 			}
 		}
 		else if(splitCommand.get(0).equals("movedone")) {
-			//Handling a move
+			/*
+			 * Afhandeling 'move' commando
+			 * Hier wordt aan de ApplicationController doorgegeven welke Gamer instantie welke zet heeft gedaan.
+			 */
 			appController.log(msg);
 			Gamer gamer = null;
 			for(Gamer aGamer : appController.getGame().getGamers()) {
@@ -116,7 +150,13 @@ public class NetworkController extends Thread {
 			appController.handleMove(gamer, Integer.parseInt(splitCommand.get(2)));
 		}
 		else if(splitCommand.get(0).equals("endgame")) {
-			//Handling the end of a game
+			/*
+			 * Afhandeling 'endgame' commando
+			 * Hier wordt het einde van een Rolit spelletje afgehandeld.
+			 * De client krijgt van de server door hoeveel punten er zijn gescoord, de volgorde van de punten
+			 * corronspondeert met de volgorde van de spelers in het 'startgame' commando.
+			 * Er wordt een mooi bericht van de gescoorde punten door de verschillende spelers gemaakt en dit wordt aan de ApplicationController doorgegeven.
+			 */
 			appController.log("The game has ended");
 			
 			String message = "The game has ended:\n";
@@ -146,7 +186,12 @@ public class NetworkController extends Thread {
 			appController.endGame(message);
 		}
 		else if(splitCommand.get(0).equals("kick")) {
-			//Handling a kick
+			/*
+			 * Afhandeling 'kick' commando
+			 * Hier wordt gekeken welke speler er door de server gekicked is.
+			 * Vervolgens wordt aan de ApplicationController doorgegeven welke gamer uit het spel verwijderd moet worden.
+			 * Of als deze client gekicked wordt, wordt dat appart doorgegeven. 
+			 */
 			Gamer kicked = null;
 			boolean found = false;
 			
@@ -164,16 +209,26 @@ public class NetworkController extends Thread {
 			}
 		}
 		else if(splitCommand.get(0).equals("message")) {
-			//appController.log(splitCommand.get(1) + ": " + msg.substring(splitCommand.get(0).length() + splitCommand.get(1).length() + 2));
+			/*
+			 * Afhandeling 'message' commando
+			 * De chatberichten die de client van de server krijgt worden naar de ApplicaitonController gestuurd
+			 */
 			appController.handleChat(msg.substring(splitCommand.get(0).length() + splitCommand.get(1).length() + 2),splitCommand.get(1));
 		}
 		else if(splitCommand.get(0).equals("challenged")) {
-			//Handling a challenge request
+			/*
+			 * Afhandeling 'challenge' commando
+			 * Aan de ApplicationController wordt doorgegeven dat en door wie de gebruiker gechallenged is.
+			 */
 			appController.challenged(splitCommand.get(1));
 			appController.log("Challenge received for a game with " + msg.substring(splitCommand.get(0).length() + 1));
 		}
 		else if(splitCommand.get(0).equals("lobby")) {
-			//Handling a lobby event
+			/*
+			 * Afhandeling 'lobby' commando
+			 * Als er een nieuwe lobby door de server gestuurd wordt, wordt de ApplicationController daarvan op de hoogte gebracht.
+			 * De NetworkController houdt de lobby bij, de ApplicationController moet de view aanpassen.
+			 */
 			lobby.clear();
 			for(int i = 1; i < splitCommand.size(); i++) {
 				lobby.add(splitCommand.get(i));
@@ -186,19 +241,27 @@ public class NetworkController extends Thread {
 	}
 
 	//Getters and Setters
+	/**
+	 * Sluit de verbinding met de server of geeft aan dat deze nooit heeft bestaan.
+	 * De ApplicationController wordt aangeroepen om de juiste views weer te geven.
+	 */
 	public void disconnect() {
 		try {
 			in.close();
 			out.close();
 			socket.close();
 		} catch (NullPointerException e) {
-			appController.log("Could never connect at all.");
+			appController.log("Could not connect at all.");
 		} catch (IOException e) {
 			System.err.println("Exceptie catched: " + e.toString());
 		}
 		appController.connectionFailed();
 	}
-
+	
+	/**
+	 * Geeft de lobby, zoals doorgekregen van de server, terug.
+	 * @return de lobby, zoals doorgekregen van de server
+	 */
 	public ArrayList<String> getLobby() {
 		return lobby;
 	}

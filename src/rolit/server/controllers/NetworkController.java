@@ -142,10 +142,10 @@ public class NetworkController extends Thread implements Observer {
 				 */
 				if(splitCommand.size() == 2) {
 					/*
-					 * Als er een nieuwe gamer aangemaakt wordt krijgt deze standaar de naam NOT CONNECTED en er wordt hier op gecheckt.
+					 * Als er een nieuwe gamer aangemaakt wordt krijgt deze standaard de naam NOT CONNECTED en er wordt hier op gecheckt.
 					 * Als de gamer al een naam toegewezen heeft gekregen wordt het verzoek tot connect niet afgehandeld.
 					 * 
-					 * Als een gamer de naam NOT CONNECTED mee geeft zou het niet afgehandeld worden omdat er een spatie in die naam zit en dit is niet conform met het protocol.
+					 * Als een gamer de naam NOT CONNECTED mee geeft zou het niet kunnen afgehandeld worden omdat er een spatie in die naam zit en dit is niet conform met het protocol.
 					 * Zo wordt deze mogelijke bug onmogelijk gemaakt.
 					 */
 					if(sender.getGamer().getName().equals("[NOT CONNECTED]")) {
