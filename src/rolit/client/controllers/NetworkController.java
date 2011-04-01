@@ -6,6 +6,13 @@ import java.util.*;
 
 import rolit.sharedModels.*;
 
+/**
+ * De NetworkController zorgt voor de communicatie tussen de ApplicationController en de ServerSocket.
+ * In de NetworkController komen de commando's van de server binnen en hij verstuurt ze naar de server.
+ * 
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 public class NetworkController extends Thread {
 
 	private ApplicationController	appController;
@@ -16,7 +23,16 @@ public class NetworkController extends Thread {
 	private BufferedReader			in;
 	private BufferedWriter			out;
 	private String					startupCommand;
-
+	
+	/**
+	 * Het IP adres waar de server op draait en de poort waar hij op luistert worden mee gegeven.
+	 * Verder wordt zijn ApplicationController toegewezen en wordt er een String meegegeven die er als volgt uitziet: "connect <name>"
+	 * 
+	 * @param aHost
+	 * @param aPort
+	 * @param controller
+	 * @param aStartupCommand
+	 */
 	public NetworkController(InetAddress aHost, int aPort, ApplicationController controller, String aStartupCommand) {
 		super();
 		appController = controller;
