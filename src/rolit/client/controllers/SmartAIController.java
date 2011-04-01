@@ -7,22 +7,42 @@ import rolit.sharedModels.Board;
 import rolit.sharedModels.Gamer;
 import rolit.sharedModels.Slot;
 
+/**
+ * De AI controller berkent de zet die de computer speler bij een bepaalde situatie op het bord zou zetten.
+ * De AI is bewust van eht aantal spelers, bord.
+ * 
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 public class SmartAIController implements AIControllerInterface {
 
 	private Board 				board;
 	private ArrayList<Gamer>	gamers;
 	private int					aanroep = 0;
 
+	/**
+	 * Aanmaken van AI controller
+	 * @param aBoard het bord van het spel
+	 * @param aGamers de gamers zodat de ai weet wie wie is.
+	 */
 	public SmartAIController(Board aBoard, ArrayList<Gamer> aGamers) {
 		board = aBoard;
 		gamers = aGamers;
 		aanroep = 0;
 	}
 	
+	/**
+	 *  Roept recursieve functie aan zodat de beste zet berkend kan worden.
+	 *  @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 */
 	public int calculateBestMove(int color) {
 		return calculateBestMove(color, board, 2);
 	}
-
+	
+	/**
+	 * De recursieve functie voor het berekenen van verschillende stappen.
+	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 */
 	public int calculateBestMove(int color, Board boardToCalculate, int moves) {
 		int result = -1;
 		aanroep++;
@@ -105,6 +125,10 @@ public class SmartAIController implements AIControllerInterface {
 		return result;
 	}
 	
+	/**
+	 * Geeft de lobby, zoals doorgekregen van de server, terug.
+	 * @return de lobby, zoals doorgekregen van de server
+	 */
 	private int nextColor(int color) {
 		int result = Slot.EMPTY;
 		if(gamers.size() == 2) {

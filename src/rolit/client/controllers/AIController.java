@@ -4,21 +4,40 @@ import rolit.client.models.AIControllerInterface;
 import java.util.*;
 import rolit.sharedModels.*;
 
-
+/**
+ * De AI controller berkent de zet die de computer speler bij een bepaalde situatie op het bord zou zetten.
+ * De AI is bewust van eht aantal spelers, bord.
+ * 
+ * @author  Mart Meijerink en Thijs Scheepers
+ * @version 1
+ */
 public class AIController implements AIControllerInterface {
 	
 	private Board board;
 	private ArrayList<Gamer> gamers;
 	
+	/**
+	 * Aanmaken van AI controller
+	 * @param aBoard het bord van het spel
+	 * @param aGamers de gamers zodat de ai weet wie wie is.
+	 */
 	public AIController(Board aBoard, ArrayList<Gamer> aGamers) {
 		board = aBoard;
 		gamers = aGamers;
 	}
 	
+	/**
+	 *  Roept recursieve functie aan zodat de beste zet berkend kan worden.
+	 *  @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 */
 	public int calculateBestMove(int color) {
 		return calculateBestMove(color, board, 2);
 	}
 	
+	/**
+	 * De recursieve functie voor het berekenen van verschillende stappen.
+	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 */
 	public int calculateBestMove(int color, Board boardToCalculate, int moves) {
 		int result = -1;
 		
@@ -56,6 +75,12 @@ public class AIController implements AIControllerInterface {
 		return result;
 	}
 	
+	/**
+	 * Rekent uit welke kleur de volgende beurt krijgt.
+	 * @require color == Slot.BLUE || Slot.RED || Slot.YELLOW || Slot.GREEN
+	 * @param color de kleur volgens Slot.(Color)
+	 * @return
+	 */
 	private int nextColor(int color) {
 		int result = Slot.EMPTY;
 		if(gamers.size() == 2) {

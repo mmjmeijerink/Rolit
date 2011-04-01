@@ -393,15 +393,27 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				lobbyView.startLoading();
 				lobbyView.computerIsSet();
 			}
+		/*
+		 * Versturen van chat berichten.	
+		 */
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChatButton()) {
 			sendChat(lobbyView.getChatMessage().getText());
 		} else if(gameView != null && event.getSource() == gameView.getChatButton()) {
 			sendChat(gameView.getChatMessage().getText());
+		
+		/*
+		 * Hiermee wordt in de gameview een bepaalde spel knop een witte kleur gegeven zodat
+		 * de gebruiker ziet wat de ai in die situatie zou doen.
+		 */
 		} else if(gameView != null && event.getSource() == gameView.getHintButton()) {
 			int moves = gameView.getTimeValue()/500;
 			int bestMove = ai.calculateBestMove(gamer.getColor(), game.getBoard(), moves);
 			gameView.getSlotsList().get(bestMove).setBackground(Color.WHITE);
-
+		
+		/*
+		 * Als je op de challengeButton drukt zal het juiste commando doorgegeven worden
+		 * aan de network controller en wordt er op de juiste manier gelogt.
+		 */
 		} else if(lobbyView != null && event.getSource() == lobbyView.getChallengeButton()) {
 			if(lobbyView.getChallengeList().getSelectedValue() != null) {
 				String selectedGamers = "challenge " + lobbyView.getChallengeList().getSelectedValue();
@@ -430,13 +442,16 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	}
 
 	/**
-	 * 
-	 * @param challenger
+	 * Wordt aangeroepen als de gebruiker gechallenged wordt door een andere gebruiker 
+	 * in de lobby.
+	 * @param challenger de unieke naam van de challenger
 	 */
 	public void challenged(String challenger) {
 		if(lobbyView != null && lobbyView.isVisible()) {
 			int choice = lobbyView.challengeReceived(challenger);
-
+			/*
+			 * Maakt een JOptionPane aan.
+			 */
 			if(choice == JOptionPane.YES_OPTION) {
 				network.sendCommand("challengeresponse " + challenger + " true");
 			}
@@ -498,6 +513,11 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Wordt aangeroepen als er iets verandert in het model van de game.
+	 * Deze methode zort er voor dat updateGameView aangeropen wordt zodat vervolgens
+	 * de view van de game de juiste situatie weergeeft.
+	 */
 	public void update(Observable o, Object arg) {
 		if(((String) arg).equals("move") && o.getClass().equals(game)) {
 			updateGameView();
@@ -507,6 +527,10 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 	public void keyTyped(KeyEvent event) {}
 	public void keyPressed(KeyEvent event) {}
 
+	/**
+	 * Wordt aangeroepen als er een nieuwe situatie in de lobby
+	 * wordt gemeld bij de server.
+	 */
 	public void updateLobby() {
 		if(lobbyView != null && lobbyView.isVisible() && network != null) {
 			lobbyView.setChallengeList(network.getLobby());
@@ -514,9 +538,17 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Handelt het einde van een game af.
+	 * @param message Het bericht dat doorgegeven wordt zodat de gebruiker
+	 * god kan zien wie er gewonnen heeft.
+	 */
 	public void endGame(String message) {
 		if(gameView != null  && lobbyView != null && gameView.isVisible() && network != null) {
 			gameView.setVisible(false);
+			/*
+			 * Reset de lobby view.
+			 */
 			lobbyView.stopLoading();
 			lobbyView.setVisible(true);
 			if(game != null && game.getGamers() != null && game.getGamers().size() > 1) {
@@ -529,9 +561,17 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 		}
 	}
 
+	/**
+	 * Deze methode verwerkt het kicken van de huidige game, als 
+	 * er gekickt is wordt de lobby weer zichtbaar. Stel dat de serer 
+	 * disconnect gaat via de disconnect methode dit afhandelen.
+	 */
 	public void gotKicked() {
 		if(gameView != null  && lobbyView != null && gameView.isVisible() && network != null) {
 			gameView.setVisible(false);
+			/*
+			 * Reset de lobby view.
+			 */
 			lobbyView.stopLoading();
 			lobbyView.setVisible(true);
 			if(!wantsToStop) {

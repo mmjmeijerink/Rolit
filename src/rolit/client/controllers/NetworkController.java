@@ -240,7 +240,6 @@ public class NetworkController extends Thread {
 		}
 	}
 
-	//Getters and Setters
 	/**
 	 * Sluit de verbinding met de server of geeft aan dat deze nooit heeft bestaan.
 	 * De ApplicationController wordt aangeroepen om de juiste views weer te geven.
