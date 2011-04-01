@@ -21,9 +21,10 @@ import rolit.sharedModels.*;
 
 /**
  * De ApplicationController beheert alle gebruiker interactie met het programma. De ApplicationController beheert dus de View's.
- * Daarnaast verwerkt de ApplicationController de acties op de GUI's en zorgt er vervolgens voor dat die op de juiste manier doorgegeven worden naar de NetworkController.
- * De ApplicationController luistert ook goed wat de NetworkController te vertellen heeft en verwerkt de commando's die van de server af komen en laat het resultaat zien op de
- * GUI's
+ * Daarnaast verwerkt de ApplicationController de acties op de GUI's en zorgt er vervolgens voor dat die op de juiste manier doorgegeven worden aan de NetworkController.
+ * De ApplicationController luistert ook goed naar wat de NetworkController te vertellen heeft en verwerkt de commando's die van de server af komen 
+ * en laat het resultaat zien op de GUI's
+ * 
  * @author  Mart Meijerink en Thijs Scheepers
  * @version 1
  */
