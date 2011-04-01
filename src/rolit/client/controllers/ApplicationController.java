@@ -128,7 +128,7 @@ public class ApplicationController implements Observer, ActionListener, KeyListe
 				e.printStackTrace();
 			}
 			*/
-			int moves = gameView.getTimeValue()/500;
+			int moves = gameView.getTimeValue()/300;
 			/*
 			 * Door de AI wordt de zet berekend en vervolgens naar de server gestuurd.
 			 */

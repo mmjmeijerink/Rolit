@@ -132,7 +132,7 @@ public class GameView extends JFrame implements AlertableView, ComponentListener
         jScrollPane2.setViewportView(jTextArea1);
         
         jSlider1.setMaximum(3000);
-        jSlider1.setValue(1000);
+        jSlider1.setValue(3000);
         
         /*
          * NetBeans generator code vanaf hier.
