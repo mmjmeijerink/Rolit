@@ -1,6 +1,33 @@
-Dit zijn de uitwerkingen van de eindopdracht van Programmeren 2 Universiteit Twente 2011,
-door Thijs Scheepers en Mart Meijerink.
+Dit zijn de uitwerkingen van de eindopdracht van Programmeren 2 Universiteit Twente 2011, door Thijs Scheepers en Mart Meijerink.
 
-De opdracht omschrijving staat in "misc".
+Deze code is te vinden op: https://github.com/mmjmeijerink/Rolit
 
-Kopieer onze uitwerkingen niet!
+
+Server
+-------
+U kunt de server openen door de Server.jar uit te voeren.
+
+De poort van de server is instelbaar op de GUI van de server.
+
+Vervolgens kunt u de server starten door in de server op "Start the Server" te drukken.
+
+In het log van de server is goed te zien wat er aan de hand is, en aan de hand van dit log kan een client eventueel worden getest.
+
+Client
+_______
+U kunt de client starten door de Client.jar uit te voeren.
+
+U kunt instellen met welke server er verbinding moet worden gelegd
+en welke nickname u graag wilt hebben.
+
+Vervolgens kunt u met de client verbinding maken met een server.
+
+Als er verbinding heeft komt u in de lobby. In de lobby kunt u chatten met andere personen die zich in de lobby bevinden. U kunt snel een game joinen door op "Quick Join" te drukken of een specifieke speler challange door op "Challenge" te drukken.
+
+Met de selectie knop "Human", "Dull AI", "Smart AI" stelt u in of u zelf wilt spelen of de computer voor u wilt laten spelen.
+
+Als een game start wordt er als u aan de beurt bent mogelijke zetten weergegeven met actieve knoppen. Deze kunt u indrukken om de zet te doen, als u graag een hint wilt tijdens het spelen kan dit met de knop "Hint?".
+
+Als de computer speelt kunt u met de schuif de rekenkracht instellen.
+
+U kunt tijdens het spel chatten met de andere spelers die meedoen aan het spel.
